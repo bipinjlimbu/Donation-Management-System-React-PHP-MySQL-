@@ -23,6 +23,10 @@ const routes = createBrowserRouter([
                 element:<h1> About Page </h1>
             },
             {
+                path:"/profile",
+                element:<h1> Profile Page </h1>
+            },
+            {
                 path:"*",
                 element:<h1> 404 Not Found </h1>
             }
