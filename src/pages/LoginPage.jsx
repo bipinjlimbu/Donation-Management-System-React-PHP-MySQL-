@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import myLogin from "../style/LoginPage.module.css"
+import Footer from "../layout/Footer";
 
 export default function LoginPage() {
     return (
@@ -15,6 +16,7 @@ export default function LoginPage() {
                 <button type="submit"> Login </button>
             </form>
             <p> Don't have an account? <Link to="/signup"> Register here </Link> </p>
+            <Footer/>
         </div>
     )
 }
