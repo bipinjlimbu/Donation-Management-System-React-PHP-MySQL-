@@ -8,7 +8,7 @@ export default function () {
 
     return(
         <div className="nav">
-            <h1> Donation Management System </h1>
+            <Link to = "/"><h1> Donation Management System </h1></Link>
             <nav>
                 <Link to = "/" > Home </Link>
                 <Link to = "/items"> Items </Link>
@@ -18,7 +18,7 @@ export default function () {
                 {isLoggedIn ?
                     <Link to = "/profile"> <button className="ProBut"> Profile </button> </Link>
                     :
-                    <button onClick={() => setIsLoggedIn(true)} className="LogBut"> Login </button>
+                    <Link to = "/login"><button className="LogBut"> Login </button></Link>
                 }
             </nav>
         </div>
