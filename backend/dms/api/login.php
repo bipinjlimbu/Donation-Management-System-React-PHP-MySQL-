@@ -2,6 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
+header("Content-Type: application/json");
 
 include 'connectDB.php';
 $objDb = new connectDB();
@@ -9,10 +10,10 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$email = $data['email'] ?? '';
-$password = $data['password'] ?? '';
+$email = strtolower(trim($data['email'] ?? ''));
+$password = trim($data['password'] ?? '');
 
-if (empty($email) || empty($password)) {
+if (!$email || !$password) {
     echo json_encode([
         "success" => false,
         "message" => "Email and password required"
@@ -20,7 +21,7 @@ if (empty($email) || empty($password)) {
     exit;
 }
 
-$sql = "SELECT * FROM loginDetails WHERE email = :email";
+$sql = "SELECT * FROM logindetails WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -34,7 +35,7 @@ if (!$user) {
     exit;
 }
 
-if ($password != $user['password']) {
+if (!password_verify($password, $user['password'])) {
     echo json_encode([
         "success" => false,
         "message" => "Invalid password"
@@ -47,7 +48,7 @@ echo json_encode([
     "message" => "Login successful",
     "user" => [
         "id" => $user['id'],
-        "email" => $user['email'],
+        "email" => $user['email']
     ]
 ]);
 ?>
