@@ -1,10 +1,8 @@
-import { useState } from "react"
 import {Link} from "react-router-dom"
+import { useAuth } from "../components/AuthContext"
 
 export default function () {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    
+    const { isLoggedIn } = useAuth();
 
     return(
         <div className="nav">
