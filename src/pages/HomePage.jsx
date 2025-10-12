@@ -6,7 +6,7 @@ export default function HomePage() {
         <div className={myHome.home}>
             <h1> Welcome to Donation Management System </h1>
             <p> This is a platform where you can manage your donations effectively. You can view items, contact us, learn about us, and manage your profile. Please log in to access your profile and other features. </p>
-            <Link to = "/login"><button className={myHome.but}> Join Us </button></Link>
+            <Link to = "/signup"><button className={myHome.but}> Join Us </button></Link>
         </div>
     )
 }

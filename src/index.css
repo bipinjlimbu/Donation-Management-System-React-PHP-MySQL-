@@ -29,6 +29,7 @@
   padding: 0.7rem 1.5rem;
   border: 1rem solid black;
   border-radius: 1.5rem;
+  cursor: pointer;
 }
 .ProBut{
   background-color: green;
@@ -36,6 +37,7 @@
   padding: 0.7rem 1.5rem;
   border: 1rem solid black;
   border-radius: 1.5rem;
+  cursor: pointer;
 }
 .nav nav a{
   text-decoration: none;
