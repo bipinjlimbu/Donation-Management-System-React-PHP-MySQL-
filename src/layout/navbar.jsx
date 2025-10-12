@@ -2,7 +2,7 @@ import {Link} from "react-router-dom"
 import { useAuth } from "../components/AuthContext"
 
 export default function () {
-    const { isLoggedIn } = useAuth();
+    const { user } = useAuth();
 
     return(
         <div className="nav">
@@ -13,7 +13,7 @@ export default function () {
                 <Link to = "/contact"> Contact </Link>
                 <Link to = "/about"> About </Link>
                 
-                {isLoggedIn ?
+                {user ?
                     <Link to = "/profile"> <button className="ProBut"> Profile </button> </Link>
                     :
                     <Link to = "/login"><button className="LogBut"> Login </button></Link>
