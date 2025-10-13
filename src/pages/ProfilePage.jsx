@@ -56,13 +56,17 @@ export default function ProfilePage() {
           <p> <strong> Email: </strong> {user.email}</p>
         </>
       )}
-
-      <button
-        onClick={handleLogout}
-        disabled={loading}
-      >
-        {loading ? "Logging out..." : "Logout"}
-      </button>
+      <div className={myProfile.buttons}>
+        <button onClick={() => navigate("/editProfile")}>
+          Edit Profile
+        </button>
+        <button
+          onClick={handleLogout}
+          disabled={loading}
+        >
+          {loading ? "Logging out..." : "Logout"}
+        </button>
+      </div>
     </div>
   );
 }
