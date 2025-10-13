@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
+import myProfile from "../style/ProfilePage.module.css";
 import axios from "axios";
 
 export default function ProfilePage() {
@@ -43,16 +44,16 @@ export default function ProfilePage() {
   }
 
   return (
-    <div>
+    <div className={myProfile.container}>
       <h1>My Profile</h1>
 
       {error ? (
         <p>{error}</p>
       ) : (
         <>
-          <p> Name: {profile?.name}</p>
-          <p> Role: {profile?.role}</p>
-          <p> Email: {user.email}</p>
+          <p> <strong> Name: </strong> {profile?.name}</p>
+          <p> <strong> Role: </strong> {profile?.role}</p>
+          <p> <strong> Email: </strong> {user.email}</p>
         </>
       )}
 

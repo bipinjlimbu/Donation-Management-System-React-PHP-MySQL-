@@ -14,7 +14,7 @@ export default function () {
                 <Link to = "/about"> About </Link>
                 
                 {user ?
-                    <Link to = "/profile"> <button className="ProBut"> Profile </button> </Link>
+                    <Link to = "/profile"> <img src="src/images/profile.webp" alt="profile" className="profImg"/> </Link>
                     :
                     <Link to = "/login"><button className="LogBut"> Login </button></Link>
                 }
