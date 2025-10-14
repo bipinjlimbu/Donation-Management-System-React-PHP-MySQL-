@@ -80,7 +80,10 @@ const handleSubmit = async (e) => {
                     <option value="Admin">Admin</option>
                 </select>
                 <br />
-                <button type="submit"> Submit </button>
+                <div className={myEdit.buttons}>
+                    <button type="submit" disabled={loading}>{loading ? "Updating..." : "Update"}</button>
+                    <button type="button" onClick={() => navigate("/profile")}>Cancel</button>
+                </div>
             </form>
         </div>
     )
