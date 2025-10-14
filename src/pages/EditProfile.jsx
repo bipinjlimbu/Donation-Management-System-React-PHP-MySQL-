@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
+import myEdit from "../style/EditProfile.module.css";
 import axios from "axios";
 
 export default function EditProfile() {
@@ -65,14 +66,14 @@ const handleSubmit = async (e) => {
   };
 
     return (
-        <div>
+        <div className={myEdit.container}>
             <h1> Edit Your Profile </h1>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="fullname"> Full Name: </label>
-                <input type="text" id="fullname" name="fullname" onChange={handleChange} required />
+                <input type="text" id="fullname" name="fullname" value={fullname} onChange={handleChange} required />
                 <br />
                 <label htmlFor="role"> Role: </label>
-                <select id="role" name="role" onChange={handleChange} required>
+                <select id="role" name="role" value={role} onChange={handleChange} required>
                     <option value="">Select Role</option>
                     <option value="Donor">Donor</option>
                     <option value="NGO">NGO</option>
