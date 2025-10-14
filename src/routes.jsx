@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
+import AboutPage from "./pages/AboutPage";
 
 const routes = createBrowserRouter([
     {
@@ -25,7 +26,7 @@ const routes = createBrowserRouter([
             },
             {
                 path:"/about",
-                element:<h1> About Page </h1>
+                element:<AboutPage/>,
             },
             {
                 path:"/profile",
