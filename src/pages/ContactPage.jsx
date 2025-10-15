@@ -2,7 +2,7 @@ import myContact from '../style/ContactPage.module.css';
 
 export default function ContactPage() {
     return (
-        <div className={myContact.about}>
+        <div className={myContact.contact}>
             <h1>Contact Us</h1>
             <p>If you have any questions, suggestions, or need assistance, please feel free to reach out to us.</p>
             <p>Email: dms@gmail.com </p>
