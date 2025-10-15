@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import ItemsPage from "./pages/ItemsPage";
 
 const routes = createBrowserRouter([
     {
@@ -19,7 +20,7 @@ const routes = createBrowserRouter([
             },
             {
                 path:"/items",
-                element:<h1> Items Page </h1>
+                element:<ItemsPage/>,
             },
             {
                 path:"/contact",
