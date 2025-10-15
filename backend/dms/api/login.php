@@ -21,7 +21,7 @@ if (!$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM logindetails WHERE email = :email";
+$sql = "SELECT * FROM userdetails WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();

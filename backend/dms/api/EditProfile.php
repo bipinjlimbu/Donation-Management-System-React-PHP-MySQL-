@@ -23,7 +23,7 @@ if (!$name || !$role || !$email) {
 }
 
 try {
-    $sql = "UPDATE logindetails SET name = :name, role = :role WHERE email = :email";
+    $sql = "UPDATE userdetails SET name = :name, role = :role WHERE email = :email";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':role', $role);
