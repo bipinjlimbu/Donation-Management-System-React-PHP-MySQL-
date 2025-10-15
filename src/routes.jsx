@@ -6,6 +6,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 
 const routes = createBrowserRouter([
     {
@@ -22,7 +23,7 @@ const routes = createBrowserRouter([
             },
             {
                 path:"/contact",
-                element:<h1> Contact Page </h1>
+                element:<ContactPage/>,
             },
             {
                 path:"/about",
