@@ -39,7 +39,7 @@ export default function CampaignsPage() {
     return (
         <div className={myCampaigns.campaigns}>
             <h1>Campaigns</h1>
-            <ul className={myCampaigns.campaignList}>
+            <ul>
                 {campaigns.length > 0 ? (
                     campaigns.map(campaign => (
                         <li key={campaign.campaign_id}>
@@ -47,6 +47,7 @@ export default function CampaignsPage() {
                             <p> {campaign.campaign_description} </p>
                             <p> Start Date: {campaign.start_date} </p>
                             <p> End Date: {campaign.end_date} </p>
+                            <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>View Details</button>
                         </li>
                     ))) : (
                     <li>No campaigns found.</li>
