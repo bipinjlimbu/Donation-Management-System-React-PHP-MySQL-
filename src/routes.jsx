@@ -8,6 +8,7 @@ import EditProfile from "./pages/EditProfile";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import ItemsPage from "./pages/ItemsPage";
+import CampaignsPage from "./pages/CampaignsPage";
 
 const routes = createBrowserRouter([
     {
@@ -19,8 +20,8 @@ const routes = createBrowserRouter([
                 element:<HomePage/>
             },
             {
-                path:"/items",
-                element:<ItemsPage/>,
+                path:"/campaigns",
+                element:<CampaignsPage/>,
             },
             {
                 path:"/contact",
@@ -45,6 +46,10 @@ const routes = createBrowserRouter([
             {
                 path:"/editProfile",
                 element:<EditProfile/>,
+            },
+            {
+                path:"/items",
+                element:<ItemsPage/>,
             },
             {
                 path:"*",

@@ -38,7 +38,7 @@ export default function ItemsPage() {
 
   return (
     <div>
-      <h1>Items Page</h1>
+      <h1>Donation Received</h1>
       <p>This is the Items page where you can view and manage donation items.</p>
       <ul>
         {items.length > 0 ? (
