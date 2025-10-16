@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../components/AuthContext"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-// import myCampaigns from "../style/CampaignsPage.module.css"  //
+import myCampaigns from "../style/CampaignsPage.module.css"
 
 export default function CampaignsPage() {
     const [campaigns, setCampaigns] = useState([]);
@@ -37,9 +37,9 @@ export default function CampaignsPage() {
     }
 
     return (
-        <div>
-            <h1>History of Campaigns</h1>
-            <ul>
+        <div className={myCampaigns.campaigns}>
+            <h1>Campaigns</h1>
+            <ul className={myCampaigns.campaignList}>
                 {campaigns.length > 0 ? (
                     campaigns.map(campaign => (
                         <li key={campaign.campaign_id}>
