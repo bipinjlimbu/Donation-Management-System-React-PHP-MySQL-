@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import myDonation from "../style/DonationPage.module.css";
 import axios from "axios";
 
 export default function DonationPage() {
@@ -58,12 +59,13 @@ export default function DonationPage() {
     };
 
     return (
-        <div>
+        <div className={myDonation.donationPage}>
             <h1>Donation Page</h1>
-            <p>This is a placeholder for the Donation Page.</p>
             <h2>Campaign: {campaign.campaign_name}</h2>
             <p>{campaign.campaign_description}</p>
-            <form onSubmit={handleSubmit}>
+            <div className={myDonation.donationForm}>
+                <h2>Donation Form</h2>
+                <form onSubmit={handleSubmit}>
                 <label>Item: </label>
                 <input type="text" name="item" value={campaign.item_type} onChange={handleChange} required />
                 <br />
@@ -72,7 +74,7 @@ export default function DonationPage() {
                 <br />
                 <button type="submit">Donate</button>
             </form>
-
+            </div>
         </div>
     );
 }
