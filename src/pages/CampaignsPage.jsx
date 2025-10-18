@@ -43,7 +43,7 @@ export default function CampaignsPage() {
                 {campaigns.length > 0 ? (
                     campaigns.map(campaign => (
                         <li key={campaign.campaign_id}>
-                            <strong> {campaign.campaign_name} </strong>
+                            <strong className={myCampaigns.head}> {campaign.campaign_name} </strong>
                             <p> {campaign.campaign_description} </p>
                             <strong> Status: {campaign.campaign_status}</strong>
                             <p> Start Date: {campaign.start_date} </p>
