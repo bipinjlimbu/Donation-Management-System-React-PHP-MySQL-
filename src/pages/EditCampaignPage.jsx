@@ -44,6 +44,7 @@ export default function EditCampaignPage() {
         e.preventDefault();
         axios.put('http://localhost/dms/api/editcampaign.php', {
             campaign_id: id,
+            campaign_name: campaign.campaign_name,
             campaign_description: campaign.campaign_description,
             campaign_status: campaign.campaign_status,
             start_date: campaign.start_date,
@@ -67,27 +68,32 @@ export default function EditCampaignPage() {
     if (error) return <div style={{ color: "red" }}>{error}</div>;
 
     return (
-        <div>
+        <div className={myEditCampaign.editCampaign}>
             <h1>Edit Campaign</h1>
-            <form className={myEditCampaign.editForm} onSubmit={handleSubmit}>
-                <label>Campaign Description:</label>
-                <textarea name="campaign_description" value={campaign.campaign_description} onChange={handleChange} required />
-                <br/>
-                <label>Campaign Status:</label>
-                <select name="campaign_status" value={campaign.campaign_status} onChange={handleChange} required>
-                    <option value="">Select Status</option>
-                    <option value="active">Active</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <br/>
-                <label>Start Date:</label>
-                <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
-                <br/>
-                <label>End Date:</label>
-                <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-                <br/>
-                <button type="submit">Update Campaign</button>
-            </form>
+            <div className={myEditCampaign.formContainer}>
+                <form onSubmit={handleSubmit}>
+                    <label>Campaign Name:</label>
+                    <input type="text" name="campaign_name" value={campaign.campaign_name} onChange={handleChange} required />
+                    <br/>
+                    <label>Campaign Description:</label>
+                    <textarea name="campaign_description" value={campaign.campaign_description} onChange={handleChange} required />
+                    <br/>
+                    <label>Campaign Status:</label>
+                    <select name="campaign_status" value={campaign.campaign_status} onChange={handleChange} required>
+                        <option value="">Select Status</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <br/>
+                    <label>Start Date:</label>
+                    <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
+                    <br/>
+                    <label>End Date:</label>
+                    <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
+                    <br/>
+                    <button type="submit">Update Campaign</button>
+                </form>
+            </div>
         </div>
     )
 }
