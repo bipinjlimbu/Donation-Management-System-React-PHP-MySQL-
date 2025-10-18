@@ -61,7 +61,7 @@ export default function SingleCampaignPage() {
     };
 
     const handleBack = () => {
-        navigate(-1);
+        navigate("/campaigns");
     };
 
     if (loading) return <div>Loading campaign...</div>;
@@ -74,7 +74,7 @@ export default function SingleCampaignPage() {
             <p>{campaign.campaign_description}</p>
             <p className={mySingleCampaign.type}>Item Type: {campaign.item_type}</p>
             <p>Category: {campaign.category}</p>
-            <p className={mySingleCampaign.status}>Campaign Status: {campaign.status}</p>
+            <p className={mySingleCampaign.status}>Campaign Status: {campaign.campaign_status}</p>
             <p>Target Quantity: {campaign.target_quantity}</p>
             <p>Collected Quantity: {campaign.collected_quantity}</p>
             <p>Location: {campaign.location}</p>

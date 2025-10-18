@@ -45,6 +45,7 @@ export default function CampaignsPage() {
                         <li key={campaign.campaign_id}>
                             <strong> {campaign.campaign_name} </strong>
                             <p> {campaign.campaign_description} </p>
+                            <strong> Status: {campaign.campaign_status}</strong>
                             <p> Start Date: {campaign.start_date} </p>
                             <p> End Date: {campaign.end_date} </p>
                             <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>View Details</button>

@@ -11,6 +11,7 @@ import ItemsPage from "./pages/ItemsPage";
 import CampaignsPage from "./pages/CampaignsPage";
 import SingleCampaignPage from "./pages/SingleCampaignPage";
 import DonationPage from "./pages/DonationPage";
+import EditCampaignPage from "./pages/EditCampaignPage";
 
 const routes = createBrowserRouter([
     {
@@ -40,7 +41,7 @@ const routes = createBrowserRouter([
             },
             {
                 path:"/edit-campaign/:id",
-                element:<h1> Edit Campaign Page - To be implemented </h1>
+                element:<EditCampaignPage/>
             },
             {
                 path:"/contact",
