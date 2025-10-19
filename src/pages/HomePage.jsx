@@ -33,7 +33,7 @@ export default function HomePage() {
                 {!user? (
                     <div className={myHome.authButtons}>
                         <button onClick={() => navigate("/login")}> Login </button>
-                        <button onClick={() => navigate("/register")}> Register </button>
+                        <button onClick={() => navigate("/signup")}> Register </button>
                     </div>
                 ):(
                     <div className={myHome.authButtons}>
@@ -43,16 +43,17 @@ export default function HomePage() {
             </div>
             <div className={myHome.latestCampaigns}>
                 <h2> Latest Campaigns </h2>
-                <button onClick={()=> navigate("/campaigns")}> View All </button>
                 <div className={myHome.campaigns}>
-                    {campaigns.slice(0, 3).map(campaign => (
+                    {campaigns.slice(0, 3).map(campaign =>(
                         <div key={campaign.campaign_id} className={myHome.campaignCard}>
                             <h3> {campaign.campaign_name} </h3>
                             <p> {campaign.campaign_description} </p>
+                            <p> <strong> Status: </strong>{campaign.campaign_status} </p>
                             <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>View Details</button>
                         </div>
                     ))}
-                </div>  
+                </div> 
+                <button onClick={() => navigate("/campaigns")} className={myHome.moreButton}> View All Campaigns </button> 
             </div>
         </div>
     )
