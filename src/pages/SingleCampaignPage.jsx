@@ -82,13 +82,13 @@ export default function SingleCampaignPage() {
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
-                {profile?.role === "donor" && (
+                {profile?.role === "Donor" && (
                     <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
                         Donate
                     </button>
                 )}
 
-                {profile?.role === "ngo" && (
+                {profile?.role === "NGO" && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>

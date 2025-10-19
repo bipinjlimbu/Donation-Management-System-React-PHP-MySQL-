@@ -29,20 +29,25 @@ export default function DashboardPage() {
 
     return (
         <div>
-            {profile?.role === "admin" ? (
+            {profile?.role === "Admin" ? (
                 <div>
                     <h1> Admin Dashboard </h1>
                     <p> Welcome, {profile?.name}! Here you can manage campaigns and view donation statistics. </p>
                 </div>
-            ) : profile?.role === "donor" ? (
+            ) : profile?.role === "Donor" ? (
                 <div>
                     <h1> Donor Dashboard </h1>
                     <p> Welcome, {profile?.name}! Here you can view your donation history and manage your profile. </p>
                 </div>
-            ) : (
+            ) : profile?.role == "NGO" ? (
                 <div>
                     <h1> NGO Dashboard </h1>
                     <p> Welcome, {profile?.name}! Here you can manage your campaigns and view donation statistics. </p>
+                </div>
+            ):(
+                <div>
+                    <h1> Edit Your Profile </h1>
+                    <p> Please complete your profile to access dashboard features. </p>
                 </div>
             )}
         </div>
