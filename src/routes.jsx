@@ -12,6 +12,7 @@ import CampaignsPage from "./pages/CampaignsPage";
 import SingleCampaignPage from "./pages/SingleCampaignPage";
 import DonationPage from "./pages/DonationPage";
 import EditCampaignPage from "./pages/EditCampaignPage";
+import DashboardPage from "./pages/DashboardPage";
 
 const routes = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ const routes = createBrowserRouter([
             {
                 path:"/",
                 element:<HomePage/>
+            },
+            {
+                path:"/dashboard",
+                element:<DashboardPage/>
             },
             {
                 path:"/campaigns",
