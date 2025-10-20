@@ -34,6 +34,8 @@ export default function SingleCampaignPage() {
             });
     }, [id]);
 
+    console.log(campaign);
+
     useEffect(() => {
         if (user && user.email) {
             axios
@@ -51,6 +53,8 @@ export default function SingleCampaignPage() {
                 });
         }
     }, [user]);
+
+    console.log(profile)
 
     const handleDonate = () => {
         navigate(`/donate/${campaign.campaign_id}`);
@@ -82,13 +86,13 @@ export default function SingleCampaignPage() {
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
-                {profile?.role === "Donor" && (
+                {profile?.role === "Donor" && campaign.campaign_status === "Active" && (
                     <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
                         Donate
                     </button>
                 )}
 
-                {profile?.role === "NGO" && (
+                {profile?.role === "NGO" && profile?.id === campaign.created_by && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>

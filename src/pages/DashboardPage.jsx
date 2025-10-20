@@ -41,8 +41,7 @@ export default function DashboardPage() {
                 </div>
             ) : profile?.role == "NGO" ? (
                 <div>
-                    <h1> NGO Dashboard </h1>
-                    <p> Welcome, {profile?.name}! Here you can manage your campaigns and view donation statistics. </p>
+                    <h1>Donation Request</h1>
                 </div>
             ):(
                 <div>
