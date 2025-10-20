@@ -39,14 +39,14 @@ export default function DonationPage() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost/dms/api/donaterequest.php', {
+        axios.post('http://localhost/dms/api/donationPending.php', {
             campaign_id: campaign.campaign_id,
             item_type: campaign.item_type,
             quantity: campaign.quantity
         })
         .then(res => {
             if (res.data.success) {
-                alert("Donation successful!");
+                alert("Donation Requested!");
             } else {
                 alert("Donation failed: " + res.data.message);
             }   
@@ -55,7 +55,6 @@ export default function DonationPage() {
             console.error("Donation error:", err);
             alert("Network or server error during donation.");
         });
-        alert(`Donated ${campaign.quantity} of ${campaign.item_type} to ${campaign.campaign_name}`);
     };
 
     return (
