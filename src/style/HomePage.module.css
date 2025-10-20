@@ -32,7 +32,7 @@
     gap: 1rem;
 }
 .authButtons button {
-    background-color: blue;
+    background-color: #007BFF;
     color: white;
     padding: 0.7rem 1.5rem;
     border: none;
@@ -42,7 +42,7 @@
     font-weight: bold;
 }
 .authButtons button:hover {
-    background-color: rgb(2, 2, 226);
+    background-color: #0056b3;
 }
 .latestCampaigns {
     padding: 4rem 2rem;
@@ -84,7 +84,7 @@
     font-size: 21px;
 }
 .campaignCard button{
-    background-color: blue;
+    background-color: #007BFF;
     color: white;
     padding: 0.7rem 1.5rem;
     border: none;
@@ -95,10 +95,10 @@
     margin-top: 1rem;
 }
 .campaignCard button:hover{
-    background-color: rgb(2, 2, 226);
+    background-color: #0056b3;
 }
 .moreButton{
-    background-color: blue;
+    background-color: #007BFF;
     color: white;
     padding: 0.7rem 1.5rem;
     border: none;
@@ -109,5 +109,5 @@
     margin-top: 2rem;
 }
 .moreButton:hover{
-    background-color: rgb(2, 2, 226);
+    background-color: #0056b3;
 }
