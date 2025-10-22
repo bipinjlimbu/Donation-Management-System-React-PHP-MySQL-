@@ -77,7 +77,7 @@ export default function SingleCampaignPage() {
             <h1>{campaign.campaign_name}</h1>
             <p>{campaign.campaign_description}</p>
             <p className={mySingleCampaign.type}>Item Type: {campaign.item_type}</p>
-            <p>Category: {campaign.category}</p>
+            <p>Category: {campaign.campaign_category}</p>
             <p className={mySingleCampaign.status}>Campaign Status: {campaign.campaign_status}</p>
             <p>Target Quantity: {campaign.target_quantity}</p>
             <p>Collected Quantity: {campaign.collected_quantity}</p>
