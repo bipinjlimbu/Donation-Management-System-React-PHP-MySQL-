@@ -43,7 +43,10 @@ export default function SignUpPage() {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
                 email: email.trim(),
                 password: password.trim()
-            });
+            },
+        {
+            headers: { "Content-Type": "application/json" }
+        });
 
             if (response.data.success) {
                 alert("Signup successful! Please login.");

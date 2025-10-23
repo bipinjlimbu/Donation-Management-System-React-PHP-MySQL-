@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import myLogin from "../style/LSPage.module.css";
 import Footer from "../layout/Footer";
 import { useAuth } from "../components/AuthContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -56,10 +56,10 @@ export default function LoginPage() {
             <h1>Welcome Back</h1>
             <form onSubmit={handleSubmit}>
                 <label>Email:</label>
-                <input type="email" name="email" onChange={handleChange} required />
+                <input type="email" name="email" value={email} onChange={handleChange} required />
                 <br/>
                 <label>Password:</label>
-                <input type="password" name="password" onChange={handleChange} required />
+                <input type="password" name="password" value={password} onChange={handleChange} required />
                 <br/>
                 <button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
             </form>

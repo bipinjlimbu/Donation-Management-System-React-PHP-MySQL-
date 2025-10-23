@@ -14,12 +14,12 @@ export default function EditProfile() {
   useEffect(() => {
     if (!user) return;
     axios.get("http://localhost/dms/api/profile.php", {
-        params: { email: user.email },
+        params: { email: user.user_email },
       })
       .then((res) => {
         if (res.data.success) {
-          setFullname(res.data.profile.name);
-          setRole(res.data.profile.role);
+          setFullname(res.data.profile.user_name);
+          setRole(res.data.profile.user_role);
         }
       })
       .catch((err) => {
@@ -47,7 +47,7 @@ const handleSubmit = async (e) => {
         {
           fullname: fullname.trim(),
           role: role.trim(),
-          email: user.email,
+          email: user.user_email,
         }
       );
 

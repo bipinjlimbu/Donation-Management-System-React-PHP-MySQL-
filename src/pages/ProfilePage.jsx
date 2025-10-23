@@ -13,7 +13,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) return;
-    axios.get("http://localhost/dms/api/profile.php", {params: { email: user.email },})
+    axios.get("http://localhost/dms/api/profile.php", {params: { email: user.user_email },})
       .then((response) => {
         if (response.data.success) {
           setProfile(response.data.profile);
@@ -51,9 +51,9 @@ export default function ProfilePage() {
         <p>{error}</p>
       ) : (
         <>
-          <p> <strong> Name: </strong> {profile?.name}</p>
-          <p> <strong> Role: </strong> {profile?.role}</p>
-          <p> <strong> Email: </strong> {user.email}</p>
+          <p> <strong> Name: </strong> {profile?.user_name}</p>
+          <p> <strong> Role: </strong> {profile?.user_role}</p>
+          <p> <strong> Email: </strong> {user.user_email}</p>
         </>
       )}
       <div className={myProfile.buttons}>
