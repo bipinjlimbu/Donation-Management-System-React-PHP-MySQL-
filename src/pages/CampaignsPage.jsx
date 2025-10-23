@@ -57,7 +57,7 @@ export default function CampaignsPage() {
         <div className={myCampaigns.campaigns}>
             <h1>Campaigns</h1>
             {profile?.user_role === "NGO" && (
-                <button onClick={ () => navigate("/")}> Create Campaign </button>
+                <button onClick={ () => navigate("/createCampaign")}> Create Campaign </button>
             )}
             <ul>
                 {campaigns.length > 0 ? (
