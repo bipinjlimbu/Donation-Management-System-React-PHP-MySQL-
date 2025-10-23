@@ -44,9 +44,9 @@ export default function SignUpPage() {
                 email: email.trim(),
                 password: password.trim()
             },
-        {
-            headers: { "Content-Type": "application/json" }
-        });
+            {
+                headers: { "Content-Type": "application/json" }
+            });
 
             if (response.data.success) {
                 alert("Signup successful! Please login.");
