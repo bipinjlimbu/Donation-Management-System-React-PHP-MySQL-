@@ -21,7 +21,7 @@ if (!$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM userdetails WHERE email = :email";
+$sql = "SELECT * FROM userdetails WHERE user_email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -36,7 +36,7 @@ if ($user) {
 }
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-$sql = "INSERT INTO userdetails (email, password) VALUES (:email, :password)";
+$sql = "INSERT INTO userdetails (user_email, user_password) VALUES (:email, :password)";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':password', $hashedPassword);

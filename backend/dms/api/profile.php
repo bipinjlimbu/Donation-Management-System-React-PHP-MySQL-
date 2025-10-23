@@ -19,7 +19,7 @@ if (empty($email)) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM userdetails WHERE email = :email");
+    $stmt = $conn->prepare("SELECT * FROM userdetails WHERE user_email = :email");
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
     $profile = $stmt->fetch(PDO::FETCH_ASSOC);
