@@ -6,10 +6,26 @@ import myCampaigns from "../style/CampaignsPage.module.css"
 
 export default function CampaignsPage() {
     const [campaigns, setCampaigns] = useState([]);
+    const [profile, setProfile] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+    if (!user) return;
+    axios.get("http://localhost/dms/api/profile.php", {
+        params: { email: user.user_email },
+      })
+      .then((res) => {
+        if (res.data.success) {
+          setProfile(res.data.profile)
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch current profile:", err);
+      });
+  }, [user]);
 
     useEffect(() => {
         axios.get('http://localhost/dms/api/campaigns.php')
@@ -36,9 +52,13 @@ export default function CampaignsPage() {
         return <div style={{ color: 'red' }}>{error}</div>;
     }
 
+    console.log(profile)
     return (
         <div className={myCampaigns.campaigns}>
             <h1>Campaigns</h1>
+            {profile?.user_role === "NGO" && (
+                <button onClick={ () => navigate("/")}> Create Campaign </button>
+            )}
             <ul>
                 {campaigns.length > 0 ? (
                     campaigns.map(campaign => (
