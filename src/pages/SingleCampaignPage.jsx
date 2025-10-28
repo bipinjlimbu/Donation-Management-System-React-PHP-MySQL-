@@ -13,8 +13,6 @@ export default function SingleCampaignPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    console.log("USER OBJECT:", user);
-
     useEffect(() => {
         axios
             .get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
@@ -34,12 +32,11 @@ export default function SingleCampaignPage() {
             });
     }, [id]);
 
-    console.log(campaign);
-
     useEffect(() => {
-        if (user && user.email) {
+        if (user && user.user_email) {
+            const email=user.user_email;
             axios
-                .get(`http://localhost/dms/api/profile.php?email=${user.email}`)
+                .get(`http://localhost/dms/api/profile.php?email=${email}`)
                 .then(res => {
                     if (res.data.success) {
                         setProfile(res.data.profile);
@@ -82,17 +79,18 @@ export default function SingleCampaignPage() {
             <p>Target Quantity: {campaign.target_quantity}</p>
             <p>Collected Quantity: {campaign.collected_quantity}</p>
             <p>Location: {campaign.location}</p>
+            <p> Created by : {profile?.user_name} </p>
             <p className={mySingleCampaign.start}>Start Date: {campaign.start_date}</p>
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
-                {profile?.role === "Donor" && campaign.campaign_status === "Active" && (
+                {profile?.user_role === "Donor" && campaign.campaign_status === "Active" && (
                     <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
                         Donate
                     </button>
                 )}
 
-                {profile?.role === "NGO" && profile?.id === campaign.created_by && (
+                {profile?.user_role === "NGO" && profile?.user_email === campaign.created_by && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>
