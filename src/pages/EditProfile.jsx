@@ -9,6 +9,7 @@ export default function EditProfile() {
     user_name: "",
     user_role: "",
   });
+  const [initialRole, setInitialRole] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ export default function EditProfile() {
     .then((res) => {
        if (res.data.success) {
         setProfile(res.data.profile);
+      }
+      if (res.data.profile.user_role === "User") {
+        setInitialRole(true);
       }
     })
     .catch((err) => {
@@ -74,7 +78,7 @@ export default function EditProfile() {
         <label htmlFor="fullname">Full Name:</label>
         <input type="text" id="fullname" name="fullname" value={profile.user_name} onChange={handleChange} required/>
         <br/>
-        { profile?.user_role === "User" && (
+        { initialRole && (
           <>
             <label htmlFor="role">Role:</label>
             <select id="role" name="role" value={profile.user_role} onChange={handleChange} required>
