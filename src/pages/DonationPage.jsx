@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import myDonation from "../style/DonationPage.module.css";
 import axios from "axios";
 
@@ -8,6 +9,7 @@ export default function DonationPage() {
     const [campaign, setCampaign] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios
@@ -49,7 +51,8 @@ export default function DonationPage() {
                 alert("Donation Requested!");
             } else {
                 alert("Donation failed: " + res.data.message);
-            }   
+            }
+            navigate("/campaigns")
         })
         .catch(err => {
             console.error("Donation error:", err);
