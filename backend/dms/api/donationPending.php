@@ -10,9 +10,9 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$campaignId = (int)($data['campaign_id'] ?? 0);
+$campaignId = (int) ($data['campaign_id'] ?? 0);
 $name = trim($data['item_type'] ?? '');
-$quantity = (int)($data['quantity'] ?? 0);
+$quantity = (int) ($data['quantity'] ?? 0);
 
 if ($campaignId <= 0 || !$name || $quantity <= 0) {
     echo json_encode([
@@ -23,9 +23,9 @@ if ($campaignId <= 0 || !$name || $quantity <= 0) {
 }
 
 try {
-    $sql = "INSERT INTO donationpending (campaign_id, donation_item, donation_quantity) VALUES (:id, :name, :quantity)";
+    $sql = "INSERT INTO donationpending (campaign_id, item_type, donated_quantity) VALUES (:id, :name, :quantity)";
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':id', $campaignId, PDO::PARAM_INT); 
+    $stmt->bindParam(':id', $campaignId, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt->execute();
