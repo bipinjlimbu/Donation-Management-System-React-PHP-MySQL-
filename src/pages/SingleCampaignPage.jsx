@@ -79,7 +79,7 @@ export default function SingleCampaignPage() {
             <p>Target Quantity: {campaign.target_quantity}</p>
             <p>Collected Quantity: {campaign.collected_quantity}</p>
             <p>Location: {campaign.location}</p>
-            <p> Created by : {profile?.user_name} </p>
+            <p> Created by : @{campaign.created_by} </p>
             <p className={mySingleCampaign.start}>Start Date: {campaign.start_date}</p>
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
