@@ -13,8 +13,10 @@ $data = json_decode(file_get_contents("php://input"), true);
 $campaignId = (int) ($data['campaign_id'] ?? 0);
 $name = trim($data['item_type'] ?? '');
 $quantity = (int) ($data['quantity'] ?? 0);
+$donatedTo = strtolower(trim($data['donated_to'] ?? ''));
+$donatedBy = strtolower(trim($data['donated_by'] ?? ''));
 
-if ($campaignId <= 0 || !$name || $quantity <= 0) {
+if ($campaignId <= 0 || !$name || !$donatedTo || !$donatedBy || $quantity <= 0) {
     echo json_encode([
         "success" => false,
         "message" => "All fields are required and campaign ID must be valid"
@@ -23,11 +25,13 @@ if ($campaignId <= 0 || !$name || $quantity <= 0) {
 }
 
 try {
-    $sql = "INSERT INTO donationpending (campaign_id, item_type, donated_quantity) VALUES (:id, :name, :quantity)";
+    $sql = "INSERT INTO donationpending (campaign_id, item_type, donated_quantity, donated_to, donated_by) VALUES (:id, :name, :quantity, :donated_to, :donated_by)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $campaignId, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+    $stmt->bindParam(':donated_to', $donatedTo, PDO::PARAM_STR);
+    $stmt->bindParam(':donated_by', $donatedBy, PDO::PARAM_STR);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
