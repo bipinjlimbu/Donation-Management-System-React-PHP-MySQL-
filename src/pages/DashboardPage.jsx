@@ -27,10 +27,12 @@ export default function DashboardPage() {
     }, [user]);
 
     useEffect(()=>{
-        axios.get(`http://localhost/dms/api/donationPending.php`)
+        if(user && user.user_email) {
+            const email = user.user_email;
+        axios.get(`http://localhost/dms/api/donationPending.php?email=${email}`)
             .then(res => {
                 if (res.data.success) {
-                    setRequest(res.data.request);
+                    setRequest(res.data.donations);
                 } else {
                     setError(res.data.message || "No Pending Request");
                 }
@@ -39,7 +41,11 @@ export default function DashboardPage() {
                 console.error("Failed to fetch user profile:", err);
                 setError("Failed to connect to the server.");
             });
-    },[]);
+        }
+    },[user]);
+
+    console.log(request);
+    
 
     return (
         <div>
@@ -56,7 +62,6 @@ export default function DashboardPage() {
             ) : profile?.user_role == "NGO" ? (
                 <div>
                     <h1>Donation Request</h1>
-                    <p> {request} </p>
                 </div>
             ):(
                 <div>
