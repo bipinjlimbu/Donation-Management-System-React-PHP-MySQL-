@@ -43,8 +43,6 @@ export default function DashboardPage() {
             });
         }
     },[user]);
-
-    console.log(request);
     
 
     return (
@@ -57,11 +55,40 @@ export default function DashboardPage() {
             ) : profile?.user_role === "Donor" ? (
                 <div>
                     <h1> {profile.user_name} Dashboard </h1>
-
                 </div>
             ) : profile?.user_role == "NGO" ? (
                 <div>
-                    <h1>Donation Request</h1>
+                    <h1> {profile.user_name} Dashboard </h1>
+                    <p> Your Pending Request </p>
+                    {request.length > 0 ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {request.map(req => (
+                                    <tr key={req.donation_id}>
+                                        <td>{req.item_type}</td>
+                                        <td>{req.donated_quantity}</td>
+                                        <td>
+                                            <button onClick={() => handleAction(req.donation_id, "approve")}>
+                                                Approve
+                                            </button>
+                                            <button onClick={() => handleAction(req.donation_id, "deny")}>
+                                                Deny
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No pending requests.</p>
+                    )}
                 </div>
             ):(
                 <div>
