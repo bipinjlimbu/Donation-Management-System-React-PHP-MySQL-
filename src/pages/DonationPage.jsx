@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
 import myDonation from "../style/DonationPage.module.css";
 import axios from "axios";
 
@@ -9,6 +10,7 @@ export default function DonationPage() {
     const [campaign, setCampaign] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,7 +46,9 @@ export default function DonationPage() {
         axios.post('http://localhost/dms/api/donationPending.php', {
             campaign_id: campaign.campaign_id,
             item_type: campaign.item_type,
-            quantity: campaign.quantity
+            quantity: campaign.quantity,
+            donated_to:campaign.created_by,
+            donated_by:user.user_email
         })
         .then(res => {
             if (res.data.success) {
