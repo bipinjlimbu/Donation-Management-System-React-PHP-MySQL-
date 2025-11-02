@@ -205,7 +205,7 @@ export default function DashboardPage() {
                             </thead>
                             <tbody>
                                 {request.map((req) => (
-                                    <tr key={req.donation_id}>
+                                    <tr key={req.dh_id}>
                                         <td>{req.campaign_name}</td>
                                         <td>{req.item_type}</td>
                                         <td>{req.donated_quantity}</td>
@@ -240,7 +240,7 @@ export default function DashboardPage() {
                             </thead>
                             <tbody>
                                 {history.map((hist) => (
-                                    <tr key={hist.donation_id}>
+                                    <tr key={hist.dh_id}>
                                         <td>{hist.campaign_name}</td>
                                         <td>{hist.item_type}</td>
                                         <td>{hist.item_quantity}</td>
