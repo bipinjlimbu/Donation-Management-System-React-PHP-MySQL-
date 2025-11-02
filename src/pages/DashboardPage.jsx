@@ -173,12 +173,12 @@ export default function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {history.map((req) => (
-                                    <tr key={req.donation_id}>
-                                        <td>{req.campaign_name}</td>
-                                        <td>{req.item_type}</td>
-                                        <td>{req.item_quantity}</td>
-                                        <td>@{req.ngo}</td>
+                                {history.map((hist) => (
+                                    <tr key={hist.donation_id}>
+                                        <td>{hist.campaign_name}</td>
+                                        <td>{hist.item_type}</td>
+                                        <td>{hist.item_quantity}</td>
+                                        <td>@{hist.ngo}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -226,6 +226,31 @@ export default function DashboardPage() {
                         </table>
                     ) : (
                         <p>No pending requests.</p>
+                    )}
+                    <h2> History of Donations </h2>
+                    {history.length > 0 ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
+                                    <th>Donor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.map((hist) => (
+                                    <tr key={hist.donation_id}>
+                                        <td>{hist.campaign_name}</td>
+                                        <td>{hist.item_type}</td>
+                                        <td>{hist.item_quantity}</td>
+                                        <td>@{hist.donor}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No History of Donations.</p>
                     )}
                 </div>
             ) : (
