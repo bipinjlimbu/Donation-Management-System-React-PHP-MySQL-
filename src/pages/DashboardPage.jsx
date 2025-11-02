@@ -44,14 +44,17 @@ export default function DashboardPage() {
         }
     },[user]);
 
+    console.log(request);
+    
+
     const handleApprove = (req, e) => {
         e.preventDefault();
         axios.post('http://localhost/dms/api/donationHistory.php', {
-            campaign_id: req.campaign_id,
+            campaign_name: req.campaign_name,
             item_type: req.item_type,
             quantity: req.quantity,
-            donor: req.donated_by,
-            ngo: req.donated_to
+            donor: req.donor,
+            ngo: req.ngo
         })
         .then(res => {
             if (res.data.success) {
@@ -86,16 +89,20 @@ export default function DashboardPage() {
                         <table>
                             <thead>
                                 <tr>
+                                    <th>Campaign Name</th>
                                     <th>Item Type</th>
                                     <th>Quantity</th>
+                                    <th>Donor</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {request.map(req => (
                                     <tr key={req.donation_id}>
+                                        <td>{req.campaign_name}</td>
                                         <td>{req.item_type}</td>
                                         <td>{req.donated_quantity}</td>
+                                        <td>@{req.donor}</td>
                                         <td>
                                             <button onClick={() => handleApprove}>
                                                 Approve
