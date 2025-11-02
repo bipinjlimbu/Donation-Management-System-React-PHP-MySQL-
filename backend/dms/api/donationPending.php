@@ -14,7 +14,7 @@ switch ($method) {
     case 'GET':
         try {
             $email = isset($_GET['email']) ? strtolower(trim($_GET['email'])) : '';
-            $sql = "SELECT * FROM donationpending WHERE ngo = :email";
+            $sql = "SELECT * FROM donationpending WHERE ngo = :email or donor = :email";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();

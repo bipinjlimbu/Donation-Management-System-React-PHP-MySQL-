@@ -18,7 +18,6 @@ if (!$conn) {
     exit;
 }
 
-// Get campaign ID from query string
 $campaignId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($campaignId <= 0) {

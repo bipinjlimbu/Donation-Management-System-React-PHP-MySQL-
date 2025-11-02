@@ -9,7 +9,7 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
-$campaignId = (int)($data['campaign_id'] ?? 0);
+$campaignId = (int) ($data['campaign_id'] ?? 0);
 $name = trim($data['campaign_name'] ?? '');
 $description = trim($data['campaign_description'] ?? '');
 $status = trim($data['campaign_status'] ?? '');
