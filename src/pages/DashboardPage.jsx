@@ -6,7 +6,8 @@ import axios from "axios";
 export default function DashboardPage() {
     const { user } = useAuth();
     const [profile, setProfile] = useState(null);
-    const [request, setRequest] = useState([]);
+    const [request, setRequest] = useState([null]);
+    const [history, setHistory] = useState([null]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -47,6 +48,25 @@ export default function DashboardPage() {
         }
     }, [user]);
 
+    useEffect(() => {
+        if (user && user.user_email) {
+            const email = user.user_email;
+            axios
+                .get(`http://localhost/dms/api/fetchHistory.php?email=${email}`)
+                .then((res) => {
+                    if (res.data.success) {
+                        setHistory(res.data.donations);
+                    } else {
+                        setError(res.data.message || "Donations Not Done Yet");
+                    }
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch donation history:", err);
+                    setError("Failed to connect to the server.");
+                });
+        }
+    }, [user]);
+    
     const handleApprove = (req, e) => {
         e.preventDefault();
         axios
@@ -141,6 +161,7 @@ export default function DashboardPage() {
                             <p>If Your Donation is Approved, It will be added as your history. Else, It is Denied due to some reasons.</p>
                         </>
                     )}
+                    <h2> History of Donations </h2>
                 </div>
             ) : profile?.user_role === "NGO" ? (
                 <div className={myDashboard.container}>
