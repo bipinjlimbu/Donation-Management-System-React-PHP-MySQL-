@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
+import myDashboard from "../style/DashboardPage.module.css";
 import axios from "axios";
 
 export default function DashboardPage() {
@@ -111,7 +112,7 @@ export default function DashboardPage() {
                     <h1>{profile.user_name} Dashboard</h1>
                 </div>
             ) : profile?.user_role === "NGO" ? (
-                <div>
+                <div className={myDashboard.ngo}>
                     <h1>{profile.user_name} Dashboard</h1>
                     <p>Your Pending Requests</p>
 
@@ -123,7 +124,7 @@ export default function DashboardPage() {
                                     <th>Item Type</th>
                                     <th>Quantity</th>
                                     <th>Donor</th>
-                                    <th>Actions</th>
+                                    <th colSpan={2}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,12 +135,12 @@ export default function DashboardPage() {
                                         <td>{req.donated_quantity}</td>
                                         <td>@{req.donor}</td>
                                         <td>
-                                            <button
-                                                onClick={(e) => handleApprove(req, e)}
-                                            >
+                                            <button className={myDashboard.approveButton} onClick={(e) => handleApprove(req, e)}>
                                                 Approve
                                             </button>
-                                            <button onClick={() => handleDeny(req)}>
+                                        </td>
+                                        <td>
+                                            <button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>
                                                 Deny
                                             </button>
                                         </td>
