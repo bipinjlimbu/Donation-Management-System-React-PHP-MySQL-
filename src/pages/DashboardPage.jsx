@@ -43,7 +43,29 @@ export default function DashboardPage() {
             });
         }
     },[user]);
-    
+
+    const handleApprove = (req, e) => {
+        e.preventDefault();
+        axios.post('http://localhost/dms/api/donationHistory.php', {
+            campaign_id: req.campaign_id,
+            item_type: req.item_type,
+            quantity: req.quantity,
+            donor: req.donated_by,
+            ngo: req.donated_to
+        })
+        .then(res => {
+            if (res.data.success) {
+                alert("Donation Approved!");
+            } else {
+                alert("Donation failed: " + res.data.message);
+            }
+        })
+        .catch(err => {
+            console.error("Donation error:", err);
+            alert("Network or server error during donation.");
+        });
+    };
+
 
     return (
         <div>
@@ -75,10 +97,10 @@ export default function DashboardPage() {
                                         <td>{req.item_type}</td>
                                         <td>{req.donated_quantity}</td>
                                         <td>
-                                            <button onClick={() => handleAction(req.donation_id, "approve")}>
+                                            <button onClick={() => handleApprove}>
                                                 Approve
                                             </button>
-                                            <button onClick={() => handleAction(req.donation_id, "deny")}>
+                                            <button onClick={() => handleDeny}>
                                                 Deny
                                             </button>
                                         </td>
