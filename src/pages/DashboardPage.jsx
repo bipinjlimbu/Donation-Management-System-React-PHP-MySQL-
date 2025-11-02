@@ -108,11 +108,39 @@ export default function DashboardPage() {
                     </p>
                 </div>
             ) : profile?.user_role === "Donor" ? (
-                <div>
+                <div className={myDashboard.container}>
                     <h1>{profile.user_name} Dashboard</h1>
+                    <p> Your Pending Requests </p>
+
+                    {request.length > 0 ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
+                                    <th>NGO</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {request.map((req) => (
+                                    <tr key={req.donation_id}>
+                                        <td>{req.campaign_name}</td>
+                                        <td>{req.item_type}</td>
+                                        <td>{req.donated_quantity}</td>
+                                        <td>@{req.ngo}</td>
+                                        <td>Pending</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No pending requests.</p>
+                    )}
                 </div>
             ) : profile?.user_role === "NGO" ? (
-                <div className={myDashboard.ngo}>
+                <div className={myDashboard.container}>
                     <h1>{profile.user_name} Dashboard</h1>
                     <p>Your Pending Requests</p>
 
