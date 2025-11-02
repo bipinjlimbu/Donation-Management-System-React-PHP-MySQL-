@@ -136,7 +136,10 @@ export default function DashboardPage() {
                             </tbody>
                         </table>
                     ) : (
-                        <p>No pending requests.</p>
+                        <>
+                            <p>No pending requests.</p>
+                            <p>If Your Donation is Approved, It will be added as your history. Else, It is Denied due to some reasons.</p>
+                        </>
                     )}
                 </div>
             ) : profile?.user_role === "NGO" ? (
