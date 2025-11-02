@@ -44,11 +44,11 @@ export default function DonationPage() {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post('http://localhost/dms/api/donationPending.php', {
-            campaign_id: campaign.campaign_id,
+            campaign_name: campaign.campaign_name,
             item_type: campaign.item_type,
             quantity: campaign.quantity,
-            donated_to:campaign.created_by,
-            donated_by:user.user_email
+            ngo:campaign.created_by,
+            donor:user.user_email
         })
         .then(res => {
             if (res.data.success) {
