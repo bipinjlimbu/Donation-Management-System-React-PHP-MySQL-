@@ -162,6 +162,30 @@ export default function DashboardPage() {
                         </>
                     )}
                     <h2> History of Donations </h2>
+                    {history.length > 0 ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
+                                    <th>NGO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.map((req) => (
+                                    <tr key={req.donation_id}>
+                                        <td>{req.campaign_name}</td>
+                                        <td>{req.item_type}</td>
+                                        <td>{req.item_quantity}</td>
+                                        <td>@{req.ngo}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No History of Donations.</p>
+                    )}
                 </div>
             ) : profile?.user_role === "NGO" ? (
                 <div className={myDashboard.container}>
