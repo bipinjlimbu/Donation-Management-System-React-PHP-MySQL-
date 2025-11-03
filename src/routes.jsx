@@ -29,6 +29,10 @@ const routes = createBrowserRouter([
                 element:<DashboardPage/>
             },
             {
+                path:"/records",
+                element:<h1> Records Page </h1>
+            },
+            {
                 path:"/campaigns",
                 children: [
                     {
