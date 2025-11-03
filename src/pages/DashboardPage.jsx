@@ -163,26 +163,29 @@ export default function DashboardPage() {
                     )}
                     <h2> Records of Donations </h2>
                     {records.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign Name</th>
-                                    <th>Item Type</th>
-                                    <th>Quantity</th>
-                                    <th>NGO</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {records.map((rec) => (
-                                    <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_name}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.item_quantity}</td>
-                                        <td>@{rec.ngo}</td>
+                        <>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Campaign Name</th>
+                                        <th>Item Type</th>
+                                        <th>Quantity</th>
+                                        <th>NGO</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {records.slice(0,3).map((rec) => (
+                                        <tr key={rec.dh_id}>
+                                            <td>{rec.campaign_name}</td>
+                                            <td>{rec.item_type}</td>
+                                            <td>{rec.item_quantity}</td>
+                                            <td>@{rec.ngo}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <button>View All Records</button>
+                        </>
                     ) : (
                         <p>No Records of Donations.</p>
                     )}
@@ -229,26 +232,29 @@ export default function DashboardPage() {
                     )}
                     <h2> Records of Donations </h2>
                     {records.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign Name</th>
-                                    <th>Item Type</th>
-                                    <th>Quantity</th>
-                                    <th>Donor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {records.map((rec) => (
-                                    <tr key={rec.dh_id}>
-                                        <td>{rec.campaign_name}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.item_quantity}</td>
-                                        <td>@{rec.donor}</td>
+                        <>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Campaign Name</th>
+                                        <th>Item Type</th>
+                                        <th>Quantity</th>
+                                        <th>Donor</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {records.slice(0,3).map((rec) => (
+                                        <tr key={rec.dh_id}>
+                                            <td>{rec.campaign_name}</td>
+                                            <td>{rec.item_type}</td>
+                                            <td>{rec.item_quantity}</td>
+                                            <td>@{rec.donor}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <button>View All Records</button>
+                        </>
                     ) : (
                         <p>No Records of Donations.</p>
                     )}
