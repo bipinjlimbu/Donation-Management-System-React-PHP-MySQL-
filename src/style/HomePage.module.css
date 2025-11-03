@@ -24,6 +24,8 @@
     margin-bottom: 1rem;
 }
 .home p{
+    font-size: 1.4rem;
+    font-weight: 100;
     max-width: 1200px;
 }
 .authButtons {

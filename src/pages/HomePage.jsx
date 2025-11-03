@@ -28,8 +28,8 @@ export default function HomePage() {
     return (
         <div className={myHome.container}>
             <div className={myHome.home}>
-                <h1> Welcome to Donation Management System </h1>
-                <p> This is a platform where you can manage your donations effectively. You can view items, contact us, learn about us, and manage your profile. Please log in to access your profile and other features. </p>
+                <h1> Welcome to ShareHope </h1>
+                <p> This platform helps NGOs track item donations, monitor campaigns, and maintain transparent donor records all in one place. You can also donate items easily and make a meaningful impact. </p>
                 {!user? (
                     <div className={myHome.authButtons}>
                         <button onClick={() => navigate("/login")}> Login </button>
