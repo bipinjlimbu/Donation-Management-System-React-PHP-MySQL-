@@ -7,7 +7,7 @@ export default function DashboardPage() {
     const { user } = useAuth();
     const [profile, setProfile] = useState(null);
     const [request, setRequest] = useState([null]);
-    const [history, setHistory] = useState([null]);
+    const [records, setRecords] = useState([null]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -55,7 +55,7 @@ export default function DashboardPage() {
                 .get(`http://localhost/dms/api/fetchHistory.php?email=${email}`)
                 .then((res) => {
                     if (res.data.success) {
-                        setHistory(res.data.donations);
+                        setRecords(res.data.donations);
                     } else {
                         setError(res.data.message || "Donations Not Done Yet");
                     }
@@ -161,8 +161,8 @@ export default function DashboardPage() {
                             <p>If Your Donation is Approved, It will be added as your history. Else, It is Denied due to some reasons.</p>
                         </>
                     )}
-                    <h2> History of Donations </h2>
-                    {history.length > 0 ? (
+                    <h2> Records of Donations </h2>
+                    {records.length > 0 ? (
                         <table>
                             <thead>
                                 <tr>
@@ -173,18 +173,18 @@ export default function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {history.map((hist) => (
-                                    <tr key={hist.donation_id}>
-                                        <td>{hist.campaign_name}</td>
-                                        <td>{hist.item_type}</td>
-                                        <td>{hist.item_quantity}</td>
-                                        <td>@{hist.ngo}</td>
+                                {records.map((rec) => (
+                                    <tr key={rec.donation_id}>
+                                        <td>{rec.campaign_name}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.item_quantity}</td>
+                                        <td>@{rec.ngo}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     ) : (
-                        <p>No History of Donations.</p>
+                        <p>No Records of Donations.</p>
                     )}
                 </div>
             ) : profile?.user_role === "NGO" ? (
@@ -227,8 +227,8 @@ export default function DashboardPage() {
                     ) : (
                         <p>No pending requests.</p>
                     )}
-                    <h2> History of Donations </h2>
-                    {history.length > 0 ? (
+                    <h2> Records of Donations </h2>
+                    {records.length > 0 ? (
                         <table>
                             <thead>
                                 <tr>
@@ -239,18 +239,18 @@ export default function DashboardPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {history.map((hist) => (
-                                    <tr key={hist.dh_id}>
-                                        <td>{hist.campaign_name}</td>
-                                        <td>{hist.item_type}</td>
-                                        <td>{hist.item_quantity}</td>
-                                        <td>@{hist.donor}</td>
+                                {records.map((rec) => (
+                                    <tr key={rec.dh_id}>
+                                        <td>{rec.campaign_name}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.item_quantity}</td>
+                                        <td>@{rec.donor}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     ) : (
-                        <p>No History of Donations.</p>
+                        <p>No Records of Donations.</p>
                     )}
                 </div>
             ) : (
