@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 import myDashboard from "../style/DashboardPage.module.css";
 import axios from "axios";
 
 export default function DashboardPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [request, setRequest] = useState([null]);
     const [records, setRecords] = useState([null]);
@@ -184,7 +186,7 @@ export default function DashboardPage() {
                                     ))}
                                 </tbody>
                             </table>
-                            <button>View All Records</button>
+                            <button onClick={()=>navigate("/records")}>View All Records</button>
                         </>
                     ) : (
                         <p>No Records of Donations.</p>
@@ -253,7 +255,7 @@ export default function DashboardPage() {
                                     ))}
                                 </tbody>
                             </table>
-                            <button>View All Records</button>
+                            <button onClick={()=>navigate("/records")}>View All Records</button>
                         </>
                     ) : (
                         <p>No Records of Donations.</p>
