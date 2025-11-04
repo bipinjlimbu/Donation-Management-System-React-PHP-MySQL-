@@ -7,266 +7,255 @@ import axios from "axios";
 export default function DashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
+
     const [profile, setProfile] = useState(null);
-    const [request, setRequest] = useState([null]);
-    const [records, setRecords] = useState([null]);
-    const [error, setError] = useState(null);
+    const [requests, setRequests] = useState([]);
+    const [records, setRecords] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        if (user && user.user_email) {
-            const email = user.user_email;
-            axios
-                .get(`http://localhost/dms/api/profile.php?email=${email}`)
-                .then((res) => {
-                    if (res.data.success) {
-                        setProfile(res.data.profile);
-                    } else {
-                        setError(res.data.message || "Failed to load user profile");
-                    }
-                })
-                .catch((err) => {
-                    console.error("Failed to fetch user profile:", err);
-                    setError("Failed to connect to the server.");
-                });
-        }
+        if (!user?.user_email) return;
+
+        const fetchData = async () => {
+            setLoading(true);
+            setError("");
+
+            try {
+                const email = user.user_email;
+
+                const [profileRes, pendingRes, historyRes] = await Promise.all([
+                    axios.get(`http://localhost/dms/api/profile.php?email=${email}`),
+                    axios.get(`http://localhost/dms/api/donationPending.php?email=${email}`),
+                    axios.get(`http://localhost/dms/api/fetchHistory.php?email=${email}`)
+                ]);
+
+                if (profileRes.data.success) {
+                    setProfile(profileRes.data.profile);
+                } else {
+                    setError(profileRes.data.message || "Failed to load profile");
+                }
+
+                if (pendingRes.data.success) {
+                    setRequests(pendingRes.data.donations);
+                }
+
+                if (historyRes.data.success) {
+                    setRecords(historyRes.data.donations);
+                }
+            } catch (err) {
+                console.error("Dashboard fetch error:", err);
+                setError("Failed to connect to the server.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [user]);
 
-    useEffect(() => {
-        if (user && user.user_email) {
-            const email = user.user_email;
-            axios
-                .get(`http://localhost/dms/api/donationPending.php?email=${email}`)
-                .then((res) => {
-                    if (res.data.success) {
-                        setRequest(res.data.donations);
-                    } else {
-                        setError(res.data.message || "No Pending Request");
-                    }
-                })
-                .catch((err) => {
-                    console.error("Failed to fetch donation requests:", err);
-                    setError("Failed to connect to the server.");
-                });
-        }
-    }, [user]);
-
-    useEffect(() => {
-        if (user && user.user_email) {
-            const email = user.user_email;
-            axios
-                .get(`http://localhost/dms/api/fetchHistory.php?email=${email}`)
-                .then((res) => {
-                    if (res.data.success) {
-                        setRecords(res.data.donations);
-                    } else {
-                        setError(res.data.message || "Donations Not Done Yet");
-                    }
-                })
-                .catch((err) => {
-                    console.error("Failed to fetch donation history:", err);
-                    setError("Failed to connect to the server.");
-                });
-        }
-    }, [user]);
-    
-    const handleApprove = (req, e) => {
+    const handleApprove = async (req, e) => {
         e.preventDefault();
-        axios
-            .post("http://localhost/dms/api/donationHistory.php", {
+        try {
+            const res = await axios.post("http://localhost/dms/api/donationHistory.php", {
                 donation_id: req.donation_id,
                 campaign_name: req.campaign_name,
                 item_type: req.item_type,
                 quantity: req.donated_quantity,
                 donor: req.donor,
                 ngo: req.ngo,
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    alert("Donation Approved!");
-                    setRequest((prev) =>
-                        prev.filter((r) => r.donation_id !== req.donation_id)
-                    );
-                } else {
-                    alert("Donation failed: " + res.data.message);
-                }
-            })
-            .catch((err) => {
-                console.error("Donation error:", err);
-                alert("Network or server error during donation.");
             });
+
+            if (res.data.success) {
+                alert("Donation Approved!");
+                setRequests((prev) => prev.filter((r) => r.donation_id !== req.donation_id));
+            } else {
+                alert("Approval failed: " + res.data.message);
+            }
+        } catch (err) {
+            console.error("Approve error:", err);
+            alert("Network or server error during donation.");
+        }
     };
 
-    const handleDeny = (req) => {
+    const handleDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
-
-        axios
-            .post("http://localhost/dms/api/deletePending.php", {
-                donation_id: req.donation_id,
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    alert("Donation request denied and removed.");
-                    setRequest((prev) =>
-                        prev.filter((r) => r.donation_id !== req.donation_id)
-                    );
-                } else {
-                    alert("Failed to deny donation: " + res.data.message);
-                }
-            })
-            .catch((err) => {
-                console.error("Deny error:", err);
-                alert("Network or server error during denial.");
-            });
+        try {
+        const res = await axios.post("http://localhost/dms/api/deletePending.php", {
+            donation_id: req.donation_id,
+        });
+        if (res.data.success) {
+            alert("Donation request denied and removed.");
+            setRequests((prev) => prev.filter((r) => r.donation_id !== req.donation_id));
+        } else {
+            alert("Failed to deny donation: " + res.data.message);
+        }
+    } catch (err) {
+        console.error("Deny error:", err);
+        alert("Network or server error during denial.");
+    }
     };
+
+    if (loading) return <p>Loading dashboard...</p>;
+    if (error) return <p style={{ color: "red" }}>{error}</p>;
+
+    if (!profile) return <p>No profile data found.</p>;
+
+    if (profile.user_role === "Admin") {
+        return (
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome, {profile.user_name}! You can manage campaigns and view statistics here.</p>
+            </div>
+        );
+    }
+
+    if (profile.user_role === "Donor") {
+        return (
+            <div className={myDashboard.container}>
+                <h1>{profile.user_name} Dashboard</h1>
+                <h2>Pending Requests</h2>
+
+                {requests.length > 0 ? (
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Item Type</th>
+                            <th>Quantity</th>
+                            <th>NGO</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {requests.map((req) => (
+                            <tr key={req.donation_id}>
+                                <td>{req.campaign_name}</td>
+                                <td>{req.item_type}</td>
+                                <td>{req.donated_quantity}</td>
+                                <td>@{req.ngo}</td>
+                                <td>Pending</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                <>
+                    <p>No pending requests.</p>
+                    <p>If approved, donations appear in your history.</p>
+                </>
+                )}
+
+                <h2>Donation Records</h2>
+                {records.length > 0 ? (
+                    <>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>NGO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {records.slice(0, 3).map((rec) => (
+                                    <tr key={rec.dh_id}>
+                                        <td>{rec.campaign_name}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.item_quantity}</td>
+                                        <td>@{rec.ngo}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <button onClick={() => navigate("/records")}>View All Records</button>
+                    </>
+                ) : (
+                    <p>No records yet.</p>
+                )}
+            </div>
+        );
+    }
+
+    if (profile.user_role === "NGO") {
+        return (
+            <div className={myDashboard.container}>
+                <h1>{profile.user_name} Dashboard</h1>
+                <h2>Pending Requests</h2>
+
+                {requests.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Item Type</th>
+                                <th>Quantity</th>
+                                <th>Donor</th>
+                                <th colSpan={2}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {requests.map((req) => (
+                                <tr key={req.donation_id}>
+                                    <td>{req.campaign_name}</td>
+                                    <td>{req.item_type}</td>
+                                    <td>{req.donated_quantity}</td>
+                                    <td>@{req.donor}</td>
+                                    <td>
+                                        <button className={myDashboard.approveButton} onClick={(e) => handleApprove(req, e)}>
+                                            Approve
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>
+                                            Deny
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No pending requests.</p>
+                )}
+
+                <h2>Donation Records</h2>
+                {records.length > 0 ? (
+                    <>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Donor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {records.slice(0, 3).map((rec) => (
+                                    <tr key={rec.dh_id}>
+                                        <td>{rec.campaign_name}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.item_quantity}</td>
+                                        <td>@{rec.donor}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <button onClick={() => navigate("/records")}>View All Records</button>
+                    </>
+                ) : (
+                    <p>No donation records yet.</p>
+                )}
+            </div>
+        );
+    }
 
     return (
         <div>
-            {profile?.user_role === "Admin" ? (
-                <div>
-                    <h1>Admin Dashboard</h1>
-                    <p>
-                        Welcome, {profile?.user_name}! Here you can manage campaigns and
-                        view donation statistics.
-                    </p>
-                </div>
-            ) : profile?.user_role === "Donor" ? (
-                <div className={myDashboard.container}>
-                    <h1>{profile.user_name} Dashboard</h1>
-                    <p> Your Pending Requests </p>
-
-                    {request.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign Name</th>
-                                    <th>Item Type</th>
-                                    <th>Quantity</th>
-                                    <th>NGO</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {request.map((req) => (
-                                    <tr key={req.donation_id}>
-                                        <td>{req.campaign_name}</td>
-                                        <td>{req.item_type}</td>
-                                        <td>{req.donated_quantity}</td>
-                                        <td>@{req.ngo}</td>
-                                        <td>Pending</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <>
-                            <p>No pending requests.</p>
-                            <p>If Your Donation is Approved, It will be added as your history. Else, It is Denied due to some reasons.</p>
-                        </>
-                    )}
-                    <h2> Records of Donations </h2>
-                    {records.length > 0 ? (
-                        <>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Campaign Name</th>
-                                        <th>Item Type</th>
-                                        <th>Quantity</th>
-                                        <th>NGO</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records.slice(0,3).map((rec) => (
-                                        <tr key={rec.dh_id}>
-                                            <td>{rec.campaign_name}</td>
-                                            <td>{rec.item_type}</td>
-                                            <td>{rec.item_quantity}</td>
-                                            <td>@{rec.ngo}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <button onClick={()=>navigate("/records")}>View All Records</button>
-                        </>
-                    ) : (
-                        <p>No Records of Donations.</p>
-                    )}
-                </div>
-            ) : profile?.user_role === "NGO" ? (
-                <div className={myDashboard.container}>
-                    <h1>{profile.user_name} Dashboard</h1>
-                    <p>Your Pending Requests</p>
-
-                    {request.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign Name</th>
-                                    <th>Item Type</th>
-                                    <th>Quantity</th>
-                                    <th>Donor</th>
-                                    <th colSpan={2}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {request.map((req) => (
-                                    <tr key={req.dh_id}>
-                                        <td>{req.campaign_name}</td>
-                                        <td>{req.item_type}</td>
-                                        <td>{req.donated_quantity}</td>
-                                        <td>@{req.donor}</td>
-                                        <td>
-                                            <button className={myDashboard.approveButton} onClick={(e) => handleApprove(req, e)}>
-                                                Approve
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>
-                                                Deny
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No pending requests.</p>
-                    )}
-                    <h2> Records of Donations </h2>
-                    {records.length > 0 ? (
-                        <>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Campaign Name</th>
-                                        <th>Item Type</th>
-                                        <th>Quantity</th>
-                                        <th>Donor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {records.slice(0,3).map((rec) => (
-                                        <tr key={rec.dh_id}>
-                                            <td>{rec.campaign_name}</td>
-                                            <td>{rec.item_type}</td>
-                                            <td>{rec.item_quantity}</td>
-                                            <td>@{rec.donor}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <button onClick={()=>navigate("/records")}>View All Records</button>
-                        </>
-                    ) : (
-                        <p>No Records of Donations.</p>
-                    )}
-                </div>
-            ) : (
-                <div>
-                    <h1>Edit Your Profile</h1>
-                    <p>Please complete your profile to access dashboard features.</p>
-                </div>
-            )}
+            <h1>Complete Your Profile</h1>
+            <p>Please fill out your profile to access dashboard features.</p>
         </div>
     );
 }
