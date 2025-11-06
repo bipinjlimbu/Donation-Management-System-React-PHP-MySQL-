@@ -10,35 +10,37 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$name = trim($data['fullname'] ?? '');
-$role = trim($data['role'] ?? '');
-$email = strtolower(trim($data['email'] ?? ''));
+$user_id = intval($data['user_id'] ?? 0);
+$new_username = trim($data['new_username'] ?? '');
+$requested_at = date("Y-m-d H:i:s");
 
-if (!$name || !$role || !$email) {
+if (!$user_id || !$new_username) {
     echo json_encode([
         "success" => false,
-        "message" => "Fullname, role and email are required"
+        "message" => "User ID and new username are required"
     ]);
     exit;
 }
 
 try {
-    $sql = "UPDATE userdetails SET user_name = :name, user_role = :role WHERE user_email = :email";
+    $sql = "INSERT INTO userpending
+            (user_id, new_username, status, requested_at)
+            VALUES (:user_id, :new_username, 'Pending', :requested_at)";
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':role', $role);
-    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->bindParam(':new_username', $new_username);
+    $stmt->bindParam(':requested_at', $requested_at);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
         echo json_encode([
             "success" => true,
-            "message" => "Details updated successfully"
+            "message" => "Profile change requested successfully"
         ]);
     } else {
         echo json_encode([
             "success" => false,
-            "message" => "No record updated. Check email or no changes made."
+            "message" => "No record requested. Check user ID or no changes made."
         ]);
     }
 } catch (PDOException $e) {
