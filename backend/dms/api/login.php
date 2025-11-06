@@ -21,7 +21,7 @@ if (!$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM userdetails WHERE user_email = :email";
+$sql = "SELECT * FROM userdetails WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -35,7 +35,7 @@ if (!$user) {
     exit;
 }
 
-if (!password_verify($password, $user['user_password'])) {
+if (!password_verify($password, $user['password_hash'])) {
     echo json_encode([
         "success" => false,
         "message" => "Invalid password"
@@ -48,7 +48,7 @@ echo json_encode([
     "message" => "Login successful",
     "user" => [
         "user_id" => $user['user_id'],
-        "user_email" => $user['user_email']
+        "email" => $user['email'],
     ]
 ]);
 ?>
