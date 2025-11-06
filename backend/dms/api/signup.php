@@ -12,6 +12,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $email = strtolower(trim($data['email'] ?? ''));
 $password = trim($data['password'] ?? '');
+$role = $data['role'] ?? 'donor';
 
 if (!$email || !$password) {
     echo json_encode([
@@ -21,7 +22,7 @@ if (!$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM userdetails WHERE user_email = :email";
+$sql = "SELECT * FROM userdetails WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -36,10 +37,12 @@ if ($user) {
 }
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-$sql = "INSERT INTO userdetails (user_email, user_password) VALUES (:email, :password)";
+
+$sql = "INSERT INTO userdetails (email, password_hash, role) VALUES (:email, :password, :role)";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':password', $hashedPassword);
+$stmt->bindParam(':role', $role);
 $stmt->execute();
 
 echo json_encode([
