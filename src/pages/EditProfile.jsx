@@ -28,11 +28,14 @@ export default function EditProfile() {
     });
   }, [user]);
 
+  console.log(profile);
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({
       ...prev,
-      [name === "fullname" ? "user_name" : "user_role"]: value,
+      [name === "fullname" ? "username" : "role"]: value,
     }));
   };
 
