@@ -12,23 +12,25 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $user_id = intval($data['user_id'] ?? 0);
 $new_username = trim($data['new_username'] ?? '');
+$new_role = trim($data['new_role'] ?? '');
 $requested_at = date("Y-m-d H:i:s");
 
-if (!$user_id || !$new_username) {
+if (!$user_id || !$new_username || !$new_role) {
     echo json_encode([
         "success" => false,
-        "message" => "User ID and new username are required"
+        "message" => "User ID, new username, and new role are required"
     ]);
     exit;
 }
 
 try {
     $sql = "INSERT INTO userpending
-            (user_id, new_username, status, requested_at)
-            VALUES (:user_id, :new_username, 'Pending', :requested_at)";
+            (user_id, new_username, new_role, status, requested_at)
+            VALUES (:user_id, :new_username, :new_role, 'Pending', :requested_at)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':user_id', $user_id);
     $stmt->bindParam(':new_username', $new_username);
+    $stmt->bindParam(':new_role', $new_role);
     $stmt->bindParam(':requested_at', $requested_at);
     $stmt->execute();
 
