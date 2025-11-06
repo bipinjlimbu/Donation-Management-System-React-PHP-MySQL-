@@ -13,7 +13,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) return;
-    axios.get("http://localhost/dms/api/profile.php", {params: { email: user.user_email },})
+    // Updated: fetch by user_id according to userdetails table
+    axios.get("http://localhost/dms/api/profile.php", {
+      params: { user_id: user.user_id },
+    })
       .then((response) => {
         if (response.data.success) {
           setProfile(response.data.profile);
@@ -27,6 +30,9 @@ export default function ProfilePage() {
         setError("Network or server error");
       });
   }, [user]);
+
+  console.log(profile);
+  
 
   const handleLogout = async () => {
     setLoading(true);
@@ -51,9 +57,9 @@ export default function ProfilePage() {
         <p>{error}</p>
       ) : (
         <>
-          <p> <strong> Name: </strong> {profile?.user_name}</p>
-          <p> <strong> Role: </strong> {profile?.user_role}</p>
-          <p> <strong> Email: </strong> {user.user_email}</p>
+          <p><strong>Name:</strong> {profile?.username}</p>
+          <p><strong>Role:</strong> {profile?.role}</p>
+          <p><strong>Email:</strong> {profile?.email}</p>
         </>
       )}
       <div className={myProfile.buttons}>
