@@ -19,7 +19,7 @@ if (empty($user_id)) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT user_id, username FROM userdetails WHERE user_id = :user_id");
+    $stmt = $conn->prepare("SELECT * FROM userdetails WHERE user_id = :user_id");
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
     $profile = $stmt->fetch(PDO::FETCH_ASSOC);
