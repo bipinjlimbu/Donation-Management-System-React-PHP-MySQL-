@@ -42,10 +42,8 @@ export default function SignUpPage() {
         try {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
                 email: email.trim(),
-                password: password.trim()
-            },
-            {
-                headers: { "Content-Type": "application/json" }
+                password: password.trim(),
+                role: "donor"
             });
 
             if (response.data.success) {
