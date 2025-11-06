@@ -18,7 +18,6 @@ export default function LoginPage() {
         if (name === "email") setEmail(value);
         else if (name === "password") setPassword(value);
     };
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
