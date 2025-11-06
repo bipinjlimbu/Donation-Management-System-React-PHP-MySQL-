@@ -6,8 +6,8 @@ import axios from "axios";
 
 export default function EditProfile() {
   const [profile, setProfile] = useState({
-    user_name: "",
-    user_role: "",
+    username: "",
+    role: "",
   });
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
@@ -38,9 +38,9 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { user_name, user_role } = profile;
+    const { username, role } = profile;
 
-    if (!user_name.trim() || !user_role.trim()) {
+    if (!username.trim() || !role.trim()) {
       alert("All fields are required!");
       return;
     }
@@ -49,8 +49,8 @@ export default function EditProfile() {
     try {
       const response = await axios.post("http://localhost/dms/api/profileEditRequest.php", {
         user_id: user.user_id,
-        new_username: user_name.trim(),
-        new_role: user_role.trim(),
+        new_username: username.trim(),
+        new_role: role.trim(),
       });
 
       if (response.data.success) {
@@ -72,10 +72,10 @@ export default function EditProfile() {
       <h1>Edit Your Profile</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" value={profile.user_name} onChange={handleChange} required/>
+        <input type="text" id="fullname" name="fullname" value={profile.username} onChange={handleChange} required/>
         <br/>
         <label htmlFor="role">Role:</label>
-        <select id="role" name="role" value={profile.user_role} onChange={handleChange} required>
+        <select id="role" name="role" value={profile.role} onChange={handleChange} required>
           <option value="">Select Role</option>
           <option value="Donor">Donor</option>
           <option value="NGO">NGO</option>
