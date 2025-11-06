@@ -51,17 +51,17 @@ export default function EditProfile() {
 
     setLoading(true);
     try {
-      const response = await axios.put("http://localhost/dms/api/editProfile.php", {
+      const response = await axios.post("http://localhost/dms/api/profileEditRequest.php", {
         fullname: user_name.trim(),
         role: user_role.trim(),
         email: user.user_email,
       });
 
       if (response.data.success) {
-        alert("Profile updated successfully!");
+        alert("Profile Change Requested successfully!");
         navigate("/profile");
       } else {
-        alert("Failed to update details: " + response.data.message);
+        alert("Failed to request: " + response.data.message);
       }
     } catch (err) {
       console.error(err);

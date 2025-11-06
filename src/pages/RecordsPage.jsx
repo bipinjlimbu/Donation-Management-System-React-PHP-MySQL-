@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import myRecords from "../style/RecordsPage.module.css"
 import axios from "axios";
 
 export default function RecordsPage() {
@@ -37,8 +38,8 @@ export default function RecordsPage() {
     }, [user]);
 
     return (
-        <div>
-            <h2>Records of Donations</h2>
+        <div className={myRecords.container}>
+            <h1>Records of Donations</h1>
 
             {loading && <p>Loading donation records...</p>}
             {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
@@ -47,24 +48,24 @@ export default function RecordsPage() {
 
             {!loading && records.length > 0 && (
                 <table>
-                <thead>
-                    <tr>
-                    <th>Campaign Name</th>
-                    <th>Item Type</th>
-                    <th>Quantity</th>
-                    <th>NGO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {records.map((rec) => (
-                    <tr key={rec.dh_id}>
-                        <td>{rec.campaign_name}</td>
-                        <td>{rec.item_type}</td>
-                        <td>{rec.item_quantity}</td>
-                        <td>@{rec.ngo}</td>
-                    </tr>
-                    ))}
-                </tbody>
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Item Type</th>
+                            <th>Quantity</th>
+                            <th>NGO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {records.map((rec) => (
+                        <tr key={rec.dh_id}>
+                            <td>{rec.campaign_name}</td>
+                            <td>{rec.item_type}</td>
+                            <td>{rec.item_quantity}</td>
+                            <td>@{rec.ngo}</td>
+                        </tr>
+                        ))}
+                    </tbody>
                 </table>
             )}
         </div>
