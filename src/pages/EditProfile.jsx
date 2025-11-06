@@ -9,7 +9,6 @@ export default function EditProfile() {
     user_name: "",
     user_role: "",
   });
-  const [initialRole, setInitialRole] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -17,14 +16,11 @@ export default function EditProfile() {
   useEffect(() => {
     if (!user) return;
     axios.get("http://localhost/dms/api/profile.php", {
-      params: { email: user.user_email },
+      params: { user_id: user.user_id },
     })
     .then((res) => {
        if (res.data.success) {
         setProfile(res.data.profile);
-      }
-      if (res.data.profile.user_role === "User") {
-        setInitialRole(true);
       }
     })
     .catch((err) => {
@@ -52,9 +48,9 @@ export default function EditProfile() {
     setLoading(true);
     try {
       const response = await axios.post("http://localhost/dms/api/profileEditRequest.php", {
-        fullname: user_name.trim(),
-        role: user_role.trim(),
-        email: user.user_email,
+        user_id: user.user_id,
+        new_username: user_name.trim(),
+        new_role: user_role.trim(),
       });
 
       if (response.data.success) {
@@ -78,18 +74,14 @@ export default function EditProfile() {
         <label htmlFor="fullname">Full Name:</label>
         <input type="text" id="fullname" name="fullname" value={profile.user_name} onChange={handleChange} required/>
         <br/>
-        { initialRole && (
-          <>
-            <label htmlFor="role">Role:</label>
-            <select id="role" name="role" value={profile.user_role} onChange={handleChange} required>
-              <option value="">Select Role</option>
-              <option value="Donor">Donor</option>
-              <option value="NGO">NGO</option>
-              <option value="Admin">Admin</option>
-            </select>
-            <br/>
-          </>
-        ) }
+        <label htmlFor="role">Role:</label>
+        <select id="role" name="role" value={profile.user_role} onChange={handleChange} required>
+          <option value="">Select Role</option>
+          <option value="Donor">Donor</option>
+          <option value="NGO">NGO</option>
+          <option value="Admin">Admin</option>
+        </select>
+        <br/>
         <div className={myEdit.buttons}>
           <button type="submit" disabled={loading}>
             {loading ? "Updating..." : "Update"}
