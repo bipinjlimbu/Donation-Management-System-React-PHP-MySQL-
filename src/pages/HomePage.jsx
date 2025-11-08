@@ -46,9 +46,9 @@ export default function HomePage() {
                 <div className={myHome.campaigns}>
                     {campaigns.slice(0, 3).map(campaign =>(
                         <div key={campaign.campaign_id} className={myHome.campaignCard}>
-                            <h3> {campaign.campaign_name} </h3>
-                            <p> {campaign.campaign_description} </p>
-                            <p> <strong> Status: </strong>{campaign.campaign_status} </p>
+                            <h3> {campaign.title} </h3>
+                            <p> {campaign.description} </p>
+                            <p> <strong> Status: </strong>{campaign.status} </p>
                             <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>View Details</button>
                         </div>
                     ))}
