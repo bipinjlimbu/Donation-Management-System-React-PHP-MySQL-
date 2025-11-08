@@ -79,7 +79,10 @@ export default function DashboardPage() {
     const handleUserApprove = async (pending_id, new_username, new_role, user_id) => {
         try {
             const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { pending_id, new_username, new_role, user_id });
-            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            if (res.data.success){
+                alert(res.data.message);
+                setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+        }
             else alert(res.data.message);
         } catch (err) {
             alert("Error approving user request.");
@@ -87,34 +90,52 @@ export default function DashboardPage() {
     };
 
     const handleUserDeny = async (pending_id) => {
+        if (!window.confirm("Are you sure you want to deny this user request?")) return;
         try {
             const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { pending_id });
-            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            if (res.data.success){
+                setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            }
             else alert(res.data.message);
         } catch (err) {
             alert("Error denying user request.");
         }
     };
 
-    const handleCampaignApprove = async (campaignId) => {
-        try {
-            const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id: campaignId });
-            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaignId));
-            else alert(res.data.message);
-        } catch (err) {
-            alert("Error approving campaign request.");
+    const handleCampaignApprove = async (pending_id) => {
+    try {
+        const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", {
+        campaign_id: pending_id,
+        });
+
+        if (res.data.success) {
+        alert(res.data.message);
+        setCampaignRequests((prev) =>
+            prev.filter((r) => r.pending_id !== pending_id)
+        );
+        } else {
+        alert(res.data.message);
         }
+    } catch (err) {
+        console.error("Error approving campaign:", err);
+        alert("Network or server error during campaign approval.");
+    }
     };
 
-    const handleCampaignDeny = async (campaignId) => {
+    const handleCampaignDeny = async (pendingId) => {
+        if (!window.confirm("Are you sure you want to deny this campaign request?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id: campaignId });
-            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaignId));
-            else alert(res.data.message);
+            const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id: pendingId });
+            if (res.data.success) {
+                setCampaignRequests(prev => prev.filter(r => r.pending_id !== pendingId));
+            } else {
+                alert(res.data.message);
+            }
         } catch (err) {
             alert("Error denying campaign request.");
         }
     };
+
     
 
     if (loading) return <p>Loading dashboard...</p>;
@@ -241,7 +262,7 @@ export default function DashboardPage() {
                 ) : <p>No user request records found.</p>}
 
                 <h2>All Campaign Requests Records</h2>
-                {campaignRequests.length > 0 ? (
+                {recordCampaignRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
@@ -254,14 +275,14 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {campaignRequests.map(req => (
+                            {recordCampaignRequests.map(req => (
                                 <tr key={req.campaign_id}>
-                                    <td>{req.campaign_name}</td>
-                                    <td>{req.campaign_description}</td>
-                                    <td>{req.campaign_category}</td>
+                                    <td>{req.title}</td>
+                                    <td>{req.description}</td>
+                                    <td>{req.category}</td>
                                     <td>{req.target_quantity}</td>
                                     <td>{req.location}</td>
-                                    <td>{req.campaign_status}</td>
+                                    <td>{req.status}</td>
                                 </tr>
                             ))}
                         </tbody>
