@@ -27,31 +27,23 @@ export default function SingleCampaignPage() {
                 console.error("Failed to fetch campaign:", err);
                 setError("Failed to connect to the server.");
             })
-            .finally(() => {
-                setLoading(false);
-            });
+            .finally(() => setLoading(false));
     }, [id]);
 
     useEffect(() => {
-        if (user && user.user_email) {
-            const email=user.user_email;
+        if (user?.user_id) {
             axios
-                .get(`http://localhost/dms/api/profile.php?email=${email}`)
+                .get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`)
                 .then(res => {
-                    if (res.data.success) {
-                        setProfile(res.data.profile);
-                    } else {
-                        setError(res.data.message || "Failed to load user profile");
-                    }
+                    if (res.data.success) setProfile(res.data.profile);
+                    else setError(res.data.message || "Failed to load profile");
                 })
                 .catch(err => {
-                    console.error("Failed to fetch user profile:", err);
+                    console.error("Failed to fetch profile:", err);
                     setError("Failed to connect to the server.");
                 });
         }
     }, [user]);
-
-    console.log(profile)
 
     const handleDonate = () => {
         navigate(`/donate/${campaign.campaign_id}`);
@@ -71,31 +63,29 @@ export default function SingleCampaignPage() {
 
     return (
         <div className={mySingleCampaign.campaign}>
-            <h1>{campaign.campaign_name}</h1>
-            <p>{campaign.campaign_description}</p>
+            <h1>{campaign.title}</h1>
+            <p>{campaign.description}</p>
             <p className={mySingleCampaign.type}>Item Type: {campaign.item_type}</p>
-            <p>Category: {campaign.campaign_category}</p>
-            <p className={mySingleCampaign.status}>Campaign Status: {campaign.campaign_status}</p>
+            <p>Category: {campaign.category}</p>
+            <p className={mySingleCampaign.status}>Campaign Status: {campaign.status}</p>
             <p>Target Quantity: {campaign.target_quantity}</p>
             <p>Collected Quantity: {campaign.collected_quantity}</p>
             <p>Location: {campaign.location}</p>
-            <p> Created by : @{campaign.created_by} </p>
+            <p>Created by: {campaign.ngo_name}</p>
             <p className={mySingleCampaign.start}>Start Date: {campaign.start_date}</p>
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
-                {profile?.user_role === "Donor" && campaign.campaign_status === "Active" && (
+                {profile?.role === "Donor" && campaign.status === "Active" && (
                     <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
                         Donate
                     </button>
                 )}
-
-                {profile?.user_role === "NGO" && profile?.user_email === campaign.created_by && (
+                {profile?.role === "NGO" && profile?.user_id === campaign.ngo_id && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>
                 )}
-
                 <button className={mySingleCampaign.backButton} onClick={handleBack}>
                     Back
                 </button>
