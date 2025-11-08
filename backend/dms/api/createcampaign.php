@@ -16,13 +16,14 @@ $itemType = trim($data['item_type'] ?? '');
 $category = trim($data['campaign_category'] ?? '');
 $targetedQty = (int) ($data['targeted_quantity'] ?? 0);
 $location = trim($data['location'] ?? '');
+$startDate = trim($data['start_date'] ?? '');
 $endDate = trim($data['end_date'] ?? '');
-$createdBy = trim($data['created_by'] ?? '');
-$status = "Active";
-$startDate = date("Y-m-d");
+$userId = intval($data['user_id'] ?? 0);
+$status = "Pending";
 $collectedQty = 0;
+$requestedAt = date("Y-m-d H:i:s");
 
-if (!$name || !$description || !$itemType || !$category || !$targetedQty || !$location || !$endDate || !$createdBy) {
+if (!$name || !$description || !$itemType || !$category || !$targetedQty || !$location || !$startDate || !$endDate || !$userId) {
     echo json_encode([
         "success" => false,
         "message" => "All fields are required."
@@ -31,10 +32,11 @@ if (!$name || !$description || !$itemType || !$category || !$targetedQty || !$lo
 }
 
 try {
-    $sql = "INSERT INTO campaigndetails 
-            (campaign_name, campaign_description, item_type, campaign_category, target_quantity, collected_quantity, location, start_date, end_date, campaign_status, created_by)
-            VALUES (:name, :description, :itemType, :category, :targetQty, :collectedQty, :location, :startDate, :endDate, :status, :createdBy)";
+    $sql = "INSERT INTO campaignpending (user_id, campaign_name, campaign_description, item_type, campaign_category, target_quantity, collected_quantity, location, start_date, end_date, campaign_status, requested_at)
+            VALUES (:userId, :name, :description, :itemType, :category, :targetQty, :collectedQty, :location, :startDate, :endDate, :status, :requestedAt)";
+
     $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':description', $description);
     $stmt->bindParam(':itemType', $itemType);
@@ -45,12 +47,12 @@ try {
     $stmt->bindParam(':startDate', $startDate);
     $stmt->bindParam(':endDate', $endDate);
     $stmt->bindParam(':status', $status);
-    $stmt->bindParam(':createdBy', $createdBy, PDO::PARAM_STR);
+    $stmt->bindParam(':requestedAt', $requestedAt);
     $stmt->execute();
 
     echo json_encode([
         "success" => true,
-        "message" => "Campaign created successfully."
+        "message" => "Campaign creation request submitted successfully and is pending approval."
     ]);
 } catch (PDOException $e) {
     echo json_encode([
