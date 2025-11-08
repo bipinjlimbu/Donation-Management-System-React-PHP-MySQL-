@@ -1,0 +1,42 @@
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: *");
+header("Content-Type: application/json");
+
+include 'connectDB.php';
+$objDb = new connectDB();
+$conn = $objDb->connect();
+
+$data = json_decode(file_get_contents("php://input"), true);
+$campaignID = intval($data['campaign_id'] ?? 0);
+
+if (!$campaignID) {
+    echo json_encode(["success" => false, "message" => "Missing campaign ID."]);
+    exit;
+}
+
+try {
+    $stmt = $conn->prepare("SELECT * FROM campaignpending WHERE pending_id = :id");
+    $stmt->bindParam(":id", $campaignID);
+    $stmt->execute();
+    $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$campaign) {
+        echo json_encode(["success" => false, "message" => "Campaign not found."]);
+        exit;
+    }
+
+    $update = $conn->prepare("UPDATE campaignpending SET status = 'Denied' WHERE pending_id = :id");
+    $update->bindParam(":id", $campaignID);
+    $update->execute();
+
+    echo json_encode(["success" => true, "message" => "Campaign request denied successfully."]);
+
+} catch (PDOException $e) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Database error: " . $e->getMessage()
+    ]);
+}
+?>
