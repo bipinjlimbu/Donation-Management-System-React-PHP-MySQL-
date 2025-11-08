@@ -12,6 +12,7 @@ export default function CreateCampaignPage() {
     campaign_category: "",
     targeted_quantity: "",
     location: "",
+    start_date:"",
     end_date: "",
   });
 
@@ -33,7 +34,7 @@ export default function CreateCampaignPage() {
     try {
       const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
         ...campaign,
-        created_by: user?.user_email,
+        user_id: user?.user_id, 
       });
 
       if (res.data.success) {
@@ -63,28 +64,21 @@ export default function CreateCampaignPage() {
           <form onSubmit={handleSubmit}>
             <label>Campaign Name:</label>
             <input type="text" name="campaign_name" value={campaign.campaign_name} onChange={handleChange} required />
-
             <label>Campaign Description:</label>
             <textarea name="campaign_description" value={campaign.campaign_description} onChange={handleChange} required />
-
             <label>Item Type:</label>
             <input type="text" name="item_type" value={campaign.item_type} onChange={handleChange} required />
-
             <label>Campaign Category:</label>
             <input type="text" name="campaign_category" value={campaign.campaign_category} onChange={handleChange} required />
-
             <label>Targeted Quantity:</label>
             <input type="number" name="targeted_quantity" value={campaign.targeted_quantity} onChange={handleChange} required />
-
             <label>Location:</label>
             <input type="text" name="location" value={campaign.location} onChange={handleChange} required />
-
+            <label>Start Date:</label>
+            <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
             <label>End Date:</label>
             <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-
-            <button type="submit" disabled={loading}>
-              {loading ? "Creating..." : "Create"}
-            </button>
+            <button type="submit" disabled={loading}>{loading ? "Creating..." : "Create"}</button>
           </form>
         </div>
       )}
