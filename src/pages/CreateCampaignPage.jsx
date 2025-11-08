@@ -6,13 +6,13 @@ import myCampaign from "../style/CreateCampaignPage.module.css";
 
 export default function CreateCampaignPage() {
   const [campaign, setCampaign] = useState({
-    campaign_name: "",
-    campaign_description: "",
+    title: "",
+    description: "",
     item_type: "",
-    campaign_category: "",
-    targeted_quantity: "",
+    category: "",
+    target_quantity: "",
     location: "",
-    start_date:"",
+    start_date: "",
     end_date: "",
   });
 
@@ -34,14 +34,14 @@ export default function CreateCampaignPage() {
     try {
       const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
         ...campaign,
-        user_id: user?.user_id, 
+        user_id: user?.user_id, // NGO ID
       });
 
       if (res.data.success) {
-        alert("Campaign created successfully!");
+        alert("Campaign creation request submitted successfully!");
         navigate("/campaigns");
       } else {
-        setError(res.data.message || "Failed to create campaign.");
+        setError(res.data.message || "Failed to submit campaign request.");
       }
     } catch (err) {
       console.error("Create campaign error:", err);
@@ -62,23 +62,23 @@ export default function CreateCampaignPage() {
       ) : (
         <div className={myCampaign.formContainer}>
           <form onSubmit={handleSubmit}>
-            <label>Campaign Name:</label>
-            <input type="text" name="campaign_name" value={campaign.campaign_name} onChange={handleChange} required />
-            <label>Campaign Description:</label>
-            <textarea name="campaign_description" value={campaign.campaign_description} onChange={handleChange} required />
+            <label>Title:</label>
+            <input type="text" name="title" value={campaign.title} onChange={handleChange} required />
+            <label>Description:</label>
+            <textarea name="description" value={campaign.description} onChange={handleChange} required />
             <label>Item Type:</label>
             <input type="text" name="item_type" value={campaign.item_type} onChange={handleChange} required />
-            <label>Campaign Category:</label>
-            <input type="text" name="campaign_category" value={campaign.campaign_category} onChange={handleChange} required />
-            <label>Targeted Quantity:</label>
-            <input type="number" name="targeted_quantity" value={campaign.targeted_quantity} onChange={handleChange} required />
+            <label>Category:</label>
+            <input type="text" name="category" value={campaign.category} onChange={handleChange} required />
+            <label>Target Quantity:</label>
+            <input type="number" name="target_quantity" value={campaign.target_quantity} onChange={handleChange} required />
             <label>Location:</label>
             <input type="text" name="location" value={campaign.location} onChange={handleChange} required />
             <label>Start Date:</label>
             <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
             <label>End Date:</label>
             <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-            <button type="submit" disabled={loading}>{loading ? "Creating..." : "Create"}</button>
+            <button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
           </form>
         </div>
       )}
