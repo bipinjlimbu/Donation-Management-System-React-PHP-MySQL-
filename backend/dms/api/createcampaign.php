@@ -10,20 +10,19 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$name = trim($data['campaign_name'] ?? '');
-$description = trim($data['campaign_description'] ?? '');
+$title = trim($data['title'] ?? '');
+$description = trim($data['description'] ?? '');
 $itemType = trim($data['item_type'] ?? '');
-$category = trim($data['campaign_category'] ?? '');
-$targetedQty = (int) ($data['targeted_quantity'] ?? 0);
+$category = trim($data['category'] ?? '');
+$targetQuantity = (float) ($data['target_quantity'] ?? 0);
 $location = trim($data['location'] ?? '');
 $startDate = trim($data['start_date'] ?? '');
 $endDate = trim($data['end_date'] ?? '');
-$userId = intval($data['user_id'] ?? 0);
+$ngoId = intval($data['user_id'] ?? 0);
 $status = "Pending";
-$collectedQty = 0;
 $requestedAt = date("Y-m-d H:i:s");
 
-if (!$name || !$description || !$itemType || !$category || !$targetedQty || !$location || !$startDate || !$endDate || !$userId) {
+if (!$title || !$description || !$itemType || !$category || !$targetQuantity || !$location || !$startDate || !$endDate || !$ngoId) {
     echo json_encode([
         "success" => false,
         "message" => "All fields are required."
@@ -32,17 +31,18 @@ if (!$name || !$description || !$itemType || !$category || !$targetedQty || !$lo
 }
 
 try {
-    $sql = "INSERT INTO campaignpending (user_id, campaign_name, campaign_description, item_type, campaign_category, target_quantity, collected_quantity, location, start_date, end_date, campaign_status, requested_at)
-            VALUES (:userId, :name, :description, :itemType, :category, :targetQty, :collectedQty, :location, :startDate, :endDate, :status, :requestedAt)";
+    $sql = "INSERT INTO campaignpending 
+            (ngo_id, title, description, item_type, category, target_Quantity, location, start_date, end_date, status, requested_at)
+            VALUES 
+            (:ngoId, :title, :description, :itemType, :category, :targetQuantity, :location, :startDate, :endDate, :status, :requestedAt)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':ngoId', $ngoId, PDO::PARAM_INT);
+    $stmt->bindParam(':title', $title);
     $stmt->bindParam(':description', $description);
     $stmt->bindParam(':itemType', $itemType);
     $stmt->bindParam(':category', $category);
-    $stmt->bindParam(':targetQty', $targetedQty, PDO::PARAM_INT);
-    $stmt->bindParam(':collectedQty', $collectedQty, PDO::PARAM_INT);
+    $stmt->bindParam(':targetQuantity', $targetQuantity);
     $stmt->bindParam(':location', $location);
     $stmt->bindParam(':startDate', $startDate);
     $stmt->bindParam(':endDate', $endDate);
