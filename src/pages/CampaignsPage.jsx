@@ -68,7 +68,7 @@ export default function CampaignsPage() {
               <strong>Status: {campaign.status}</strong>
               <p>Start Date: {campaign.start_date}</p>
               <p>End Date: {campaign.end_date}</p>
-              <button onClick={() => navigate(`/campaigns/${campaign.c_id}`)}>
+              <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>
                 View Details
               </button>
             </li>
