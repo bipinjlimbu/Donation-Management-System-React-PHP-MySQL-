@@ -119,6 +119,7 @@ export default function DashboardPage() {
     if (!profile) return <p>No profile data found.</p>;
 
     const pendingUserRequests = userRequests.filter(req => req.status === "Pending");
+    const recordUserRequests = userRequests.filter(req => req.status !== "Pending");
 
     if (profile.role === "Admin") {
         return (
@@ -200,7 +201,7 @@ export default function DashboardPage() {
                 ) : <p>No campaign creation requests pending.</p>}
 
                 <h2>All User Requests Records</h2>
-                {userRequests.length > 0 ? (
+                {recordUserRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
@@ -212,7 +213,7 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {userRequests.map(req => (
+                            {recordUserRequests.map(req => (
                                 <tr key={req.pending_id}>
                                     <td>{req.user_id}</td>
                                     <td>{req.new_username}</td>
