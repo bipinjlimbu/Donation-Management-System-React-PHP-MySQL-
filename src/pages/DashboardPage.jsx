@@ -44,6 +44,9 @@ export default function DashboardPage() {
         fetchData();
     }, [user]);
 
+    console.log(campaignRequests);
+    
+
     const handleApprove = async (req, e) => {
         e.preventDefault();
         try {
@@ -121,6 +124,9 @@ export default function DashboardPage() {
     const pendingUserRequests = userRequests.filter(req => req.status === "Pending");
     const recordUserRequests = userRequests.filter(req => req.status !== "Pending");
 
+    const pendingCampaignRequests = campaignRequests.filter(req => req.status === "Pending");
+    const recordCampaignRequests = campaignRequests.filter(req => req.status !== "Pending");
+
     if (profile.role === "Admin") {
         return (
             <div className={myDashboard.container}>
@@ -166,39 +172,47 @@ export default function DashboardPage() {
 
 
                 <h2>Campaign Creation Requests</h2>
-                {campaignRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Campaign Name</th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Target Quantity</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th colSpan={2}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {campaignRequests.map(req => (
-                                <tr key={req.campaign_id}>
-                                    <td>{req.campaign_name}</td>
-                                    <td>{req.campaign_description}</td>
-                                    <td>{req.campaign_category}</td>
-                                    <td>{req.target_quantity}</td>
-                                    <td>{req.location}</td>
-                                    <td>{req.campaign_status}</td>
-                                    <td>
-                                        <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.campaign_id)}>Approve</button>
-                                    </td>
-                                    <td>
-                                        <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.campaign_id)}>Deny</button>
-                                    </td>
+                    {pendingCampaignRequests.length > 0 ? (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Target Quantity</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Requested By</th>
+                                    <th>Requested At</th>
+                                    <th colSpan={2}>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : <p>No campaign creation requests pending.</p>}
+                            </thead>
+                            <tbody>
+                                {pendingCampaignRequests.map(req => (
+                                    <tr key={req.pending_id}>
+                                        <td>{req.title}</td>
+                                        <td>{req.description}</td>
+                                        <td>{req.target_quantity}</td>
+                                        <td>{req.start_date}</td>
+                                        <td>{req.end_date}</td>
+                                        <td>{req.status}</td>
+                                        <td>{req.ngo_name}</td>
+                                        <td>{req.requested_at}</td>
+                                        <td>
+                                            <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.pending_id)}>
+                                                Approve
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.pending_id)}>
+                                                Deny
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : <p>No campaign creation requests pending.</p>}
 
                 <h2>All User Requests Records</h2>
                 {recordUserRequests.length > 0 ? (
