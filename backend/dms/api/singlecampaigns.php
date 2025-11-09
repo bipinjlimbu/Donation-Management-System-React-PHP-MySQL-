@@ -16,6 +16,8 @@ if ($campaignId <= 0) {
 }
 
 try {
+    $conn->exec("UPDATE campaigndetails SET status='Completed' WHERE status='Active' AND end_date < CURDATE() OR target_quantity <= collected_quantity");
+
     $stmt = $conn->prepare("
         SELECT c.*, u.username AS ngo_name
         FROM campaigndetails c
