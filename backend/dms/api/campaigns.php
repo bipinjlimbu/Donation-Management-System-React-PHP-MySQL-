@@ -13,6 +13,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
         try {
+            $conn->exec("UPDATE campaigndetails SET status='Completed' WHERE status='Active' AND end_date < CURDATE() OR target_quantity <= collected_quantity");
+
             $stmt = $conn->prepare("SELECT * FROM campaigndetails");
             $stmt->execute();
             $campaigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
