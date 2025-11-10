@@ -363,8 +363,7 @@ export default function DashboardPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Campaign</th>
-                                <th>Item Type</th>
+                                <th>Campaign</th>   
                                 <th>Quantity</th>
                                 <th>Donor</th>
                                 <th colSpan={2}>Actions</th>
@@ -374,9 +373,8 @@ export default function DashboardPage() {
                             {requests.map(req => (
                                 <tr key={req.donation_id}>
                                     <td>{req.campaign_title}</td>
-                                    <td>{req.item_type}</td>
-                                    <td>{req.donated_quantity}</td>
-                                    <td>@{req.donor}</td>
+                                    <td>{req.quantity}</td>
+                                    <td>{req.donor}</td>
                                     <td><button className={myDashboard.approveButton} onClick={e => handleApprove(req, e)}>Approve</button></td>
                                     <td><button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>Deny</button></td>
                                 </tr>
