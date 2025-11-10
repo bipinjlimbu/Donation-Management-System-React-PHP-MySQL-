@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 import myDonation from "../style/DonationPage.module.css";
 import axios from "axios";
@@ -8,6 +7,7 @@ import axios from "axios";
 export default function DonationPage() {
     const { id } = useParams();
     const [campaign, setCampaign] = useState(null);
+    const [quantity, setQuantity] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { user } = useAuth();
@@ -27,59 +27,54 @@ export default function DonationPage() {
                 console.error("Failed to fetch campaign:", err);
                 setError("Failed to connect to the server.");
             })
-            .finally(() => {
-                setLoading(false);
-            });
+            .finally(() => setLoading(false));
     }, [id]);
 
     if (loading) return <div>Loading donation page...</div>;
     if (error) return <div style={{ color: "red" }}>{error}</div>;
     if (!campaign) return <div>No campaign found.</div>;
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCampaign(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post('http://localhost/dms/api/donationPending.php', {
-            campaign_name: campaign.campaign_name,
-            item_type: campaign.item_type,
-            quantity: campaign.quantity,
-            ngo:campaign.created_by,
-            donor:user.user_email
-        })
-        .then(res => {
+
+        if (!quantity || quantity <= 0) {
+            alert("Please enter a valid quantity to donate.");
+            return;
+        }
+
+        try {
+            const res = await axios.post("http://localhost/dms/api/donationPending.php", {
+                donor_id: user.user_id,
+                campaign_id: campaign.campaign_id,
+                quantity: quantity 
+            });
+
             if (res.data.success) {
-                alert("Donation Requested!");
+                alert("Donation request submitted successfully!");
+                navigate("/campaigns");
             } else {
                 alert("Donation failed: " + res.data.message);
             }
-            navigate("/campaigns")
-        })
-        .catch(err => {
+        } catch (err) {
             console.error("Donation error:", err);
             alert("Network or server error during donation.");
-        });
+        }
     };
 
     return (
         <div className={myDonation.donationPage}>
-            <h1>Donation Page</h1>
-            <h2>Campaign: {campaign.campaign_name}</h2>
-            <p>{campaign.campaign_description}</p>
+            <h1>Donate to Campaign</h1>
+            <h2>{campaign.title}</h2>
+            <p>{campaign.description}</p>
+            <p><strong>Target Quantity:</strong> {campaign.target_quantity}</p>
+            <p><strong>End Date:</strong> {campaign.end_date}</p>
+
             <div className={myDonation.donationForm}>
-                <h2>Donation Form</h2>
                 <form onSubmit={handleSubmit}>
-                <label>Item: </label>
-                <input type="text" name="item" value={campaign.item_type} onChange={handleChange} required />
-                <br />
-                <label>Quantity: </label>
-                <input type="number" name="quantity" onChange={handleChange} required />
-                <br />
-                <button type="submit">Donate</button>
-            </form>
+                    <label>Quantity to Donate: </label>
+                    <input type="number" name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+                    <button type="submit">Donate</button>
+                </form>
             </div>
         </div>
     );
