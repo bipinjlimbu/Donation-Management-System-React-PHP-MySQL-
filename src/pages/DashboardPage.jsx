@@ -44,33 +44,40 @@ export default function DashboardPage() {
         fetchData();
     }, [user]);
 
-    console.log(requests);
-    
-
     const handleApprove = async (req, e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost/dms/api/donationHistory.php", {
-                donation_id: req.donation_id,
-                campaign_name: req.campaign_name,
-                item_type: req.item_type,
-                quantity: req.donated_quantity,
-                donor: req.donor,
-                ngo: req.ngo,
+            const res = await axios.post("http://localhost/dms/api/approveDonation.php", {
+                pending_id: req.pending_id,
+                campaign_id: req.campaign_id,
+                quantity: req.quantity,
+                donor_id: req.donor_id,
             });
-            if (res.data.success) setRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
-            else alert("Approval failed: " + res.data.message);
+
+            if (res.data.success) {
+                alert("Donation approved successfully.");
+                setRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            } else {
+                alert("Approval failed: " + res.data.message);
+            }
         } catch (err) {
-            alert("Network or server error during donation.");
+            alert("Network or server error during approval.");
         }
     };
 
     const handleDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/deletePending.php", { donation_id: req.donation_id });
-            if (res.data.success) setRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
-            else alert("Failed to deny donation: " + res.data.message);
+            const res = await axios.post("http://localhost/dms/api/denyDonation.php", {
+                pending_id: req.pending_id
+            });
+
+            if (res.data.success) {
+                alert("Donation request denied.");
+                setRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            } else {
+                alert("Failed to deny donation: " + res.data.message);
+            }
         } catch (err) {
             alert("Network or server error during denial.");
         }
