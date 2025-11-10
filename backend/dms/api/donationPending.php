@@ -13,10 +13,43 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
         try {
-            $email = isset($_GET['email']) ? strtolower(trim($_GET['email'])) : '';
-            $sql = "SELECT * FROM donationpending WHERE ngo = :email or donor = :email";
+            $user_id = isset($_GET['user_id']) ? (int) $_GET['user_id'] : 0;
+            $role = isset($_GET['role']) ? strtolower(trim($_GET['role'])) : '';
+
+            if (!$user_id || !$role) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Missing user_id or role"
+                ]);
+                exit;
+            }
+
+            if ($role === 'donor') {
+                $sql = "SELECT dp.*, cd.title AS campaign_title
+                        FROM DonationPending dp
+                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id
+                        WHERE dp.donor_id = :user_id";
+            } else if ($role === 'ngo') {
+                $sql = "SELECT dp.*, cd.title AS campaign_title
+                        FROM DonationPending dp
+                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id
+                        WHERE cd.ngo_id = :user_id";
+            } else if ($role === 'admin') {
+                $sql = "SELECT dp.*, cd.title AS campaign_title
+                        FROM DonationPending dp
+                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id";
+            } else {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Invalid role"
+                ]);
+                exit;
+            }
+
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            if ($role !== 'admin') {
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            }
             $stmt->execute();
             $donations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -35,40 +68,36 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
 
-        $campaignName = trim($data['campaign_name']);
-        $name = trim($data['item_type'] ?? '');
-        $quantity = (int) ($data['quantity'] ?? 0);
-        $ngo = strtolower(trim($data['ngo'] ?? ''));
-        $donor = strtolower(trim($data['donor'] ?? ''));
+        $donor_id = (int) ($data['donor_id'] ?? 0);
+        $campaign_id = (int) ($data['campaign_id'] ?? 0);
+        $quantity = (float) ($data['quantity'] ?? 0);
 
-        if (!$campaignName || !$name || !$ngo || !$donor || $quantity <= 0) {
+        if (!$donor_id || !$campaign_id || $quantity <= 0) {
             echo json_encode([
                 "success" => false,
-                "message" => "All fields are required and campaign ID must be valid"
+                "message" => "All fields are required and amount must be greater than zero"
             ]);
             exit;
         }
 
         try {
-            $sql = "INSERT INTO donationpending (campaign_name, item_type, donated_quantity, ngo, donor)
-                    VALUES (:campaign_name, :name, :quantity, :ngo, :donor)";
+            $sql = "INSERT INTO donationpending (donor_id, campaign_id, quantity, status)
+                    VALUES (:donor_id, :campaign_id, :quantity, 'Pending' )";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':campaign_name', $campaignName, PDO::PARAM_STR);
-            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-            $stmt->bindParam(':ngo', $ngo, PDO::PARAM_STR);
-            $stmt->bindParam(':donor', $donor, PDO::PARAM_STR);
+            $stmt->bindParam(':donor_id', $donor_id, PDO::PARAM_INT);
+            $stmt->bindParam(':campaign_id', $campaign_id, PDO::PARAM_INT);
+            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_STR);
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
                 echo json_encode([
                     "success" => true,
-                    "message" => "Donation added for pending successfully"
+                    "message" => "Donation request submitted successfully!"
                 ]);
             } else {
                 echo json_encode([
                     "success" => false,
-                    "message" => "No request added."
+                    "message" => "Failed to submit donation request."
                 ]);
             }
         } catch (PDOException $e) {
