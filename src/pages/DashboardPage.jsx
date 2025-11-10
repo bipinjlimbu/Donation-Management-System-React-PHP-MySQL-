@@ -44,7 +44,7 @@ export default function DashboardPage() {
         fetchData();
     }, [user]);
 
-    console.log(campaignRequests);
+    console.log(requests);
     
 
     const handleApprove = async (req, e) => {
@@ -296,60 +296,63 @@ export default function DashboardPage() {
         return (
             <div className={myDashboard.container}>
                 <h1>{profile.username} Dashboard</h1>
-                <h2>Pending Requests</h2>
+
+                <h2>Pending Donation Requests</h2>
                 {requests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
-                                <th>Campaign</th>
-                                <th>Item Type</th>
+                                <th>Campaign Title</th>
                                 <th>Quantity</th>
-                                <th>NGO</th>
                                 <th>Status</th>
+                                <th>Requested At</th>
                             </tr>
                         </thead>
                         <tbody>
                             {requests.map(req => (
-                                <tr key={req.donation_id}>
-                                    <td>{req.campaign_name}</td>
-                                    <td>{req.item_type}</td>
-                                    <td>{req.donated_quantity}</td>
-                                    <td>@{req.ngo}</td>
-                                    <td>Pending</td>
+                                <tr key={req.pending_id}>
+                                    <td>{req.campaign_title}</td>
+                                    <td>{req.quantity}</td>
+                                    <td>{req.status}</td>
+                                    <td>{req.requested_at}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                ) : <p>No pending requests. If approved, donations appear in your history.</p>}
-                <h2>Donation Records</h2>
+                ) : (
+                    <p>No pending donation requests.</p>
+                )}
+
+                <h2>Donation History</h2>
                 {records.length > 0 ? (
                     <>
                         <table>
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>NGO</th>
+                                    <th>Amount</th>
+                                    <th>Donated At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
-                                    <tr key={rec.dh_id}>
-                                        <td>{rec.campaign_name}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.item_quantity}</td>
-                                        <td>@{rec.ngo}</td>
+                                    <tr key={rec.donation_id}>
+                                        <td>{rec.campaign_title}</td>
+                                        <td>{rec.amount}</td>
+                                        <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         <button onClick={() => navigate("/records")}>View All Records</button>
                     </>
-                ) : <p>No records yet.</p>}
+                ) : (
+                    <p>No donation history yet.</p>
+                )}
             </div>
         );
     }
+
 
     if (profile.role === "NGO") {
         return (
@@ -370,7 +373,7 @@ export default function DashboardPage() {
                         <tbody>
                             {requests.map(req => (
                                 <tr key={req.donation_id}>
-                                    <td>{req.campaign_name}</td>
+                                    <td>{req.campaign_title}</td>
                                     <td>{req.item_type}</td>
                                     <td>{req.donated_quantity}</td>
                                     <td>@{req.donor}</td>
