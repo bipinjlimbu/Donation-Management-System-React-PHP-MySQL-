@@ -25,7 +25,7 @@ export default function DashboardPage() {
                 const [profileRes, pendingRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/donationPending.php?user_id=${user.user_id}`),
-                    axios.get(`http://localhost/dms/api/fetchHistory.php?user_id=${user.user_id}`),
+                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
                     axios.get("http://localhost/dms/api/fetchUserPending.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignPending.php")
                 ]);
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Campaign Title</th>
+                                <th>Campaign</th>
                                 <th>Quantity</th>
                                 <th>Status</th>
                                 <th>Requested At</th>
@@ -337,15 +337,17 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Amount</th>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
                                     <th>Donated At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_title}</td>
-                                        <td>{rec.amount}</td>
+                                        <td>{rec.campaign_name || rec.campaign_title}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.item_quantity || rec.quantity}</td>
                                         <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
@@ -360,17 +362,17 @@ export default function DashboardPage() {
         );
     }
 
-
     if (profile.role === "NGO") {
         return (
             <div className={myDashboard.container}>
                 <h1>{profile.username} Dashboard</h1>
-                <h2>Pending Requests</h2>
+
+                <h2>Pending Donation Approvals</h2>
                 {requests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
-                                <th>Campaign</th>   
+                                <th>Campaign</th>
                                 <th>Quantity</th>
                                 <th>Donor</th>
                                 <th colSpan={2}>Actions</th>
@@ -378,17 +380,28 @@ export default function DashboardPage() {
                         </thead>
                         <tbody>
                             {requests.map(req => (
-                                <tr key={req.donation_id}>
+                                <tr key={req.pending_id}>
                                     <td>{req.campaign_title}</td>
                                     <td>{req.quantity}</td>
                                     <td>{req.donor}</td>
-                                    <td><button className={myDashboard.approveButton} onClick={e => handleApprove(req, e)}>Approve</button></td>
-                                    <td><button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>Deny</button></td>
+                                    <td>
+                                        <button className={myDashboard.approveButton} onClick={e => handleApprove(req, e)}>
+                                            Approve
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>
+                                            Deny
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                ) : <p>No pending requests.</p>}
+                ) : (
+                    <p>No pending donation requests.</p>
+                )}
+
                 <h2>Donation Records</h2>
                 {records.length > 0 ? (
                     <>
@@ -396,25 +409,29 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Item</th>
+                                    <th>Item Type</th>
                                     <th>Quantity</th>
                                     <th>Donor</th>
+                                    <th>Donated At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
-                                    <tr key={rec.dh_id}>
-                                        <td>{rec.campaign_name}</td>
+                                    <tr key={rec.donation_id}>
+                                        <td>{rec.campaign_title}</td>
                                         <td>{rec.item_type}</td>
-                                        <td>{rec.item_quantity}</td>
-                                        <td>@{rec.donor}</td>
+                                        <td>{rec.quantity}</td>
+                                        <td>{rec.donor_name}</td>
+                                        <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                         <button onClick={() => navigate("/records")}>View All Records</button>
                     </>
-                ) : <p>No donation records yet.</p>}
+                ) : (
+                    <p>No donation records yet.</p>
+                )}
             </div>
         );
     }
