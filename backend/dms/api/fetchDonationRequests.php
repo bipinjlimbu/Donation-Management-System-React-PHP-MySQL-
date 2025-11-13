@@ -14,40 +14,65 @@ switch ($method) {
     case 'GET':
         try {
             $user_id = isset($_GET['user_id']) ? (int) $_GET['user_id'] : 0;
-            $role = isset($_GET['role']) ? strtolower(trim($_GET['role'])) : '';
 
-            if (!$user_id || !$role) {
+            if (!$user_id) {
                 echo json_encode([
                     "success" => false,
-                    "message" => "Missing user_id or role"
+                    "message" => "Missing user_id"
                 ]);
                 exit;
             }
 
-            if ($role === 'donor') {
-                $sql = "SELECT dp.*, cd.title AS campaign_title
-                        FROM DonationPending dp
-                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id
-                        WHERE dp.donor_id = :user_id";
-            } else if ($role === 'ngo') {
-                $sql = "SELECT dp.*, cd.title AS campaign_title
-                        FROM DonationPending dp
-                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id
-                        WHERE cd.ngo_id = :user_id";
-            } else if ($role === 'admin') {
-                $sql = "SELECT dp.*, cd.title AS campaign_title
-                        FROM DonationPending dp
-                        JOIN CampaignDetails cd ON dp.campaign_id = cd.campaign_id";
+            $roleQuery = "SELECT role FROM userdetails WHERE user_id = :user_id";
+            $roleStmt = $conn->prepare($roleQuery);
+            $roleStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $roleStmt->execute();
+            $roleResult = $roleStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$roleResult) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "User not found"
+                ]);
+                exit;
+            }
+
+            $role = $roleResult['role'];
+
+            if ($role === 'Donor') {
+                $sql = "SELECT dp.*,
+                        cd.title AS campaign_title, cd.campaign_id, 
+                        u.username AS ngo
+                    FROM donationpending dp
+                    JOIN campaigndetails cd ON dp.campaign_id = cd.campaign_id
+                    JOIN userdetails u ON cd.ngo_id = u.user_id
+                    WHERE dp.donor_id = :user_id";
+            } elseif ($role === 'NGO') {
+                $sql = "SELECT dp.*,
+                        cd.title AS campaign_title, cd.campaign_id,
+                        du.username AS donor
+                    FROM donationpending dp
+                    JOIN campaigndetails cd ON dp.campaign_id = cd.campaign_id
+                    JOIN userdetails du ON dp.donor_id = du.user_id
+                    WHERE cd.ngo_id = :user_id";
+            } elseif ($role === 'Admin') {
+                $sql = "SELECT dp.pending_id, dp.quantity AS donated_quantity, dp.status,
+                        cd.title AS campaign_name, cd.campaign_id,
+                        du.username AS donor, nu.username AS ngo
+                    FROM donationpending dp
+                    JOIN campaigndetails cd ON dp.campaign_id = cd.campaign_id
+                    JOIN userdetails du ON dp.donor_id = du.user_id
+                    JOIN userdetails nu ON cd.ngo_id = nu.user_id";
             } else {
                 echo json_encode([
                     "success" => false,
-                    "message" => "Invalid role"
+                    "message" => "Invalid user role"
                 ]);
                 exit;
             }
 
             $stmt = $conn->prepare($sql);
-            if ($role !== 'admin') {
+            if ($role !== 'Admin') {
                 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             }
             $stmt->execute();
@@ -57,6 +82,7 @@ switch ($method) {
                 "success" => true,
                 "donations" => $donations
             ]);
+
         } catch (PDOException $e) {
             echo json_encode([
                 "success" => false,
@@ -64,6 +90,7 @@ switch ($method) {
             ]);
         }
         break;
+
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
