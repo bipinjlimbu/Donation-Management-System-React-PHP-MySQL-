@@ -24,7 +24,7 @@ export default function DashboardPage() {
             try {
                 const [profileRes, pendingRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`),
-                    axios.get(`http://localhost/dms/api/donationPending.php?user_id=${user.user_id}`),
+                    axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
                     axios.get("http://localhost/dms/api/fetchUserPending.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignPending.php")
@@ -143,7 +143,26 @@ export default function DashboardPage() {
         }
     };
 
-    
+    const handleDelete = async (id, type) => {
+        if (!window.confirm("Are you sure you want to delete this record?")) return;
+        try {
+            const res = await axios.post("http://localhost/dms/api/deleteRecord.php", {
+                id, type
+            });
+
+            if (res.data.success) {
+                alert(res.data.message);
+                if (type === "user")
+                    setUserRequests(prev => prev.filter(r => r.pending_id !== id));
+                else if (type === "donation")
+                    setRequests(prev => prev.filter(r => r.pending_id !== id));
+            } else {
+                alert(res.data.message);
+            }
+        } catch (err) {
+            alert("Error deleting record.");
+        }
+    };
 
     if (loading) return <p>Loading dashboard...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -154,6 +173,9 @@ export default function DashboardPage() {
 
     const pendingCampaignRequests = campaignRequests.filter(req => req.status === "Pending");
     const recordCampaignRequests = campaignRequests.filter(req => req.status !== "Pending");
+
+    const pendingDonationRequests = requests.filter(req => req.status === "Pending");
+    const recordDonationRequests = requests.filter(req => req.status !== "Pending");
 
     if (profile.role === "Admin") {
         return (
@@ -252,6 +274,7 @@ export default function DashboardPage() {
                                 <th>Requested Role</th>
                                 <th>Status</th>
                                 <th>Requested At</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -262,6 +285,7 @@ export default function DashboardPage() {
                                     <td>{req.new_role}</td>
                                     <td>{req.status}</td>
                                     <td>{req.requested_at}</td>
+                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"user")}> Delete </button></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -305,7 +329,7 @@ export default function DashboardPage() {
                 <h1>{profile.username} Dashboard</h1>
 
                 <h2>Pending Donation Requests</h2>
-                {requests.length > 0 ? (
+                {pendingDonationRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
@@ -316,12 +340,40 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {requests.map(req => (
+                            {pendingDonationRequests.map(req => (
                                 <tr key={req.pending_id}>
                                     <td>{req.campaign_title}</td>
                                     <td>{req.quantity}</td>
                                     <td>{req.status}</td>
                                     <td>{req.requested_at}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No pending donation requests.</p>
+                )}
+
+                <h2> Donation Requests</h2>
+                {recordDonationRequests.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Requested At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {recordDonationRequests.map(req => (
+                                <tr key={req.pending_id}>
+                                    <td>{req.campaign_title}</td>
+                                    <td>{req.quantity}</td>
+                                    <td>{req.status}</td>
+                                    <td>{req.requested_at}</td>
+                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"donation")}> Delete </button></td>
                                 </tr>
                             ))}
                         </tbody>
