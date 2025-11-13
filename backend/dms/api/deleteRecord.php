@@ -26,6 +26,8 @@ try {
         $table = 'userpending';
     } elseif ($type === 'donation') {
         $table = 'donationpending';
+    } elseif ($type === 'campaign') {
+        $table = 'campaignpending';
     } else {
         echo json_encode([
             "success" => false,
