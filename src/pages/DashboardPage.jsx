@@ -9,7 +9,7 @@ export default function DashboardPage() {
     const navigate = useNavigate();
 
     const [profile, setProfile] = useState(null);
-    const [requests, setRequests] = useState([]);
+    const [donationRequests, setDonationRequests] = useState([]);
     const [records, setRecords] = useState([]);
     const [userRequests, setUserRequests] = useState([]);
     const [campaignRequests, setCampaignRequests] = useState([]);
@@ -22,16 +22,16 @@ export default function DashboardPage() {
             setLoading(true);
             setError("");
             try {
-                const [profileRes, pendingRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
+                const [profileRes, donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
                     axios.get("http://localhost/dms/api/fetchUserPending.php"),
-                    axios.get("http://localhost/dms/api/fetchCampaignPending.php")
+                    axios.get("http://localhost/dms/api/fetchCampaignRequests.php")
                 ]);
 
                 if (profileRes.data.success) setProfile(profileRes.data.profile);
-                if (pendingRes.data.success) setRequests(pendingRes.data.donations);
+                if (donationReqRes.data.success) setDonationRequests(donationReqRes.data.donations);
                 if (historyRes.data.success) setRecords(historyRes.data.donations);
                 if (userReqRes.data.success) setUserRequests(userReqRes.data.requests || []);
                 if (campaignReqRes.data.success) setCampaignRequests(campaignReqRes.data.requests || []);
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         fetchData();
     }, [user]);
 
-    const handleApprove = async (req, e) => {
+    const handleDonationApprove = async (req, e) => {
         e.preventDefault();
         try {
             const res = await axios.post("http://localhost/dms/api/approveDonation.php", {
@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
             if (res.data.success) {
                 alert("Donation approved successfully.");
-                setRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+                setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
             } else {
                 alert("Approval failed: " + res.data.message);
             }
@@ -65,7 +65,7 @@ export default function DashboardPage() {
         }
     };
 
-    const handleDeny = async (req) => {
+    const handleDonationDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
         try {
             const res = await axios.post("http://localhost/dms/api/denyDonation.php", {
@@ -74,7 +74,7 @@ export default function DashboardPage() {
 
             if (res.data.success) {
                 alert("Donation request denied.");
-                setRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+                setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
             } else {
                 alert("Failed to deny donation: " + res.data.message);
             }
@@ -155,7 +155,7 @@ export default function DashboardPage() {
                 if (type === "user")
                     setUserRequests(prev => prev.filter(r => r.pending_id !== id));
                 else if (type === "donation")
-                    setRequests(prev => prev.filter(r => r.pending_id !== id));
+                    setDonationRequests(prev => prev.filter(r => r.pending_id !== id));
                 else if (type === "campaign")
                     setCampaignRequests(prev => prev.filter(r => r.pending_id !== id));
             } else {
@@ -176,8 +176,8 @@ export default function DashboardPage() {
     const pendingCampaignRequests = campaignRequests.filter(req => req.status === "Pending");
     const recordCampaignRequests = campaignRequests.filter(req => req.status !== "Pending");
 
-    const pendingDonationRequests = requests.filter(req => req.status === "Pending");
-    const recordDonationRequests = requests.filter(req => req.status !== "Pending");
+    const pendingDonationRequests = donationRequests.filter(req => req.status === "Pending");
+    const recordDonationRequests = donationRequests.filter(req => req.status !== "Pending");
 
     if (profile.role === "Admin") {
         return (
@@ -424,7 +424,7 @@ export default function DashboardPage() {
                 <h1>{profile.username} Dashboard</h1>
 
                 <h2>Pending Donation Approvals</h2>
-                {requests.length > 0 ? (
+                {pendingDonationRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
