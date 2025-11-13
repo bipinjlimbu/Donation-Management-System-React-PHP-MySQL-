@@ -156,6 +156,8 @@ export default function DashboardPage() {
                     setUserRequests(prev => prev.filter(r => r.pending_id !== id));
                 else if (type === "donation")
                     setRequests(prev => prev.filter(r => r.pending_id !== id));
+                else if (type === "campaign")
+                    setCampaignRequests(prev => prev.filter(r => r.pending_id !== id));
             } else {
                 alert(res.data.message);
             }
@@ -303,17 +305,19 @@ export default function DashboardPage() {
                                 <th>Target Quantity</th>
                                 <th>Location</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {recordCampaignRequests.map(req => (
-                                <tr key={req.campaign_id}>
+                                <tr key={req.pending_id}>
                                     <td>{req.title}</td>
                                     <td>{req.description}</td>
                                     <td>{req.category}</td>
                                     <td>{req.target_quantity}</td>
                                     <td>{req.location}</td>
                                     <td>{req.status}</td>
+                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"campaign")}> Delete </button></td>
                                 </tr>
                             ))}
                         </tbody>
