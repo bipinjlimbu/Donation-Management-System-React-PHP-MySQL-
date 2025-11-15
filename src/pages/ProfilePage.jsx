@@ -13,7 +13,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) return;
-    // Updated: fetch by user_id according to userdetails table
     axios.get("http://localhost/dms/api/profile.php", {
       params: { user_id: user.user_id },
     })
