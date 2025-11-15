@@ -32,16 +32,15 @@ try {
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt->execute();
 
-    $updateCampaign = "UPDATE campaigndetails SET collected_quantity = collected_quantity + :quantity 
+    $update = "UPDATE campaigndetails SET collected_quantity = collected_quantity + :quantity 
                        WHERE campaign_id = :campaign_id";
-    $stmt2 = $conn->prepare($updateCampaign);
+    $stmt2 = $conn->prepare($update);
     $stmt2->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt2->bindParam(':campaign_id', $campaign_id, PDO::PARAM_INT);
     $stmt2->execute();
 
-    $updatePending = "UPDATE donationpending SET status = 'Approved' 
-                      WHERE pending_id = :pending_id";
-    $stmt3 = $conn->prepare($updatePending);
+    $delete = "DELETE FROM donationpending WHERE pending_id = :pending_id";
+    $stmt3 = $conn->prepare($delete);
     $stmt3->bindParam(':pending_id', $pending_id, PDO::PARAM_INT);
     $stmt3->execute();
 
