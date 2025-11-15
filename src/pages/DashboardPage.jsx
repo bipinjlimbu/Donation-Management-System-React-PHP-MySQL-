@@ -8,7 +8,6 @@ export default function DashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [profile, setProfile] = useState(null);
     const [donationRequests, setDonationRequests] = useState([]);
     const [records, setRecords] = useState([]);
     const [userRequests, setUserRequests] = useState([]);
@@ -22,15 +21,13 @@ export default function DashboardPage() {
             setLoading(true);
             setError("");
             try {
-                const [profileRes, donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
-                    axios.get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`),
+                const [donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
                     axios.get("http://localhost/dms/api/fetchUserPending.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignRequests.php")
                 ]);
 
-                if (profileRes.data.success) setProfile(profileRes.data.profile);
                 if (donationReqRes.data.success) setDonationRequests(donationReqRes.data.donations);
                 if (historyRes.data.success) setRecords(historyRes.data.donations);
                 if (userReqRes.data.success) setUserRequests(userReqRes.data.requests || []);
@@ -53,14 +50,9 @@ export default function DashboardPage() {
                 quantity: req.quantity,
                 donor_id: req.donor_id,
             });
-
-            if (res.data.success) {
-                alert("Donation approved successfully.");
-                setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
-            } else {
-                alert("Approval failed: " + res.data.message);
-            }
-        } catch (err) {
+            if (res.data.success) setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            else alert(res.data.message);
+        } catch {
             alert("Network or server error during approval.");
         }
     };
@@ -68,17 +60,10 @@ export default function DashboardPage() {
     const handleDonationDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyDonationRequest.php", {
-                pending_id: req.pending_id
-            });
-
-            if (res.data.success) {
-                alert("Donation request denied.");
-                setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
-            } else {
-                alert("Failed to deny donation: " + res.data.message);
-            }
-        } catch (err) {
+            const res = await axios.post("http://localhost/dms/api/denyDonationRequest.php", { pending_id: req.pending_id });
+            if (res.data.success) setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            else alert(res.data.message);
+        } catch {
             alert("Network or server error during denial.");
         }
     };
@@ -86,12 +71,9 @@ export default function DashboardPage() {
     const handleUserApprove = async (pending_id, new_username, new_role, user_id) => {
         try {
             const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { pending_id, new_username, new_role, user_id });
-            if (res.data.success){
-                alert(res.data.message);
-                setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
-        }
+            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
             else alert(res.data.message);
-        } catch (err) {
+        } catch {
             alert("Error approving user request.");
         }
     };
@@ -100,45 +82,30 @@ export default function DashboardPage() {
         if (!window.confirm("Are you sure you want to deny this user request?")) return;
         try {
             const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { pending_id });
-            if (res.data.success){
-                setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
-            }
+            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
             else alert(res.data.message);
-        } catch (err) {
+        } catch {
             alert("Error denying user request.");
         }
     };
 
     const handleCampaignApprove = async (pending_id) => {
-    try {
-        const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", {
-        campaign_id: pending_id,
-        });
-
-        if (res.data.success) {
-        alert(res.data.message);
-        setCampaignRequests((prev) =>
-            prev.filter((r) => r.pending_id !== pending_id)
-        );
-        } else {
-        alert(res.data.message);
+        try {
+            const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id: pending_id });
+            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            else alert(res.data.message);
+        } catch {
+            alert("Network or server error during campaign approval.");
         }
-    } catch (err) {
-        console.error("Error approving campaign:", err);
-        alert("Network or server error during campaign approval.");
-    }
     };
 
     const handleCampaignDeny = async (pendingId) => {
         if (!window.confirm("Are you sure you want to deny this campaign request?")) return;
         try {
             const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id: pendingId });
-            if (res.data.success) {
-                setCampaignRequests(prev => prev.filter(r => r.pending_id !== pendingId));
-            } else {
-                alert(res.data.message);
-            }
-        } catch (err) {
+            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.pending_id !== pendingId));
+            else alert(res.data.message);
+        } catch {
             alert("Error denying campaign request.");
         }
     };
@@ -146,29 +113,20 @@ export default function DashboardPage() {
     const handleDelete = async (id, type) => {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/deleteRecord.php", {
-                id, type
-            });
-
+            const res = await axios.post("http://localhost/dms/api/deleteRecord.php", { id, type });
             if (res.data.success) {
-                alert(res.data.message);
-                if (type === "user")
-                    setUserRequests(prev => prev.filter(r => r.pending_id !== id));
-                else if (type === "donation")
-                    setDonationRequests(prev => prev.filter(r => r.pending_id !== id));
-                else if (type === "campaign")
-                    setCampaignRequests(prev => prev.filter(r => r.pending_id !== id));
-            } else {
-                alert(res.data.message);
-            }
-        } catch (err) {
+                if (type === "user") setUserRequests(prev => prev.filter(r => r.pending_id !== id));
+                else if (type === "donation") setDonationRequests(prev => prev.filter(r => r.pending_id !== id));
+                else if (type === "campaign") setCampaignRequests(prev => prev.filter(r => r.pending_id !== id));
+            } else alert(res.data.message);
+        } catch {
             alert("Error deleting record.");
         }
     };
 
     if (loading) return <p>Loading dashboard...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
-    if (!profile) return <p>No profile data found.</p>;
+    if (!user) return <p>No profile data found.</p>;
 
     const pendingUserRequests = userRequests.filter(req => req.status === "Pending");
     const recordUserRequests = userRequests.filter(req => req.status !== "Pending");
@@ -179,12 +137,11 @@ export default function DashboardPage() {
     const pendingDonationRequests = donationRequests.filter(req => req.status === "Pending");
     const recordDonationRequests = donationRequests.filter(req => req.status !== "Pending");
 
-    if (profile.role === "Admin") {
+    if (user.role === "Admin") {
         return (
             <div className={myDashboard.container}>
                 <h1>Admin Dashboard</h1>
-                <p>Welcome, {profile.username}! You can manage user and campaign requests here.</p>
-
+                <p>Welcome, {user.username}! You can manage user and campaign requests here.</p>
                 <h2>User Profile Change Requests</h2>
                 {pendingUserRequests.length > 0 ? (
                     <table>
@@ -222,49 +179,44 @@ export default function DashboardPage() {
                     </table>
                 ) : <p>No user profile change requests pending.</p>}
 
-
                 <h2>Campaign Creation Requests</h2>
-                    {pendingCampaignRequests.length > 0 ? (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Target Quantity</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Status</th>
-                                    <th>Requested By</th>
-                                    <th>Requested At</th>
-                                    <th colSpan={2}>Actions</th>
+                {pendingCampaignRequests.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Target Quantity</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Requested By</th>
+                                <th>Requested At</th>
+                                <th colSpan={2}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pendingCampaignRequests.map(req => (
+                                <tr key={req.pending_id}>
+                                    <td>{req.title}</td>
+                                    <td>{req.description}</td>
+                                    <td>{req.target_quantity}</td>
+                                    <td>{req.start_date}</td>
+                                    <td>{req.end_date}</td>
+                                    <td>{req.status}</td>
+                                    <td>{req.ngo_name}</td>
+                                    <td>{req.requested_at}</td>
+                                    <td>
+                                        <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.pending_id)}>Approve</button>
+                                    </td>
+                                    <td>
+                                        <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.pending_id)}>Deny</button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {pendingCampaignRequests.map(req => (
-                                    <tr key={req.pending_id}>
-                                        <td>{req.title}</td>
-                                        <td>{req.description}</td>
-                                        <td>{req.target_quantity}</td>
-                                        <td>{req.start_date}</td>
-                                        <td>{req.end_date}</td>
-                                        <td>{req.status}</td>
-                                        <td>{req.ngo_name}</td>
-                                        <td>{req.requested_at}</td>
-                                        <td>
-                                            <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.pending_id)}>
-                                                Approve
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.pending_id)}>
-                                                Deny
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : <p>No campaign creation requests pending.</p>}
+                            ))}
+                        </tbody>
+                    </table>
+                ) : <p>No campaign creation requests pending.</p>}
 
                 <h2>All User Requests Records</h2>
                 {recordUserRequests.length > 0 ? (
@@ -327,10 +279,10 @@ export default function DashboardPage() {
         );
     }
 
-    if (profile.role === "Donor") {
+    if (user.role === "Donor") {
         return (
             <div className={myDashboard.container}>
-                <h1>{profile.username} Dashboard</h1>
+                <h1>{user.username} Dashboard</h1>
 
                 <h2>Pending Donation Requests</h2>
                 {pendingDonationRequests.length > 0 ? (
@@ -354,37 +306,7 @@ export default function DashboardPage() {
                             ))}
                         </tbody>
                     </table>
-                ) : (
-                    <p>No pending donation requests.</p>
-                )}
-
-                <h2> Donation Requests</h2>
-                {recordDonationRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Campaign</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Requested At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recordDonationRequests.map(req => (
-                                <tr key={req.pending_id}>
-                                    <td>{req.campaign_title}</td>
-                                    <td>{req.quantity}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.requested_at}</td>
-                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"donation")}> Delete </button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No pending donation requests.</p>
-                )}
+                ) : <p>No pending donation requests.</p>}
 
                 <h2>Donation History</h2>
                 {records.length > 0 ? (
@@ -401,9 +323,9 @@ export default function DashboardPage() {
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_name || rec.campaign_title}</td>
+                                        <td>{rec.campaign_title || rec.campaign_name}</td>
                                         <td>{rec.item_type}</td>
-                                        <td>{rec.item_quantity || rec.quantity}</td>
+                                        <td>{rec.quantity || rec.item_quantity}</td>
                                         <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
@@ -411,17 +333,15 @@ export default function DashboardPage() {
                         </table>
                         <button onClick={() => navigate("/records")}>View All Records</button>
                     </>
-                ) : (
-                    <p>No donation history yet.</p>
-                )}
+                ) : <p>No donation history yet.</p>}
             </div>
         );
     }
 
-    if (profile.role === "NGO") {
+    if (user.role === "NGO") {
         return (
             <div className={myDashboard.container}>
-                <h1>{profile.username} Dashboard</h1>
+                <h1>{user.username} Dashboard</h1>
 
                 <h2>Pending Donation Approvals</h2>
                 {pendingDonationRequests.length > 0 ? (
@@ -441,22 +361,16 @@ export default function DashboardPage() {
                                     <td>{req.quantity}</td>
                                     <td>{req.donor}</td>
                                     <td>
-                                        <button className={myDashboard.approveButton} onClick={e => handleDonationApprove(req, e)}>
-                                            Approve
-                                        </button>
+                                        <button className={myDashboard.approveButton} onClick={e => handleDonationApprove(req, e)}>Approve</button>
                                     </td>
                                     <td>
-                                        <button className={myDashboard.denyButton} onClick={() => handleDonationDeny(req)}>
-                                            Deny
-                                        </button>
+                                        <button className={myDashboard.denyButton} onClick={() => handleDonationDeny(req)}>Deny</button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                ) : (
-                    <p>No pending donation requests.</p>
-                )}
+                ) : <p>No pending donation requests.</p>}
 
                 <h2>Donation Records</h2>
                 {records.length > 0 ? (
@@ -485,9 +399,7 @@ export default function DashboardPage() {
                         </table>
                         <button onClick={() => navigate("/records")}>View All Records</button>
                     </>
-                ) : (
-                    <p>No donation records yet.</p>
-                )}
+                ) : <p>No donation records yet.</p>}
             </div>
         );
     }
