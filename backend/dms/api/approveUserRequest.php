@@ -20,15 +20,15 @@ if (!$pending_id || !$userId || !$newUsername || !$newRole) {
 }
 
 try {
-    $updateUser = $conn->prepare("UPDATE userdetails SET username = :username, role = :role WHERE user_id = :id");
-    $updateUser->bindParam(":username", $newUsername);
-    $updateUser->bindParam(":role", $newRole);
-    $updateUser->bindParam(":id", $userId);
-    $updateUser->execute();
+    $update = $conn->prepare("UPDATE userdetails SET username = :username, role = :role WHERE user_id = :id");
+    $update->bindParam(":username", $newUsername);
+    $update->bindParam(":role", $newRole);
+    $update->bindParam(":id", $userId);
+    $update->execute();
 
-    $updateReq = $conn->prepare("UPDATE userpending SET status = 'Approved' WHERE pending_id = :pending_id");
-    $updateReq->bindParam(":pending_id", $pending_id);
-    $updateReq->execute();
+    $delete = $conn->prepare("DELETE FROM userpending WHERE pending_id = :pending_id");
+    $delete->bindParam(":pending_id", $pending_id);
+    $delete->execute();
 
     echo json_encode(["success" => true, "message" => "User profile updated and approved."]);
 } catch (PDOException $e) {
