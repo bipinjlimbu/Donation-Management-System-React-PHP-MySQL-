@@ -7,7 +7,6 @@ import { useAuth } from "../components/AuthContext";
 export default function SingleCampaignPage() {
     const { id } = useParams();
     const [campaign, setCampaign] = useState(null);
-    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { user } = useAuth();
@@ -29,21 +28,6 @@ export default function SingleCampaignPage() {
             })
             .finally(() => setLoading(false));
     }, [id]);
-
-    useEffect(() => {
-        if (user?.user_id) {
-            axios
-                .get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`)
-                .then(res => {
-                    if (res.data.success) setProfile(res.data.profile);
-                    else setError(res.data.message || "Failed to load profile");
-                })
-                .catch(err => {
-                    console.error("Failed to fetch profile:", err);
-                    setError("Failed to connect to the server.");
-                });
-        }
-    }, [user]);
 
     const handleDonate = () => {
         navigate(`/donate/${campaign.campaign_id}`);
@@ -76,12 +60,12 @@ export default function SingleCampaignPage() {
             <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
-                {profile?.role === "Donor" && campaign.status === "Active" && (
+                {user?.role === "Donor" && campaign.status === "Active" && (
                     <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
                         Donate
                     </button>
                 )}
-                {profile?.role === "NGO" && profile?.user_id === campaign.ngo_id && (
+                {user?.role === "NGO" && user?.user_id === campaign.ngo_id && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>
