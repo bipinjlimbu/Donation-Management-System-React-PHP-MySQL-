@@ -36,8 +36,6 @@ export default function RecordsPage() {
 
         fetchHistory();
     }, [user]);
-
-    console.log(records);
     
     const role = user?.role;
     
