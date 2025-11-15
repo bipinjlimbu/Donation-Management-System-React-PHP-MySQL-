@@ -6,44 +6,42 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function SignUpPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "email") setEmail(value);
-        else if (name === "password") setPassword(value);
-        else if (name === "confirmPassword") setConfirmPassword(value);
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!email.trim() || !password.trim()) {
+        if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
             alert("All fields are required!");
             return;
         }
 
-        if (password !== confirmPassword) {
+        if (formData.password !== formData.confirmPassword) {
             alert("Passwords do not match!");
             return;
         }
 
-        if (password.length < 8) {
+        if (formData.password.length < 8) {
             alert("Password must be at least 8 characters");
             return;
         }
 
-        setLoading(true);
-
         try {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
-                email: email.trim(),
-                password: password.trim(),
-                role: "donor"
+                username: formData.username.trim(),
+                email: formData.email.trim(),
+                password: formData.password.trim()
             });
 
             if (response.data.success) {
@@ -55,8 +53,6 @@ export default function SignUpPage() {
         } catch (err) {
             console.error(err);
             alert("Network or server error");
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -64,19 +60,18 @@ export default function SignUpPage() {
         <div className={myLogin.login}>
             <h1>Join Us</h1>
             <form onSubmit={handleSubmit}>
+                <label>Username:</label>
+                <input type="text" name="username" value={formData.username} onChange={handleChange} required />
                 <label>Email:</label>
-                <input type="email" name="email" value={email} onChange={handleChange} required />
-                <br/>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                 <label>Password:</label>
-                <input type="password" name="password" value={password} onChange={handleChange} required />
-                <br/>
+                <input type="password" name="password" value={formData.password} onChange={handleChange} required />               
                 <label>Confirm Password:</label>
-                <input type="password" name="confirmPassword" value={confirmPassword} onChange={handleChange} required />
-                <br/>
-                <button type="submit" disabled={loading}>{loading ? "Signing Up..." : "Sign Up"}</button>
+                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />                
+                <button type="submit">Sign Up</button>
             </form>
             <p>Already have an account? <Link to="/login">Login here</Link></p>
-            <Footer/>
+            <Footer />
         </div>
     );
 }
