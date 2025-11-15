@@ -40,9 +40,9 @@ try {
     $insert->bindParam(":endDate", $campaign['end_date']);
     $insert->execute();
 
-    $update = $conn->prepare("UPDATE campaignpending SET status = 'Approved' WHERE pending_id = :id");
-    $update->bindParam(":id", $campaignID);
-    $update->execute();
+    $delete = $conn->prepare("DELETE FROM campaignpending WHERE pending_id = :id");
+    $delete->bindParam(":id", $campaignID);
+    $delete->execute();
 
     echo json_encode(["success" => true, "message" => "Campaign approved and moved to active list."]);
 
