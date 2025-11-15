@@ -1,35 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import myEdit from "../style/EditProfile.module.css";
 import axios from "axios";
 
 export default function EditProfile() {
+  const { user } = useAuth();
   const [profile, setProfile] = useState({
-    username: "",
-    role: "",
+    username: user?.username || "",
+    role: user?.role || "",
   });
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) return;
-    axios.get("http://localhost/dms/api/profile.php", {
-      params: { user_id: user.user_id },
-    })
-    .then((res) => {
-       if (res.data.success) {
-        setProfile(res.data.profile);
-      }
-    })
-    .catch((err) => {
-      console.error("Failed to fetch current profile:", err);
-    });
-  }, [user]);
-
-  console.log(profile);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +57,7 @@ export default function EditProfile() {
       <h1>Edit Your Profile</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" value={profile.username} onChange={handleChange} required/>
+        <input type="text" id="fullname" name="fullname" value={profile.username} onChange={handleChange} required />
         <br/>
         <label htmlFor="role">Role:</label>
         <select id="role" name="role" value={profile.role} onChange={handleChange} required>
