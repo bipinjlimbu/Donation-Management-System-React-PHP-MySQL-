@@ -47,7 +47,7 @@ export default function DashboardPage() {
     const handleDonationApprove = async (req, e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost/dms/api/approveDonation.php", {
+            const res = await axios.post("http://localhost/dms/api/approveDonationRequest.php", {
                 pending_id: req.pending_id,
                 campaign_id: req.campaign_id,
                 quantity: req.quantity,
@@ -68,7 +68,7 @@ export default function DashboardPage() {
     const handleDonationDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyDonation.php", {
+            const res = await axios.post("http://localhost/dms/api/denyDonationRequest.php", {
                 pending_id: req.pending_id
             });
 
@@ -435,18 +435,18 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {requests.map(req => (
+                            {pendingDonationRequests.map(req => (
                                 <tr key={req.pending_id}>
                                     <td>{req.campaign_title}</td>
                                     <td>{req.quantity}</td>
                                     <td>{req.donor}</td>
                                     <td>
-                                        <button className={myDashboard.approveButton} onClick={e => handleApprove(req, e)}>
+                                        <button className={myDashboard.approveButton} onClick={e => handleDonationApprove(req, e)}>
                                             Approve
                                         </button>
                                     </td>
                                     <td>
-                                        <button className={myDashboard.denyButton} onClick={() => handleDeny(req)}>
+                                        <button className={myDashboard.denyButton} onClick={() => handleDonationDeny(req)}>
                                             Deny
                                         </button>
                                     </td>
