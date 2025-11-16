@@ -102,37 +102,49 @@ switch ($method) {
         if (!$donor_id || !$campaign_id || $quantity <= 0) {
             echo json_encode([
                 "success" => false,
-                "message" => "All fields are required and amount must be greater than zero"
+                "message" => "All fields are required and quantity must be greater than zero"
             ]);
             exit;
         }
 
         try {
-            $sql = "INSERT INTO donationpending (donor_id, campaign_id, quantity, status)
-                    VALUES (:donor_id, :campaign_id, :quantity, 'Pending' )";
+            $ngoQuery = "SELECT ngo_id FROM campaigndetails WHERE campaign_id = :campaign_id";
+            $ngoStmt = $conn->prepare($ngoQuery);
+            $ngoStmt->bindParam(':campaign_id', $campaign_id, PDO::PARAM_INT);
+            $ngoStmt->execute();
+            $ngoResult = $ngoStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$ngoResult) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Campaign not found"
+                ]);
+                exit;
+            }
+
+            $ngo_id = $ngoResult['ngo_id'];
+
+            $sql = "INSERT INTO donationpending (donor_id, ngo_id, campaign_id, quantity, status)
+                    VALUES (:donor_id, :ngo_id, :campaign_id, :quantity, 'Pending')";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':donor_id', $donor_id, PDO::PARAM_INT);
+            $stmt->bindParam(':ngo_id', $ngo_id, PDO::PARAM_INT);
             $stmt->bindParam(':campaign_id', $campaign_id, PDO::PARAM_INT);
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_STR);
             $stmt->execute();
 
-            if ($stmt->rowCount() > 0) {
-                echo json_encode([
-                    "success" => true,
-                    "message" => "Donation request submitted successfully!"
-                ]);
-            } else {
-                echo json_encode([
-                    "success" => false,
-                    "message" => "Failed to submit donation request."
-                ]);
-            }
+            echo json_encode([
+                "success" => true,
+                "message" => "Donation request submitted successfully!"
+            ]);
+
         } catch (PDOException $e) {
             echo json_encode([
                 "success" => false,
                 "message" => "Database error: " . $e->getMessage()
             ]);
         }
+
         break;
 
     default:
