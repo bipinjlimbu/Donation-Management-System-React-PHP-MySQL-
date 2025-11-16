@@ -14,6 +14,7 @@ $pending_id = (int) ($data['pending_id'] ?? 0);
 $campaign_id = (int) ($data['campaign_id'] ?? 0);
 $quantity = (int) ($data['quantity'] ?? 0);
 $donor_id = (int) ($data['donor_id'] ?? 0);
+$ngo_id = (int) ($data['ngo_id'] ?? 0);
 
 if (!$pending_id || !$campaign_id || !$donor_id || $quantity <= 0) {
     echo json_encode([
@@ -24,11 +25,12 @@ if (!$pending_id || !$campaign_id || !$donor_id || $quantity <= 0) {
 }
 
 try {
-    $insert = "INSERT INTO donationhistory (campaign_id, donor_id, quantity, donated_at)
-               VALUES (:campaign_id, :donor_id, :quantity, NOW())";
+    $insert = "INSERT INTO donationhistory (campaign_id, donor_id, ngo_id, quantity, donated_at)
+               VALUES (:campaign_id, :donor_id, :ngo_id, :quantity, NOW())";
     $stmt = $conn->prepare($insert);
     $stmt->bindParam(':campaign_id', $campaign_id, PDO::PARAM_INT);
     $stmt->bindParam(':donor_id', $donor_id, PDO::PARAM_INT);
+    $stmt->bindParam(':ngo_id', $ngo_id, PDO::PARAM_INT);
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt->execute();
 
