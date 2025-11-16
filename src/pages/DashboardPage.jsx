@@ -218,63 +218,40 @@ export default function DashboardPage() {
                     </table>
                 ) : <p>No campaign creation requests pending.</p>}
 
-                <h2>All User Requests Records</h2>
-                {recordUserRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Requested Username</th>
-                                <th>Requested Role</th>
-                                <th>Status</th>
-                                <th>Requested At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recordUserRequests.map(req => (
-                                <tr key={req.pending_id}>
-                                    <td>{req.user_id}</td>
-                                    <td>{req.new_username}</td>
-                                    <td>{req.new_role}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.requested_at}</td>
-                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"user")}> Delete </button></td>
+                <h2>Donation History</h2>
+                {records.length > 0 ? (
+                    <>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Category</th>
+                                    <th>Item Type</th>
+                                    <th>Quantity</th>
+                                    <th>Donor</th>
+                                    <th>NGO</th>
+                                    <th>Location</th>
+                                    <th>Donated At</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : <p>No user request records found.</p>}
-
-                <h2>All Campaign Requests Records</h2>
-                {recordCampaignRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Campaign Name</th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Target Quantity</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recordCampaignRequests.map(req => (
-                                <tr key={req.pending_id}>
-                                    <td>{req.title}</td>
-                                    <td>{req.description}</td>
-                                    <td>{req.category}</td>
-                                    <td>{req.target_quantity}</td>
-                                    <td>{req.location}</td>
-                                    <td>{req.status}</td>
-                                    <td><button className={myDashboard.denyButton} onClick={() => handleDelete(req.pending_id,"campaign")}> Delete </button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : <p>No campaign request records found.</p>}
+                            </thead>
+                            <tbody>
+                                {records.slice(0, 3).map(rec => (
+                                    <tr key={rec.donation_id}>
+                                        <td>{rec.campaign_title}</td>
+                                        <td>{rec.category}</td>
+                                        <td>{rec.item_type}</td>
+                                        <td>{rec.quantity}</td>
+                                        <td>{rec.donor_name}</td>
+                                        <td>{rec.ngo_name}</td>
+                                        <td>{rec.location}</td>
+                                        <td>{rec.donated_at}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <button onClick={() => navigate("/records")}>View All Records</button>
+                    </>
+                ) : <p>No donation history yet.</p>}
             </div>
         );
     }
@@ -315,17 +292,23 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
+                                    <th>Category</th>
                                     <th>Item Type</th>
                                     <th>Quantity</th>
+                                    <th>NGO</th>
+                                    <th>Location</th>
                                     <th>Donated At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_title || rec.campaign_name}</td>
+                                        <td>{rec.campaign_title}</td>
+                                        <td>{rec.category}</td>
                                         <td>{rec.item_type}</td>
-                                        <td>{rec.quantity || rec.item_quantity}</td>
+                                        <td>{rec.quantity}</td>
+                                        <td>{rec.ngo_name}</td>
+                                        <td>{rec.location}</td>
                                         <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
@@ -379,9 +362,11 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
+                                    <th>Category</th>
                                     <th>Item Type</th>
                                     <th>Quantity</th>
                                     <th>Donor</th>
+                                    <th>Location</th>
                                     <th>Donated At</th>
                                 </tr>
                             </thead>
@@ -389,9 +374,11 @@ export default function DashboardPage() {
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
                                         <td>{rec.campaign_title}</td>
+                                        <td>{rec.category}</td>
                                         <td>{rec.item_type}</td>
                                         <td>{rec.quantity}</td>
                                         <td>{rec.donor_name}</td>
+                                        <td>{rec.location}</td>
                                         <td>{rec.donated_at}</td>
                                     </tr>
                                 ))}
