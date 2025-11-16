@@ -48,6 +48,7 @@ export default function DashboardPage() {
                 pending_id: req.pending_id,
                 campaign_id: req.campaign_id,
                 quantity: req.quantity,
+                ngo_id: req.ngo_id,
                 donor_id: req.donor_id,
             });
             if (res.data.success) setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
