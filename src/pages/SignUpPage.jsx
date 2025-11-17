@@ -10,7 +10,8 @@ export default function SignUpPage() {
         username: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        role: "Donor"
     });
 
     const navigate = useNavigate();
@@ -41,11 +42,12 @@ export default function SignUpPage() {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
                 username: formData.username.trim(),
                 email: formData.email.trim(),
-                password: formData.password.trim()
+                password: formData.password.trim(),
+                role: formData.role
             });
 
             if (response.data.success) {
-                alert("Signup successful! Please login.");
+                alert("Signup Successfull!");
                 navigate("/login");
             } else {
                 alert("Signup failed: " + response.data.message);
@@ -65,13 +67,17 @@ export default function SignUpPage() {
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                 <label>Password:</label>
-                <input type="password" name="password" value={formData.password} onChange={handleChange} required />               
+                <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                 <label>Confirm Password:</label>
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />                
+                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                <label>Role:</label>
+                <select name="role" value={formData.role} onChange={handleChange}>
+                    <option value="Donor">Donor</option>
+                    <option value="NGO">NGO</option>
+                </select>
                 <button type="submit">Sign Up</button>
             </form>
             <p>Already have an account? <Link to="/login">Login here</Link></p>
-            <Footer />
         </div>
     );
 }
