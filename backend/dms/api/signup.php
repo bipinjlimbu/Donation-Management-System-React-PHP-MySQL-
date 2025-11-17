@@ -13,7 +13,8 @@ $data = json_decode(file_get_contents("php://input"), true);
 $username = trim($data['username'] ?? '');
 $email = strtolower(trim($data['email'] ?? ''));
 $password = trim($data['password'] ?? '');
-$role = "Donor";
+$pendingRole = $data['role'] ?? 'Donor';
+$requestedAt = date('Y-m-d H:i:s');
 
 if (!$username || !$email || !$password) {
     echo json_encode([
@@ -39,12 +40,14 @@ if ($user) {
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-$sql = "INSERT INTO Users (username, email, password_hash, role) VALUES (:username, :email, :password_hash, :role)";
+$sql = "INSERT INTO Users (email, password_hash, pending_username, pending_role, requested_at) 
+        VALUES (:email, :password_hash, :pending_username, :pending_role, :requested_at)";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':username', $username);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':password_hash', $hashedPassword);
-$stmt->bindParam(':role', $role);
+$stmt->bindParam(':pending_username', $username);
+$stmt->bindParam(':pending_role', $pendingRole);
+$stmt->bindParam(':requested_at', $requestedAt);
 $stmt->execute();
 
 $user_id = $conn->lastInsertId();
@@ -56,6 +59,6 @@ $stmtDonor->execute();
 
 echo json_encode([
     "success" => true,
-    "message" => "User registered successfully"
+    "message" => "Signup Successfull!"
 ]);
 ?>
