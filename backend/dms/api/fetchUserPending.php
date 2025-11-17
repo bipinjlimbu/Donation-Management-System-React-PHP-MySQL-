@@ -9,10 +9,9 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
-    $sql = "SELECT `up`.`pending_id`, `up`.`user_id`, `up`.`new_username`, `up`.`new_role`, `up`.`status`, `up`.`requested_at`, `ud`.`username` AS `current_username`, `ud`.`role` AS `current_role`
-            FROM `userpending` AS `up`
-            INNER JOIN `userdetails` AS `ud` ON `up`.`user_id` = `ud`.`user_id`
-            ORDER BY `up`.`requested_at` DESC";
+    $sql = "SELECT user_id, username AS `current_username`, role AS `current_role`, pending_username AS `new_username`, pending_role AS `new_role`, pending_status AS `status`, requested_at 
+            FROM Users WHERE pending_status = 'Pending' 
+            ORDER BY requested_at DESC";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
