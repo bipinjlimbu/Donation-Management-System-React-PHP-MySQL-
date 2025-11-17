@@ -24,7 +24,7 @@ export default function DashboardPage() {
                 const [donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
-                    axios.get("http://localhost/dms/api/fetchUserPending.php"),
+                    axios.get("http://localhost/dms/api/fetchUserRequests.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignRequests.php")
                 ]);
 
