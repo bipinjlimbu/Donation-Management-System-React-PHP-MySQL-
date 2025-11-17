@@ -39,7 +39,7 @@ export default function DashboardPage() {
             }
         };
         fetchData();
-    }, [user]);
+    }, [user]); 
 
     const handleDonationApprove = async (req, e) => {
         e.preventDefault();
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                         </thead>
                         <tbody>
                             {pendingUserRequests.map(req => (
-                                <tr key={req.pending_id}>
+                                <tr key={req.user_id}>
                                     <td>{req.user_id}</td>
                                     <td>{req.current_username}</td>
                                     <td>{req.new_username}</td>
