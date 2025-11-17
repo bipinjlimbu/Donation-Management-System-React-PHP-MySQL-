@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
+header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
@@ -9,26 +9,22 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
-$pending_id = intval($data['pending_id'] ?? 0);
-$newUsername = $data['new_username'] ?? '';
-$newRole = $data['new_role'] ?? '';
 $userId = intval($data['user_id'] ?? 0);
+$newUsername = trim($data['new_username'] ?? '');
+$newRole = $data['new_role'] ?? '';
 
-if (!$pending_id || !$userId || !$newUsername || !$newRole) {
+if (!$userId || !$newUsername || !$newRole) {
     echo json_encode(["success" => false, "message" => "Missing required data."]);
     exit;
 }
 
 try {
-    $update = $conn->prepare("UPDATE userdetails SET username = :username, role = :role WHERE user_id = :id");
+    $update = $conn->prepare("UPDATE users SET username = :username, role = :role, pending_username = NULL, pending_role = NULL, pending_status = 'Approved', approved_at = NOW() 
+                              WHERE user_id = :id");
     $update->bindParam(":username", $newUsername);
     $update->bindParam(":role", $newRole);
     $update->bindParam(":id", $userId);
     $update->execute();
-
-    $delete = $conn->prepare("DELETE FROM userpending WHERE pending_id = :pending_id");
-    $delete->bindParam(":pending_id", $pending_id);
-    $delete->execute();
 
     echo json_encode(["success" => true, "message" => "User profile updated and approved."]);
 } catch (PDOException $e) {
