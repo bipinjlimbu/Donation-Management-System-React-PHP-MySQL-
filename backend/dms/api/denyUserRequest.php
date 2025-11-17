@@ -9,17 +9,18 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
-$pending_id = intval($data['pending_id'] ?? 0);
+$userId = intval($data['user_id'] ?? 0);
 
-if (!$pending_id) {
-    echo json_encode(["success" => false, "message" => "Missing request ID."]);
+if (!$userId) {
+    echo json_encode(["success" => false, "message" => "Missing user ID."]);
     exit;
 }
 
 try {
-    $updateReq = $conn->prepare("UPDATE userpending SET status = 'Denied' WHERE pending_id = :pending_id");
-    $updateReq->bindParam(":pending_id", $pending_id);
-    $updateReq->execute();
+    $update = $conn->prepare("UPDATE users SET pending_status = 'Denied', pending_username = NULL, pending_role = NULL, approved_at = NOW()
+                              WHERE user_id = :id");
+    $update->bindParam(":id", $userId);
+    $update->execute();
 
     echo json_encode(["success" => true, "message" => "User request denied."]);
 } catch (PDOException $e) {
