@@ -132,9 +132,6 @@ export default function DashboardPage() {
     const pendingUserRequests = userRequests.filter(req => req.status === "Pending");
     const recordUserRequests = userRequests.filter(req => req.status !== "Pending");
 
-    const pendingCampaignRequests = campaignRequests.filter(req => req.status === "Pending");
-    const recordCampaignRequests = campaignRequests.filter(req => req.status !== "Pending");
-
     const pendingDonationRequests = donationRequests.filter(req => req.status === "Pending");
     const recordDonationRequests = donationRequests.filter(req => req.status !== "Pending");
 
@@ -181,15 +178,13 @@ export default function DashboardPage() {
                 ) : <p>No user profile change requests pending.</p>}
 
                 <h2>Campaign Creation Requests</h2>
-                {pendingCampaignRequests.length > 0 ? (
+                {campaignRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Target Quantity</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
                                 <th>Status</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
@@ -197,13 +192,11 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pendingCampaignRequests.map(req => (
+                            {campaignRequests.map(req => (
                                 <tr key={req.pending_id}>
                                     <td>{req.title}</td>
                                     <td>{req.description}</td>
                                     <td>{req.target_quantity}</td>
-                                    <td>{req.start_date}</td>
-                                    <td>{req.end_date}</td>
                                     <td>{req.status}</td>
                                     <td>{req.ngo_name}</td>
                                     <td>{req.requested_at}</td>
