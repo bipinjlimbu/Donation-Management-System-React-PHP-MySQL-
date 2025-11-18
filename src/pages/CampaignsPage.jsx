@@ -45,16 +45,10 @@ export default function CampaignsPage() {
           campaigns.map((campaign) => (
             <li key={campaign.campaign_id}>
               <strong className={myCampaigns.head}>{campaign.title}</strong>
-              <p>{campaign.description}</p>
-
-              <p><strong>Item:</strong> {campaign.item_name}</p>
-              <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
-              <p><strong>Collected:</strong> {campaign.collected_quantity}</p>
-
+              <p>{campaign.description.length > 100 ? campaign.description.slice(0, 100) + "..." : campaign.description}</p>
               <p><strong>Status:</strong> {campaign.status}</p>
-              <p><strong>Start Date:</strong> {campaign.start_date}</p>
-              <p><strong>End Date:</strong> {campaign.end_date}</p>
-
+              <p><strong>Start Date:</strong> {campaign.start_date} </p>
+              <p><strong>End Date:</strong> {campaign.end_date} </p>
               <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>
                 View Details
               </button>
