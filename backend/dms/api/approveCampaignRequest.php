@@ -17,34 +17,21 @@ if (!$campaignID) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM campaignpending WHERE pending_id = :id");
+    $stmt = $conn->prepare("SELECT * FROM Campaigns WHERE campaign_id = :id AND status = 'Pending'");
     $stmt->bindParam(":id", $campaignID);
     $stmt->execute();
     $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$campaign) {
-        echo json_encode(["success" => false, "message" => "Campaign not found."]);
+        echo json_encode(["success" => false, "message" => "Campaign not found or already approved."]);
         exit;
     }
 
-    $insert = $conn->prepare("INSERT INTO campaigndetails (ngo_id, title, description, item_type, category, target_quantity, collected_quantity, location, start_date, end_date, status)
-                                    VALUES (:ngoId, :title, :description, :item, :category, :targetQuantity, 0, :location, :startDate, :endDate, 'Active')");
-    $insert->bindParam(":ngoId", $campaign['ngo_id']);
-    $insert->bindParam(":title", $campaign['title']);
-    $insert->bindParam(":description", $campaign['description']);
-    $insert->bindParam(":item", $campaign['item_type']);
-    $insert->bindParam(":category", $campaign['category']);
-    $insert->bindParam(":targetQuantity", $campaign['target_quantity']);
-    $insert->bindParam(":location", $campaign['location']);
-    $insert->bindParam(":startDate", $campaign['start_date']);
-    $insert->bindParam(":endDate", $campaign['end_date']);
-    $insert->execute();
+    $update = $conn->prepare("UPDATE Campaigns SET status = 'Active', approved_at = NOW() WHERE campaign_id = :id");
+    $update->bindParam(":id", $campaignID);
+    $update->execute();
 
-    $delete = $conn->prepare("DELETE FROM campaignpending WHERE pending_id = :id");
-    $delete->bindParam(":id", $campaignID);
-    $delete->execute();
-
-    echo json_encode(["success" => true, "message" => "Campaign approved and moved to active list."]);
+    echo json_encode(["success" => true, "message" => "Campaign approved and is now Active."]);
 
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
