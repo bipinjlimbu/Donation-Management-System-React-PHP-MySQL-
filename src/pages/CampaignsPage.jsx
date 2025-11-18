@@ -21,8 +21,7 @@ export default function CampaignsPage() {
           setError(res.data.message || "Failed to load campaigns.");
         }
       })
-      .catch((err) => {
-        console.error("Error fetching campaigns:", err);
+      .catch(() => {
         setError("Failed to connect to the server.");
       })
       .finally(() => setLoading(false));
@@ -44,12 +43,18 @@ export default function CampaignsPage() {
       <ul>
         {campaigns.length > 0 ? (
           campaigns.map((campaign) => (
-            <li key={campaign.c_id}>
+            <li key={campaign.campaign_id}>
               <strong className={myCampaigns.head}>{campaign.title}</strong>
               <p>{campaign.description}</p>
-              <strong>Status: {campaign.status}</strong>
-              <p>Start Date: {campaign.start_date}</p>
-              <p>End Date: {campaign.end_date}</p>
+
+              <p><strong>Item:</strong> {campaign.item_name}</p>
+              <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
+              <p><strong>Collected:</strong> {campaign.collected_quantity}</p>
+
+              <p><strong>Status:</strong> {campaign.status}</p>
+              <p><strong>Start Date:</strong> {campaign.start_date}</p>
+              <p><strong>End Date:</strong> {campaign.end_date}</p>
+
               <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>
                 View Details
               </button>
