@@ -17,17 +17,17 @@ if (!$campaignID) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM campaignpending WHERE pending_id = :id");
+    $stmt = $conn->prepare("SELECT * FROM Campaigns WHERE campaign_id = :id AND status = 'Pending'");
     $stmt->bindParam(":id", $campaignID);
     $stmt->execute();
     $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$campaign) {
-        echo json_encode(["success" => false, "message" => "Campaign not found."]);
+        echo json_encode(["success" => false, "message" => "Campaign not found or already processed."]);
         exit;
     }
 
-    $update = $conn->prepare("UPDATE campaignpending SET status = 'Denied' WHERE pending_id = :id");
+    $update = $conn->prepare("UPDATE Campaigns SET status = 'Denied' WHERE campaign_id = :id");
     $update->bindParam(":id", $campaignID);
     $update->execute();
 
