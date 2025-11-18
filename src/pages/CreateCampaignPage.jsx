@@ -8,10 +8,9 @@ export default function CreateCampaignPage() {
   const [campaign, setCampaign] = useState({
     title: "",
     description: "",
-    item_type: "",
-    category: "",
+    item_name: "",
+    unit: "",
     target_quantity: "",
-    location: "",
     start_date: "",
     end_date: "",
   });
@@ -34,11 +33,11 @@ export default function CreateCampaignPage() {
     try {
       const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
         ...campaign,
-        user_id: user?.user_id, // NGO ID
+        ngo_id: user?.user_id, // NGO ID
       });
 
       if (res.data.success) {
-        alert("Campaign creation request submitted successfully!");
+        alert(res.data.message);
         navigate("/campaigns");
       } else {
         setError(res.data.message || "Failed to submit campaign request.");
@@ -66,14 +65,12 @@ export default function CreateCampaignPage() {
             <input type="text" name="title" value={campaign.title} onChange={handleChange} required />
             <label>Description:</label>
             <textarea name="description" value={campaign.description} onChange={handleChange} required />
-            <label>Item Type:</label>
-            <input type="text" name="item_type" value={campaign.item_type} onChange={handleChange} required />
-            <label>Category:</label>
-            <input type="text" name="category" value={campaign.category} onChange={handleChange} required />
+            <label>Item Name:</label>
+            <input type="text" name="item_name" value={campaign.item_name} onChange={handleChange} required />
+            <label>Unit:</label>
+            <input type="text" name="unit" value={campaign.unit} onChange={handleChange} required />
             <label>Target Quantity:</label>
             <input type="number" name="target_quantity" value={campaign.target_quantity} onChange={handleChange} required />
-            <label>Location:</label>
-            <input type="text" name="location" value={campaign.location} onChange={handleChange} required />
             <label>Start Date:</label>
             <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
             <label>End Date:</label>
