@@ -13,14 +13,13 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case 'GET':
         try {
-            $update = $conn->prepare("UPDATE Campaigns SET status = 'Completed' WHERE status = 'Active'
-                AND (end_date < CURDATE() OR target_quantity <= collected_quantity)");
+            $update = $conn->prepare("UPDATE Campaigns SET status = 'Completed' 
+                WHERE status = 'Active' AND (end_date < CURDATE() OR target_quantity <= collected_quantity)");
             $update->execute();
 
-            $stmt = $conn->prepare("
-                SELECT campaign_id, ngo_id, title, description, item_name,target_quantity, collected_quantity, unit, status,start_date, end_date, requested_at, approved_at
-                FROM Campaigns ORDER BY start_date DESC
-            ");
+            $stmt = $conn->prepare("SELECT campaign_id, ngo_id, title, description, item_name, target_quantity, collected_quantity, unit, status, start_date, end_date, requested_at, approved_at
+                FROM Campaigns WHERE status IN ('Active', 'Completed')
+                ORDER BY start_date DESC");
             $stmt->execute();
             $campaigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
