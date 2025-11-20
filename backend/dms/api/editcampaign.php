@@ -15,6 +15,7 @@ $title = trim($data['title'] ?? '');
 $description = trim($data['description'] ?? '');
 $targetQuantity = (int) ($data['target_quantity'] ?? 0);
 $endDate = trim($data['end_date'] ?? '');
+$status = trim($data['status'] ?? '');
 
 if ($campaignId <= 0 || !$title || !$description || !$targetQuantity || !$endDate) {
     echo json_encode([
@@ -25,28 +26,23 @@ if ($campaignId <= 0 || !$title || !$description || !$targetQuantity || !$endDat
 }
 
 try {
-    $sql = "UPDATE campaigndetails SET title = :title, description = :description, target_quantity = :targetQuantity, end_date = :endDate 
+    $sql = "UPDATE Campaigns SET title = :title, description = :description, target_quantity = :targetQuantity, end_date = :endDate, status = :status
             WHERE campaign_id = :campaignId";
 
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':title', $title);
     $stmt->bindParam(':description', $description);
     $stmt->bindParam(':targetQuantity', $targetQuantity, PDO::PARAM_INT);
+    $stmt->bindParam(':status', $status);
     $stmt->bindParam(':endDate', $endDate);
     $stmt->bindParam(':campaignId', $campaignId, PDO::PARAM_INT);
     $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        echo json_encode([
-            "success" => true,
-            "message" => "Campaign updated successfully."
-        ]);
-    } else {
-        echo json_encode([
-            "success" => false,
-            "message" => "No record updated. Check campaign ID or no changes made."
-        ]);
-    }
+    echo json_encode([
+        "success" => true,
+        "message" => "Campaign updated successfully."
+    ]);
+
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
