@@ -37,11 +37,11 @@ export default function SingleCampaignPage() {
         <div className={mySingleCampaign.campaign}>
             <h1>{campaign.title}</h1>
             <p>{campaign.description}</p>
-            <p><strong>Item Name:</strong> {campaign.item_name}</p>
-            <p><strong>Status:</strong> {campaign.status}</p>
-            <p><strong>Target Quantity:</strong> {campaign.target_quantity} {campaign.unit}</p>
-            <p><strong>Collected Quantity:</strong> {campaign.collected_quantity} {campaign.unit}</p>
+            <p><strong>Item:</strong> {campaign.item_name}</p>
+            <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
+            <p><strong>Collected:</strong> {campaign.collected_quantity} {campaign.unit}</p>
             <p><strong>NGO:</strong> {campaign.ngo_name}</p>
+            <p><strong>Status:</strong> {campaign.status}</p>
             <p><strong>Start Date:</strong> {campaign.start_date}</p>
             <p><strong>End Date:</strong> {campaign.end_date}</p>
 
