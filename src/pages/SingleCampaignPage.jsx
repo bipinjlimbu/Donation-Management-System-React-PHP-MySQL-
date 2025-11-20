@@ -41,9 +41,9 @@ export default function SingleCampaignPage() {
             <p><strong>Status:</strong> {campaign.status}</p>
             <p><strong>Target Quantity:</strong> {campaign.target_quantity} {campaign.unit}</p>
             <p><strong>Collected Quantity:</strong> {campaign.collected_quantity} {campaign.unit}</p>
+            <p><strong>NGO:</strong> {campaign.ngo_name}</p>
             <p><strong>Start Date:</strong> {campaign.start_date}</p>
             <p><strong>End Date:</strong> {campaign.end_date}</p>
-            <p><strong>NGO:</strong> {campaign.ngo_name}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
                 {user?.role === "Donor" && campaign.status === "Active" && (

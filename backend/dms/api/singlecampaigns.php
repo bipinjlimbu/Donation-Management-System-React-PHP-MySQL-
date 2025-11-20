@@ -16,14 +16,12 @@ if ($campaignId <= 0) {
 }
 
 try {
-    $conn->exec("UPDATE campaigndetails SET status='Completed' WHERE status='Active' AND end_date < CURDATE() OR target_quantity <= collected_quantity");
+    $conn->exec("UPDATE Campaigns SET status = 'Completed'
+        WHERE (status = 'Active' AND end_date < CURDATE()) OR collected_quantity >= target_quantity");
 
-    $stmt = $conn->prepare("
-        SELECT c.*, u.username AS ngo_name
-        FROM campaigndetails c
-        JOIN userdetails u ON c.ngo_id = u.user_id
-        WHERE c.campaign_id = :id
-    ");
+    $stmt = $conn->prepare("SELECT c.campaign_id, c.ngo_id, c.title, c.description, c.item_name, c.target_quantity, c.collected_quantity, c.unit, c.status, c.start_date, c.end_date, u.username AS ngo_name
+        FROM Campaigns c JOIN Users u ON c.ngo_id = u.user_id WHERE c.campaign_id = :id");
+
     $stmt->bindParam(':id', $campaignId, PDO::PARAM_INT);
     $stmt->execute();
 
@@ -34,6 +32,7 @@ try {
     } else {
         echo json_encode(["success" => false, "message" => "Campaign not found"]);
     }
+
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
