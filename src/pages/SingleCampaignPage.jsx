@@ -13,33 +13,21 @@ export default function SingleCampaignPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios
-            .get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
+        axios.get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
             .then(res => {
                 if (res.data.success) {
                     setCampaign(res.data.campaign);
                 } else {
-                    setError(res.data.message || "Failed to load campaign");
+                    setError(res.data.message);
                 }
             })
-            .catch(err => {
-                console.error("Failed to fetch campaign:", err);
-                setError("Failed to connect to the server.");
-            })
+            .catch(() => setError("Failed to connect to server"))
             .finally(() => setLoading(false));
     }, [id]);
 
-    const handleDonate = () => {
-        navigate(`/donate/${campaign.campaign_id}`);
-    };
-
-    const handleEdit = () => {
-        navigate(`/edit-campaign/${campaign.campaign_id}`);
-    };
-
-    const handleBack = () => {
-        navigate("/campaigns");
-    };
+    const handleDonate = () => navigate(`/donate/${campaign.campaign_id}`);
+    const handleEdit = () => navigate(`/edit-campaign/${campaign.campaign_id}`);
+    const handleBack = () => navigate("/campaigns");
 
     if (loading) return <div>Loading campaign...</div>;
     if (error) return <div style={{ color: "red" }}>{error}</div>;
@@ -49,15 +37,13 @@ export default function SingleCampaignPage() {
         <div className={mySingleCampaign.campaign}>
             <h1>{campaign.title}</h1>
             <p>{campaign.description}</p>
-            <p className={mySingleCampaign.type}>Item Type: {campaign.item_type}</p>
-            <p>Category: {campaign.category}</p>
-            <p className={mySingleCampaign.status}>Campaign Status: {campaign.status}</p>
-            <p>Target Quantity: {campaign.target_quantity}</p>
-            <p>Collected Quantity: {campaign.collected_quantity}</p>
-            <p>Location: {campaign.location}</p>
-            <p>Created by: {campaign.ngo_name}</p>
-            <p className={mySingleCampaign.start}>Start Date: {campaign.start_date}</p>
-            <p className={mySingleCampaign.end}>End Date: {campaign.end_date}</p>
+            <p><strong>Item Name:</strong> {campaign.item_name}</p>
+            <p><strong>Status:</strong> {campaign.status}</p>
+            <p><strong>Target Quantity:</strong> {campaign.target_quantity} {campaign.unit}</p>
+            <p><strong>Collected Quantity:</strong> {campaign.collected_quantity} {campaign.unit}</p>
+            <p><strong>Start Date:</strong> {campaign.start_date}</p>
+            <p><strong>End Date:</strong> {campaign.end_date}</p>
+            <p><strong>NGO:</strong> {campaign.ngo_name}</p>
 
             <div className={mySingleCampaign.buttonContainer}>
                 {user?.role === "Donor" && campaign.status === "Active" && (
@@ -65,11 +51,13 @@ export default function SingleCampaignPage() {
                         Donate
                     </button>
                 )}
+
                 {user?.role === "NGO" && user?.user_id === campaign.ngo_id && (
                     <button className={mySingleCampaign.editButton} onClick={handleEdit}>
                         Edit Campaign
                     </button>
                 )}
+
                 <button className={mySingleCampaign.backButton} onClick={handleBack}>
                     Back
                 </button>
