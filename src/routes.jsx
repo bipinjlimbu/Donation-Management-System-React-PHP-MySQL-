@@ -7,7 +7,6 @@ import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
-import ItemsPage from "./pages/ItemsPage";
 import CampaignsPage from "./pages/CampaignsPage";
 import SingleCampaignPage from "./pages/SingleCampaignPage";
 import DonationPage from "./pages/DonationPage";
@@ -86,10 +85,6 @@ const routes = createBrowserRouter([
             {
                 path:"/editProfile",
                 element:<EditProfile/>,
-            },
-            {
-                path:"/items",
-                element:<ItemsPage/>,
             },
             {
                 path:"*",
