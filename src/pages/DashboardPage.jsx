@@ -7,7 +7,7 @@ import axios from "axios";
 export default function DashboardPage() {
     const { user } = useAuth();
     const navigate = useNavigate();
-
+    const [signupRequests, setSignupRequests] = useState([]);
     const [donationRequests, setDonationRequests] = useState([]);
     const [records, setRecords] = useState([]);
     const [userRequests, setUserRequests] = useState([]);
@@ -21,13 +21,14 @@ export default function DashboardPage() {
             setLoading(true);
             setError("");
             try {
-                const [donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
+                const [signReqRes ,donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
+                    axios.get("http://localhost/dms/api/fetchSignupRequests.php"),
                     axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
                     axios.get("http://localhost/dms/api/fetchUserRequests.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignRequests.php")
                 ]);
-
+                if (signReqRes.data.success) setSignupRequests(signReqRes.data.requests || []);
                 if (donationReqRes.data.success) setDonationRequests(donationReqRes.data.donations);
                 if (historyRes.data.success) setRecords(historyRes.data.donations);
                 if (userReqRes.data.success) setUserRequests(userReqRes.data.requests || []);
@@ -40,6 +41,27 @@ export default function DashboardPage() {
         };
         fetchData();
     }, [user]); 
+
+    const handleSignupApprove = async (register_id) => {
+        try {
+            const res = await axios.post("http://localhost/dms/api/approveSignup.php", { register_id });
+            if (res.data.success) setSignupRequests(prev => prev.filter(r => r.register_id !== register_id));
+            else alert(res.data.message);
+        } catch {
+            alert("Error approving signup request");
+        }
+    };
+
+    const handleSignupDeny = async (register_id) => {
+        if (!window.confirm("Are you sure you want to deny this signup request?")) return;
+        try {
+            const res = await axios.post("http://localhost/dms/api/denySignup.php", { register_id });
+            if (res.data.success) setSignupRequests(prev => prev.filter(r => r.register_id !== register_id));
+            else alert(res.data.message);
+        } catch {
+            alert("Error denying signup request");
+        }
+    };
 
     const handleDonationApprove = async (req, e) => {
         e.preventDefault();
@@ -140,6 +162,39 @@ export default function DashboardPage() {
             <div className={myDashboard.container}>
                 <h1>Admin Dashboard</h1>
                 <p>Welcome, {user.username}! You can manage user and campaign requests here.</p>
+                <h2>New Signup Requests</h2>
+                {signupRequests.length > 0 ? (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Registration Number</th>
+                                <th>Requested At</th>
+                                <th colSpan={2}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {signupRequests.map(req => (
+                                <tr key={req.register_id}>
+                                    <td>{req.username}</td>
+                                    <td>{req.email}</td>
+                                    <td>{req.role}</td>
+                                    <td>{req.role === "NGO" ? req.registration_number : "-"}</td>
+                                    <td>{req.requested_at}</td>
+                                    <td>
+                                        <button className={myDashboard.approveButton} onClick={() => handleSignupApprove(req.register_id)}>Approve</button>
+                                    </td>
+                                    <td>
+                                        <button className={myDashboard.denyButton} onClick={() => handleSignupDeny(req.register_id)}>Deny</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : <p>No new signup requests.</p>}
+
                 <h2>User Profile Change Requests</h2>
                 {pendingUserRequests.length > 0 ? (
                     <table>
