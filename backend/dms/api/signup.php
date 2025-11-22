@@ -13,8 +13,9 @@ $data = json_decode(file_get_contents("php://input"), true);
 $username = trim($data['username'] ?? '');
 $email = strtolower(trim($data['email'] ?? ''));
 $password = trim($data['password'] ?? '');
-$pendingRole = $data['role'] ?? 'Donor';
-$requestedAt = date('Y-m-d H:i:s');
+$role = $data['role'] ?? 'Donor';
+$registration_number = trim($data['registration_number'] ?? null);
+$requested_at = date('Y-m-d H:i:s');
 
 if (!$username || !$email || !$password) {
     echo json_encode([
@@ -24,13 +25,13 @@ if (!$username || !$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM Users WHERE email = :email";
+$sql = "SELECT * FROM register WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($user) {
+if ($existing) {
     echo json_encode([
         "success" => false,
         "message" => "Email already exists"
@@ -39,26 +40,19 @@ if ($user) {
 }
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-$sql = "INSERT INTO Users (email, password_hash, pending_username, pending_role, requested_at) 
-        VALUES (:email, :password_hash, :pending_username, :pending_role, :requested_at)";
+$sql = "INSERT INTO register (username, email, password_hash, role, registration_number, status, requested_at)
+        VALUES (:username, :email, :password_hash, :role, :registration_number, 'Pending', :requested_at)";
 $stmt = $conn->prepare($sql);
+$stmt->bindParam(':username', $username);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':password_hash', $hashedPassword);
-$stmt->bindParam(':pending_username', $username);
-$stmt->bindParam(':pending_role', $pendingRole);
-$stmt->bindParam(':requested_at', $requestedAt);
+$stmt->bindParam(':role', $role);
+$stmt->bindParam(':registration_number', $registration_number);
+$stmt->bindParam(':requested_at', $requested_at);
 $stmt->execute();
-
-$user_id = $conn->lastInsertId();
-
-$sqlDonor = "INSERT INTO Donor (donor_id) VALUES (:donor_id)";
-$stmtDonor = $conn->prepare($sqlDonor);
-$stmtDonor->bindParam(':donor_id', $user_id);
-$stmtDonor->execute();
 
 echo json_encode([
     "success" => true,
-    "message" => "Signup Successfull!"
+    "message" => "Signup request submitted! Waiting for admin approval."
 ]);
 ?>
