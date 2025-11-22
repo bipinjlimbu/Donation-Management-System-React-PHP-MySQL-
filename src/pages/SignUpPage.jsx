@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import myLogin from "../style/LSPage.module.css";
-import Footer from "../layout/Footer";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -11,7 +10,8 @@ export default function SignUpPage() {
         email: "",
         password: "",
         confirmPassword: "",
-        role: "Donor"
+        role: "Donor",
+        registration_number: ""
     });
 
     const navigate = useNavigate();
@@ -38,16 +38,22 @@ export default function SignUpPage() {
             return;
         }
 
+        if (formData.role === "NGO" && !formData.registration_number.trim()) {
+            alert("Registration number is required for NGOs!");
+            return;
+        }
+
         try {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
                 username: formData.username.trim(),
                 email: formData.email.trim(),
                 password: formData.password.trim(),
-                role: formData.role
+                role: formData.role,
+                registration_number: formData.role === "NGO" ? formData.registration_number.trim() : null
             });
 
             if (response.data.success) {
-                alert("Signup Successfull!");
+                alert(response.data.message);
                 navigate("/login");
             } else {
                 alert("Signup failed: " + response.data.message);
@@ -64,17 +70,29 @@ export default function SignUpPage() {
             <form onSubmit={handleSubmit}>
                 <label>Username:</label>
                 <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                
                 <label>Password:</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                
                 <label>Confirm Password:</label>
                 <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+                
                 <label>Role:</label>
                 <select name="role" value={formData.role} onChange={handleChange}>
                     <option value="Donor">Donor</option>
                     <option value="NGO">NGO</option>
                 </select>
+
+                {formData.role === "NGO" && (
+                    <>
+                        <label>Registration Number:</label>
+                        <input type="text" name="registration_number" value={formData.registration_number} onChange={handleChange} required />
+                    </>
+                )}
+
                 <button type="submit">Sign Up</button>
             </form>
             <p>Already have an account? <Link to="/login">Login here</Link></p>
