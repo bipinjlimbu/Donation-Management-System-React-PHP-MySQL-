@@ -81,7 +81,6 @@ export default function EditProfile() {
         <input type="text" id="phone" name="phone" value={profile.phone} onChange={handleChange} />
         <label htmlFor="address">Address:</label>
         <textarea id="address" name="address" value={profile.address} onChange={handleChange} />
-
         <div className={myEdit.buttons}>
           <button type="submit" disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
