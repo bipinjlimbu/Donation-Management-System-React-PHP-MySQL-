@@ -6,7 +6,6 @@ import axios from "axios";
 
 export default function SignUpPage() {
     const [formData, setFormData] = useState({
-        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -23,7 +22,7 @@ export default function SignUpPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
+        if (!formData.email.trim() || !formData.password.trim()) {
             alert("All fields are required!");
             return;
         }
@@ -45,7 +44,6 @@ export default function SignUpPage() {
 
         try {
             const response = await axios.post("http://localhost/dms/api/signup.php", {
-                username: formData.username.trim(),
                 email: formData.email.trim(),
                 password: formData.password.trim(),
                 role: formData.role,
@@ -67,10 +65,7 @@ export default function SignUpPage() {
     return (
         <div className={myLogin.login}>
             <h1>Join Us</h1>
-            <form onSubmit={handleSubmit}>
-                <label>Username:</label>
-                <input type="text" name="username" value={formData.username} onChange={handleChange} required />
-                
+            <form onSubmit={handleSubmit}>                
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                 
