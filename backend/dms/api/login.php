@@ -49,7 +49,6 @@ echo json_encode([
     "user" => [
         "user_id" => $user['user_id'],
         "email" => $user['email'],
-        "username" => $user['username'],
         "role" => $user['role']
     ]
 ]);
