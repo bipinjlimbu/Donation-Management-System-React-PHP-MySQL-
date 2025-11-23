@@ -91,21 +91,21 @@ export default function DashboardPage() {
         }
     };
 
-    const handleUserApprove = async (pending_id, new_username, new_role, user_id) => {
+    const handleUserApprove = async (user_id, role) => {
         try {
-            const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { pending_id, new_username, new_role, user_id });
-            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { user_id, role });
+            if (res.data.success) setUserRequests(prev => prev.filter(r => r.user_id !== user_id));
             else alert(res.data.message);
         } catch {
             alert("Error approving user request.");
         }
     };
 
-    const handleUserDeny = async (pending_id) => {
+    const handleUserDeny = async (user_id, role) => {
         if (!window.confirm("Are you sure you want to deny this user request?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { pending_id });
-            if (res.data.success) setUserRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { user_id, role });
+            if (res.data.success) setUserRequests(prev => prev.filter(r => r.user_id !== user_id));
             else alert(res.data.message);
         } catch {
             alert("Error denying user request.");
@@ -151,9 +151,6 @@ export default function DashboardPage() {
     if (error) return <p style={{ color: "red" }}>{error}</p>;
     if (!user) return <p>No profile data found.</p>;
 
-    const pendingUserRequests = userRequests.filter(req => req.status === "Pending");
-    const recordUserRequests = userRequests.filter(req => req.status !== "Pending");
-
     const pendingDonationRequests = donationRequests.filter(req => req.status === "Pending");
     const recordDonationRequests = donationRequests.filter(req => req.status !== "Pending");
 
@@ -196,41 +193,53 @@ export default function DashboardPage() {
                 ) : <p>No new signup requests.</p>}
 
                 <h2>User Profile Change Requests</h2>
-                {pendingUserRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Current Username</th>
-                                <th>New Username</th>
-                                <th>Current Role</th>
-                                <th>New Role</th>
-                                <th>Status</th>
-                                <th>Requested At</th>
-                                <th colSpan={2}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pendingUserRequests.map(req => (
-                                <tr key={req.user_id}>
-                                    <td>{req.user_id}</td>
-                                    <td>{req.current_username}</td>
-                                    <td>{req.new_username}</td>
-                                    <td>{req.current_role}</td>
-                                    <td>{req.new_role}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.requested_at}</td>
-                                    <td>
-                                        <button className={myDashboard.approveButton} onClick={() => handleUserApprove(req.pending_id, req.new_username, req.new_role, req.user_id)}>Approve</button>
-                                    </td>
-                                    <td>
-                                        <button className={myDashboard.denyButton} onClick={() => handleUserDeny(req.pending_id)}>Deny</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : <p>No user profile change requests pending.</p>}
+                {userRequests.length > 0 ? (
+                <table>
+                    <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Role</th>
+                        <th>Current Name</th>
+                        <th>New Name</th>
+                        <th>Current Phone</th>
+                        <th>New Phone</th>
+                        <th>Current Address</th>
+                        <th>New Address</th>
+                        <th>Status</th>
+                        <th>Requested At</th>
+                        <th colSpan={2}>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {userRequests.map((req) => (
+                        <tr key={req.user_id}>
+                        <td>{req.user_id}</td>
+                        <td>{req.role}</td>
+                        <td>{req.current_name || "-"}</td>
+                        <td>{req.new_name || "-"}</td>
+                        <td>{req.current_phone || "-"}</td>
+                        <td>{req.new_phone || "-"}</td>
+                        <td>{req.current_address || "-"}</td>
+                        <td>{req.new_address || "-"}</td>
+                        <td>{req.status}</td>
+                        <td>{req.requested_at}</td>
+                        <td>
+                            <button className={myDashboard.approveButton} onClick={() => handleUserApprove(req.user_id, req.role)}>
+                            Approve
+                            </button>
+                        </td>
+                        <td>
+                            <button className={myDashboard.denyButton} onClick={() => handleUserDeny(req.user_id, req.role)}>
+                            Deny
+                            </button>
+                        </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                ) : (
+                <p>No user profile change requests pending.</p>
+                )}
 
                 <h2>Campaign Creation Requests</h2>
                 {campaignRequests.length > 0 ? (
