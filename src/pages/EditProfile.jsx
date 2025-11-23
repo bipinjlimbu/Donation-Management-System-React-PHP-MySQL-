@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import myEdit from "../style/EditProfile.module.css";
@@ -6,27 +6,42 @@ import axios from "axios";
 
 export default function EditProfile() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
-    username: user?.username || "",
-    role: user?.role || "",
+    name: "",
+    phone: "",
+    address: "",
   });
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "Donor") {
+        setProfile({
+          name: user.pending_full_name || user.full_name || "",
+          phone: user.pending_phone || user.phone || "",
+          address: user.pending_address || user.address || "",
+        });
+      } else if (user.role === "NGO") {
+        setProfile({
+          name: user.pending_organization_name || user.organization_name || "",
+          phone: user.pending_phone || user.phone || "",
+          address: user.pending_address || user.address || "",
+        });
+      }
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfile((prev) => ({
-      ...prev,
-      [name === "fullname" ? "username" : "role"]: value,
-    }));
+    setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, role } = profile;
 
-    if (!username.trim() || !role.trim()) {
-      alert("All fields are required!");
+    if (!profile.name.trim()) {
+      alert("Name is required!");
       return;
     }
 
@@ -34,12 +49,12 @@ export default function EditProfile() {
     try {
       const response = await axios.post("http://localhost/dms/api/profileEditRequest.php", {
         user_id: user.user_id,
-        new_username: username.trim(),
-        new_role: role.trim(),
+        role: user.role,
+        ...profile,
       });
 
       if (response.data.success) {
-        alert("Profile Change Requested successfully!");
+        alert("Profile change requested successfully!");
         navigate("/profile");
       } else {
         alert("Failed to request: " + response.data.message);
@@ -52,24 +67,24 @@ export default function EditProfile() {
     }
   };
 
+  if (!user) return <p>Loading...</p>;
+
   return (
     <div className={myEdit.container}>
       <h1>Edit Your Profile</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="fullname">Full Name:</label>
-        <input type="text" id="fullname" name="fullname" value={profile.username} onChange={handleChange} required />
-        <br/>
-        <label htmlFor="role">Role:</label>
-        <select id="role" name="role" value={profile.role} onChange={handleChange} required>
-          <option value="">Select Role</option>
-          <option value="Donor">Donor</option>
-          <option value="NGO">NGO</option>
-          <option value="Admin">Admin</option>
-        </select>
-        <br/>
+        <label htmlFor="name">
+          {user.role === "Donor" ? "Full Name" : "Organization Name"}:
+        </label>
+        <input type="text" id="name" name="name" value={profile.name} onChange={handleChange} />
+        <label htmlFor="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" value={profile.phone} onChange={handleChange} />
+        <label htmlFor="address">Address:</label>
+        <textarea id="address" name="address" value={profile.address} onChange={handleChange} />
+
         <div className={myEdit.buttons}>
           <button type="submit" disabled={loading}>
-            {loading ? "Updating..." : "Update"}
+            {loading ? "Submitting..." : "Submit"}
           </button>
           <button type="button" onClick={() => navigate("/profile")}>
             Cancel
