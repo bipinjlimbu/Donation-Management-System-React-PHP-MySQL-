@@ -10,23 +10,29 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 $userId = intval($data['user_id'] ?? 0);
-$newUsername = trim($data['new_username'] ?? '');
-$newRole = $data['new_role'] ?? '';
+$role = $data['role'] ?? '';
 
-if (!$userId || !$newUsername || !$newRole) {
+if (!$userId || !$role) {
     echo json_encode(["success" => false, "message" => "Missing required data."]);
     exit;
 }
 
 try {
-    $update = $conn->prepare("UPDATE users SET username = :username, role = :role, pending_username = NULL, pending_role = NULL, pending_status = 'Approved', approved_at = NOW() 
-                              WHERE user_id = :id");
-    $update->bindParam(":username", $newUsername);
-    $update->bindParam(":role", $newRole);
-    $update->bindParam(":id", $userId);
-    $update->execute();
+    if ($role === "Donor") {
+        $sql = "UPDATE donor SET full_name = pending_full_name, phone = pending_phone, address = pending_address, pending_full_name = NULL, pending_phone = NULL, pending_address = NULL, pending_status = 'Approved', approved_at = NOW() WHERE donor_id = :id";
+    } elseif ($role === "NGO") {
+        $sql = "UPDATE ngo SET organization_name = pending_organization_name, phone = pending_phone, address = pending_address, pending_organization_name = NULL, pending_phone = NULL, pending_address = NULL, pending_status = 'Approved', approved_at = NOW() WHERE ngo_id = :id";
+    } else {
+        echo json_encode(["success" => false, "message" => "Invalid role"]);
+        exit;
+    }
 
-    echo json_encode(["success" => true, "message" => "User profile updated and approved."]);
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(":id", $userId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    echo json_encode(["success" => true, "message" => "User profile approved successfully."]);
+
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
