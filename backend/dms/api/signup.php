@@ -10,14 +10,13 @@ $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$username = trim($data['username'] ?? '');
 $email = strtolower(trim($data['email'] ?? ''));
 $password = trim($data['password'] ?? '');
 $role = $data['role'] ?? 'Donor';
 $registration_number = trim($data['registration_number'] ?? null);
 $requested_at = date('Y-m-d H:i:s');
 
-if (!$username || !$email || !$password) {
+if (!$email || !$password) {
     echo json_encode([
         "success" => false,
         "message" => "All fields are required"
@@ -40,10 +39,9 @@ if ($existing) {
 }
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-$sql = "INSERT INTO register (username, email, password_hash, role, registration_number, status, requested_at)
-        VALUES (:username, :email, :password_hash, :role, :registration_number, 'Pending', :requested_at)";
+$sql = "INSERT INTO register (email, password_hash, role, registration_number, status, requested_at)
+        VALUES (:email, :password_hash, :role, :registration_number, 'Pending', :requested_at)";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':username', $username);
 $stmt->bindParam(':email', $email);
 $stmt->bindParam(':password_hash', $hashedPassword);
 $stmt->bindParam(':role', $role);
