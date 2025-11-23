@@ -39,7 +39,6 @@ export default function ProfilePage() {
   return (
     <div className={myProfile.container}>
       <h1>My Profile</h1>
-      <p><strong>Username:</strong> {profile.username}</p>
       <p><strong>Email:</strong> {profile.email}</p>
       <p><strong>Role:</strong> {profile.role}</p>
 
