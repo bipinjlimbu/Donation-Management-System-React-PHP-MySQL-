@@ -8,24 +8,29 @@ export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost/dms/api/campaigns.php")
-      .then((res) => {
-        if (res.data.success) {
-          setCampaigns(res.data.campaigns);
-        } else {
-          setError(res.data.message || "Failed to load campaigns.");
-        }
-      })
-      .catch(() => {
-        setError("Failed to connect to the server.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    axios.get("http://localhost/dms/api/campaigns.php", {
+      params: {
+        role: user?.role,
+        user_id: user?.user_id,
+      }
+    })
+    .then((res) => {
+      if (res.data.success) {
+        setCampaigns(res.data.campaigns);
+      } else {
+        setError(res.data.message || "Failed to load campaigns.");
+      }
+    })
+    .catch(() => {
+      setError("Failed to connect to the server.");
+    })
+    .finally(() => setLoading(false));
+  }, [user]);
 
   if (loading) return <div>Loading campaigns...</div>;
   if (error) return <div style={{ color: "red" }}>{error}</div>;
@@ -45,10 +50,17 @@ export default function CampaignsPage() {
           campaigns.map((campaign) => (
             <li key={campaign.campaign_id}>
               <strong className={myCampaigns.head}>{campaign.title}</strong>
-              <p>{campaign.description.length > 100 ? campaign.description.slice(0, 100) + "..." : campaign.description}</p>
+
+              <p>
+                {campaign.description?.length > 100
+                  ? campaign.description.slice(0, 100) + "..."
+                  : campaign.description}
+              </p>
+
               <p><strong>Status:</strong> {campaign.status}</p>
-              <p><strong>Start Date:</strong> {campaign.start_date} </p>
-              <p><strong>End Date:</strong> {campaign.end_date} </p>
+              <p><strong>Start Date:</strong> {campaign.start_date}</p>
+              <p><strong>End Date:</strong> {campaign.end_date}</p>
+
               <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>
                 View Details
               </button>
