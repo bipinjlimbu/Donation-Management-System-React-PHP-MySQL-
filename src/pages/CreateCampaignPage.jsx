@@ -33,7 +33,7 @@ export default function CreateCampaignPage() {
     try {
       const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
         ...campaign,
-        ngo_id: user?.user_id, // NGO ID
+        ngo_id: user?.user_id, 
       });
 
       if (res.data.success) {
@@ -75,7 +75,9 @@ export default function CreateCampaignPage() {
             <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
             <label>End Date:</label>
             <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-            <button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
+            </button>
           </form>
         </div>
       )}
