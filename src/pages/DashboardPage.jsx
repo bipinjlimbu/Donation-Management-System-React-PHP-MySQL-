@@ -112,21 +112,23 @@ export default function DashboardPage() {
         }
     };
 
-    const handleCampaignApprove = async (pending_id) => {
+    const handleCampaignApprove = async (campaign_id) => {
         try {
-            const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id: pending_id });
-            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.pending_id !== pending_id));
+            const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id });
+            if (res.data.success) 
+                setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
             else alert(res.data.message);
         } catch {
             alert("Network or server error during campaign approval.");
         }
     };
 
-    const handleCampaignDeny = async (pendingId) => {
+    const handleCampaignDeny = async (campaign_id) => {
         if (!window.confirm("Are you sure you want to deny this campaign request?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id: pendingId });
-            if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.pending_id !== pendingId));
+            const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id });
+            if (res.data.success) 
+                setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
             else alert(res.data.message);
         } catch {
             alert("Error denying campaign request.");
@@ -257,7 +259,7 @@ export default function DashboardPage() {
                         </thead>
                         <tbody>
                             {campaignRequests.map(req => (
-                                <tr key={req.pending_id}>
+                                <tr key={req.campaign_id}>
                                     <td>{req.title}</td>
                                     <td>{req.description}</td>
                                     <td>{req.target_quantity}</td>
@@ -265,10 +267,10 @@ export default function DashboardPage() {
                                     <td>{req.ngo_name}</td>
                                     <td>{req.requested_at}</td>
                                     <td>
-                                        <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.pending_id)}>Approve</button>
+                                        <button className={myDashboard.approveButton} onClick={() => handleCampaignApprove(req.campaign_id)}>Approve</button>
                                     </td>
                                     <td>
-                                        <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.pending_id)}>Deny</button>
+                                        <button className={myDashboard.denyButton} onClick={() => handleCampaignDeny(req.campaign_id)}>Deny</button>
                                     </td>
                                 </tr>
                             ))}
