@@ -9,10 +9,11 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
-    $sql = "SELECT cp.campaign_id AS pending_id, cp.ngo_id, cp.title, cp.description, cp.item_name, cp.target_quantity, 
-            cp.unit, cp.start_date, cp.end_date, cp.requested_at, cp.status,u.username AS ngo_name
-            FROM Campaigns AS cp
-            INNER JOIN Users AS u ON cp.ngo_id = u.user_id
+    $sql = "SELECT cp.campaign_id, cp.ngo_id, cp.title, cp.description, cp.item_name, cp.target_quantity, 
+                   cp.unit, cp.start_date, cp.end_date, cp.requested_at, cp.status,
+                   n.organization_name AS ngo_name
+            FROM campaigns AS cp
+            INNER JOIN ngo AS n ON cp.ngo_id = n.ngo_id
             WHERE cp.status = 'Pending'
             ORDER BY cp.requested_at DESC";
 
