@@ -17,7 +17,7 @@ if (!$campaignID) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM Campaigns WHERE campaign_id = :id AND status = 'Pending'");
+    $stmt = $conn->prepare("SELECT * FROM campaigns WHERE campaign_id = :id AND status = 'Pending'");
     $stmt->bindParam(":id", $campaignID);
     $stmt->execute();
     $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,7 +27,7 @@ try {
         exit;
     }
 
-    $update = $conn->prepare("UPDATE Campaigns SET status = 'Denied' WHERE campaign_id = :id");
+    $update = $conn->prepare("UPDATE campaigns SET status = 'Denied' WHERE campaign_id = :id");
     $update->bindParam(":id", $campaignID);
     $update->execute();
 
