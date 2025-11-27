@@ -67,13 +67,12 @@ export default function DashboardPage() {
         e.preventDefault();
         try {
             const res = await axios.post("http://localhost/dms/api/approveDonationRequest.php", {
-                pending_id: req.pending_id,
+                donation_id: req.donation_id,
                 campaign_id: req.campaign_id,
-                quantity: req.quantity,
-                ngo_id: req.ngo_id,
-                donor_id: req.donor_id,
+                quantity: req.quantity
             });
-            if (res.data.success) setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            if (res.data.success)
+                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
             else alert(res.data.message);
         } catch {
             alert("Network or server error during approval.");
@@ -83,8 +82,11 @@ export default function DashboardPage() {
     const handleDonationDeny = async (req) => {
         if (!window.confirm("Are you sure you want to deny this donation?")) return;
         try {
-            const res = await axios.post("http://localhost/dms/api/denyDonationRequest.php", { pending_id: req.pending_id });
-            if (res.data.success) setDonationRequests(prev => prev.filter(r => r.pending_id !== req.pending_id));
+            const res = await axios.post("http://localhost/dms/api/denyDonationRequest.php", {
+                donation_id: req.donation_id
+            });
+            if (res.data.success)
+                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
             else alert(res.data.message);
         } catch {
             alert("Network or server error during denial.");
@@ -318,31 +320,6 @@ export default function DashboardPage() {
         return (
             <div className={myDashboard.container}>
                 <h1>{user.username} Dashboard</h1>
-
-                <h2>Pending Donation Requests</h2>
-                {pendingDonationRequests.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Campaign</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Requested At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pendingDonationRequests.map(req => (
-                                <tr key={req.pending_id}>
-                                    <td>{req.campaign_title}</td>
-                                    <td>{req.quantity}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.requested_at}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : <p>No pending donation requests.</p>}
-
                 <h2>Donation History</h2>
                 {records.length > 0 ? (
                     <>
