@@ -43,7 +43,7 @@ export default function DonationPage() {
         }
 
         try {
-            const res = await axios.post("http://localhost/dms/api/fetchDonationRequests.php", {
+            const res = await axios.post("http://localhost/dms/api/donate.php", {
                 donor_id: user.user_id,
                 campaign_id: campaign.campaign_id,
                 quantity: quantity 
