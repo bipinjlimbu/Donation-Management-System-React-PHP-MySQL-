@@ -166,7 +166,6 @@ export default function DashboardPage() {
                     <table>
                         <thead>
                             <tr>
-                                <th>Username</th>
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Registration Number</th>
@@ -177,7 +176,6 @@ export default function DashboardPage() {
                         <tbody>
                             {signupRequests.map(req => (
                                 <tr key={req.register_id}>
-                                    <td>{req.username}</td>
                                     <td>{req.email}</td>
                                     <td>{req.role}</td>
                                     <td>{req.role === "NGO" ? req.registration_number : "-"}</td>
