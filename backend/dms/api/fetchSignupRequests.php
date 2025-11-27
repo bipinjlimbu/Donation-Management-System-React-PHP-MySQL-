@@ -7,7 +7,7 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
-    $sql = "SELECT register_id, username, email, role, registration_number, status, requested_at 
+    $sql = "SELECT register_id, email, role, registration_number, status, requested_at 
             FROM register WHERE status = 'Pending' ORDER BY requested_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
