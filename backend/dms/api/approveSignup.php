@@ -28,10 +28,9 @@ try {
         exit;
     }
 
-    $sql = "INSERT INTO users (username, email, password_hash, role) 
-            VALUES (:username, :email, :password_hash, :role)";
+    $sql = "INSERT INTO users (email, password_hash, role) 
+            VALUES (:email, :password_hash, :role)";
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':username', $request['username']);
     $stmt->bindParam(':email', $request['email']);
     $stmt->bindParam(':password_hash', $request['password_hash']);
     $stmt->bindParam(':role', $request['role']);
