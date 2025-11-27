@@ -27,12 +27,11 @@ try {
         exit;
     }
 
-    $update = $conn->prepare("UPDATE campaigns SET status = 'Active', approved_at = NOW() WHERE campaign_id = :id");
+    $update = $conn->prepare("UPDATE campaigns SET status = 'Approved', approved_at = NOW() WHERE campaign_id = :id");
     $update->bindParam(":id", $campaignID);
     $update->execute();
 
-    echo json_encode(["success" => true, "message" => "Campaign approved and is now Active."]);
-
+    echo json_encode(["success" => true, "message" => "Campaign approved and is now Approved."]);
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 }
