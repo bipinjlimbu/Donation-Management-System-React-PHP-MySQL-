@@ -5,38 +5,36 @@ header("Access-Control-Allow-Methods: *");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
-$objDb = new connectDB();
-$conn = $objDb->connect();
+$conn = (new connectDB())->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
-$pendingId = (int) ($data['pending_id'] ?? 0);
+$donation_id = (int) ($data['donation_id'] ?? 0);
 
-if (!$pendingId) {
+if (!$donation_id) {
     echo json_encode([
         "success" => false,
-        "message" => "Pending ID is required."
+        "message" => "Donation ID is required."
     ]);
     exit;
 }
 
 try {
-    $update = "UPDATE donationpending SET status = 'Denied' 
-               WHERE pending_id = :pending_id";
-    $stmt = $conn->prepare($update);
-    $stmt->bindParam(':pending_id', $pendingId, PDO::PARAM_INT);
+    $stmt = $conn->prepare("UPDATE donations SET status='Denied' WHERE donation_id=:donation_id AND status='Pending'");
+    $stmt->bindParam(':donation_id', $donation_id, PDO::PARAM_INT);
     $stmt->execute();
 
     if ($stmt->rowCount() > 0) {
         echo json_encode([
             "success" => true,
-            "message" => "Donation request denied successfully."
+            "message" => "Donation denied successfully."
         ]);
     } else {
         echo json_encode([
             "success" => false,
-            "message" => "No matching donation found."
+            "message" => "No matching pending donation found."
         ]);
     }
+
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
