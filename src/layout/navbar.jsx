@@ -11,7 +11,6 @@ export default function () {
                 <Link to = "/"> Home </Link>
                 <Link to = "/dashboard"> Dashboard </Link>
                 <Link to = "/records"> Records </Link>
-                <Link to = "/notifications"> Notifications </Link>
                 <Link to = "/campaigns"> Campaigns </Link>
                 <Link to = "/contact"> Contact </Link>
                 <Link to = "/about"> About </Link>
