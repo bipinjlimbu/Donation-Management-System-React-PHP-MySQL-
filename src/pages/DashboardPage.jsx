@@ -21,7 +21,7 @@ export default function DashboardPage() {
             setLoading(true);
             setError("");
             try {
-                const [signReqRes ,donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
+                const [signReqRes, donationReqRes, historyRes, userReqRes, campaignReqRes] = await Promise.all([
                     axios.get("http://localhost/dms/api/fetchSignupRequests.php"),
                     axios.get(`http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
@@ -40,7 +40,10 @@ export default function DashboardPage() {
             }
         };
         fetchData();
-    }, [user]); 
+    }, [user]);
+
+    console.log(records);
+    
 
     const handleSignupApprove = async (register_id) => {
         try {
@@ -117,7 +120,7 @@ export default function DashboardPage() {
     const handleCampaignApprove = async (campaign_id) => {
         try {
             const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id });
-            if (res.data.success) 
+            if (res.data.success)
                 setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
             else alert(res.data.message);
         } catch {
@@ -129,7 +132,7 @@ export default function DashboardPage() {
         if (!window.confirm("Are you sure you want to deny this campaign request?")) return;
         try {
             const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id });
-            if (res.data.success) 
+            if (res.data.success)
                 setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
             else alert(res.data.message);
         } catch {
@@ -154,9 +157,6 @@ export default function DashboardPage() {
     if (loading) return <p>Loading dashboard...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
     if (!user) return <p>No profile data found.</p>;
-
-    const pendingDonationRequests = donationRequests.filter(req => req.status === "Pending");
-    const recordDonationRequests = donationRequests.filter(req => req.status !== "Pending");
 
     if (user.role === "Admin") {
         return (
@@ -196,51 +196,51 @@ export default function DashboardPage() {
 
                 <h2>User Profile Change Requests</h2>
                 {userRequests.length > 0 ? (
-                <table>
-                    <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Role</th>
-                        <th>Current Name</th>
-                        <th>New Name</th>
-                        <th>Current Phone</th>
-                        <th>New Phone</th>
-                        <th>Current Address</th>
-                        <th>New Address</th>
-                        <th>Status</th>
-                        <th>Requested At</th>
-                        <th colSpan={2}>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {userRequests.map((req) => (
-                        <tr key={req.user_id}>
-                        <td>{req.user_id}</td>
-                        <td>{req.role}</td>
-                        <td>{req.current_name || "-"}</td>
-                        <td>{req.new_name || "-"}</td>
-                        <td>{req.current_phone || "-"}</td>
-                        <td>{req.new_phone || "-"}</td>
-                        <td>{req.current_address || "-"}</td>
-                        <td>{req.new_address || "-"}</td>
-                        <td>{req.status}</td>
-                        <td>{req.requested_at}</td>
-                        <td>
-                            <button className={myDashboard.approveButton} onClick={() => handleUserApprove(req.user_id, req.role)}>
-                            Approve
-                            </button>
-                        </td>
-                        <td>
-                            <button className={myDashboard.denyButton} onClick={() => handleUserDeny(req.user_id, req.role)}>
-                            Deny
-                            </button>
-                        </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Role</th>
+                                <th>Current Name</th>
+                                <th>New Name</th>
+                                <th>Current Phone</th>
+                                <th>New Phone</th>
+                                <th>Current Address</th>
+                                <th>New Address</th>
+                                <th>Status</th>
+                                <th>Requested At</th>
+                                <th colSpan={2}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {userRequests.map((req) => (
+                                <tr key={req.user_id}>
+                                    <td>{req.user_id}</td>
+                                    <td>{req.role}</td>
+                                    <td>{req.current_name || "-"}</td>
+                                    <td>{req.new_name || "-"}</td>
+                                    <td>{req.current_phone || "-"}</td>
+                                    <td>{req.new_phone || "-"}</td>
+                                    <td>{req.current_address || "-"}</td>
+                                    <td>{req.new_address || "-"}</td>
+                                    <td>{req.status}</td>
+                                    <td>{req.requested_at}</td>
+                                    <td>
+                                        <button className={myDashboard.approveButton} onClick={() => handleUserApprove(req.user_id, req.role)}>
+                                            Approve
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button className={myDashboard.denyButton} onClick={() => handleUserDeny(req.user_id, req.role)}>
+                                            Deny
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 ) : (
-                <p>No user profile change requests pending.</p>
+                    <p>No user profile change requests pending.</p>
                 )}
 
                 <h2>Campaign Creation Requests</h2>
@@ -285,26 +285,26 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Category</th>
-                                    <th>Item Type</th>
+                                    <th>Item Name</th>
                                     <th>Quantity</th>
                                     <th>Donor</th>
                                     <th>NGO</th>
                                     <th>Location</th>
-                                    <th>Donated At</th>
+                                    <th>Status</th>
+                                    <th>Delivered At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
                                         <td>{rec.campaign_title}</td>
-                                        <td>{rec.category}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.quantity}</td>
+                                        <td>{rec.item_name}</td>
+                                        <td>{rec.quantity} {rec.unit}</td>
                                         <td>{rec.donor_name}</td>
                                         <td>{rec.ngo_name}</td>
-                                        <td>{rec.location}</td>
-                                        <td>{rec.donated_at}</td>
+                                        <td>{rec.ngo_address}</td>
+                                        <td>{rec.status}</td>
+                                        <td>{rec.delivered_at || "-"}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -327,24 +327,24 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Category</th>
-                                    <th>Item Type</th>
+                                    <th>Item Name</th>
                                     <th>Quantity</th>
                                     <th>NGO</th>
                                     <th>Location</th>
-                                    <th>Donated At</th>
+                                    <th>Status</th>
+                                    <th>Delivered At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
                                         <td>{rec.campaign_title}</td>
-                                        <td>{rec.category}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.quantity}</td>
+                                        <td>{rec.item_name}</td>
+                                        <td>{rec.quantity} {rec.unit}</td>
                                         <td>{rec.ngo_name}</td>
-                                        <td>{rec.location}</td>
-                                        <td>{rec.donated_at}</td>
+                                        <td>{rec.ngo_address}</td>
+                                        <td>{rec.status}</td>
+                                        <td>{rec.delivered_at || "-"}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                 <h1>{user.username} Dashboard</h1>
 
                 <h2>Pending Donation Approvals</h2>
-                {pendingDonationRequests.length > 0 ? (
+                {donationRequests.length > 0 ? (
                     <table>
                         <thead>
                             <tr>
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pendingDonationRequests.map(req => (
+                            {donationRequests.map(req => (
                                 <tr key={req.pending_id}>
                                     <td>{req.campaign_title}</td>
                                     <td>{req.quantity}</td>
@@ -397,24 +397,22 @@ export default function DashboardPage() {
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
-                                    <th>Category</th>
-                                    <th>Item Type</th>
+                                    <th>Item Name</th>
                                     <th>Quantity</th>
                                     <th>Donor</th>
-                                    <th>Location</th>
-                                    <th>Donated At</th>
+                                    <th>Status</th>
+                                    <th>Delivered At</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {records.slice(0, 3).map(rec => (
                                     <tr key={rec.donation_id}>
                                         <td>{rec.campaign_title}</td>
-                                        <td>{rec.category}</td>
-                                        <td>{rec.item_type}</td>
-                                        <td>{rec.quantity}</td>
+                                        <td>{rec.item_name}</td>
+                                        <td>{rec.quantity} {rec.unit}</td>
                                         <td>{rec.donor_name}</td>
-                                        <td>{rec.location}</td>
-                                        <td>{rec.donated_at}</td>
+                                        <td>{rec.status}</td>
+                                        <td>{rec.delivered_at || "-"}</td>
                                     </tr>
                                 ))}
                             </tbody>
