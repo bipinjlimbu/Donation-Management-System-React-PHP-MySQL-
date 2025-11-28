@@ -22,7 +22,7 @@ if (!$donation_id || !$campaign_id || $quantity <= 0) {
 }
 
 try {
-    $stmt = $conn->prepare("UPDATE donations SET status='Approved', delivered_at=NOW() WHERE donation_id=:donation_id AND status='Pending'");
+    $stmt = $conn->prepare("UPDATE donations SET status='Delivered', delivered_at=NOW() WHERE donation_id=:donation_id AND status='Pending'");
     $stmt->bindParam(':donation_id', $donation_id, PDO::PARAM_INT);
     $stmt->execute();
 
@@ -38,7 +38,7 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Donation approved successfully."
+        "message" => "Donation delivered successfully."
     ]);
 
 } catch (PDOException $e) {
