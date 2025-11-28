@@ -43,7 +43,6 @@ export default function RecordsPage() {
     return (
         <div className={myRecords.container}>
             <h1>Records of Donations</h1>
-
             {loading && <p>Loading donation records...</p>}
             {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
 
@@ -56,26 +55,26 @@ export default function RecordsPage() {
                     <thead>
                         <tr>
                             <th>Campaign</th>
-                            <th>Category</th>
-                            <th>Item Type</th>
+                            <th>Item Name</th>
                             <th>Quantity</th>
                             <th>Donor</th>
                             <th>NGO</th>
                             <th>Location</th>
-                            <th>Donated At</th>
+                            <th>Status</th>
+                            <th>Delivered At</th>
                         </tr>
                     </thead>
                     <tbody>
                         {records.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
-                                <td>{rec.category}</td>
-                                <td>{rec.item_type}</td>
+                                <td>{rec.item_name}</td>
                                 <td>{rec.quantity}</td>
                                 <td>{rec.donor_name}</td>
                                 <td>{rec.ngo_name}</td>
-                                <td>{rec.location}</td>
-                                <td>{rec.donated_at}</td>
+                                <td>{rec.ngo_address}</td>
+                                <td>{rec.status}</td>
+                                <td>{rec.delivered_at || "-"}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -87,24 +86,24 @@ export default function RecordsPage() {
                     <thead>
                         <tr>
                             <th>Campaign</th>
-                            <th>Category</th>
-                            <th>Item Type</th>
+                            <th>Item Name</th>
                             <th>Quantity</th>
                             <th>NGO</th>
                             <th>Location</th>
-                            <th>Donated At</th>
+                            <th>Status</th>
+                            <th>Delivered At</th>
                         </tr>
                     </thead>
                     <tbody>
                         {records.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
-                                <td>{rec.category}</td>
-                                <td>{rec.item_type}</td>
+                                <td>{rec.item_name}</td>
                                 <td>{rec.quantity}</td>
                                 <td>{rec.ngo_name}</td>
-                                <td>{rec.location}</td>
-                                <td>{rec.donated_at}</td>
+                                <td>{rec.ngo_address}</td>
+                                <td>{rec.status}</td>
+                                <td>{rec.delivered_at || "-"}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -116,24 +115,24 @@ export default function RecordsPage() {
                     <thead>
                         <tr>
                             <th>Campaign</th>
-                            <th>Category</th>
-                            <th>Item Type</th>
+                            <th>Item Name</th>
                             <th>Quantity</th>
                             <th>Donor</th>
                             <th>Location</th>
-                            <th>Donated At</th>
+                            <th>Status</th>
+                            <th>Delivered At</th>
                         </tr>
                     </thead>
                     <tbody>
                         {records.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
-                                <td>{rec.category}</td>
-                                <td>{rec.item_type}</td>
+                                <td>{rec.item_name}</td>
                                 <td>{rec.quantity}</td>
                                 <td>{rec.donor_name}</td>
-                                <td>{rec.location}</td>
-                                <td>{rec.donated_at}</td>
+                                <td>{rec.ngo_address}</td>
+                                <td>{rec.status}</td>
+                                <td>{rec.delivered_at || "-"}</td>
                             </tr>
                         ))}
                     </tbody>
