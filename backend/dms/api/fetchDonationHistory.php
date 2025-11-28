@@ -19,7 +19,7 @@ if ($user_id <= 0) {
 }
 
 try {
-    $roleSql = "SELECT role FROM userdetails WHERE user_id = :uid";
+    $roleSql = "SELECT role FROM users WHERE user_id = :uid";
     $roleStmt = $conn->prepare($roleSql);
     $roleStmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
     $roleStmt->execute();
@@ -33,50 +33,36 @@ try {
         exit;
     }
 
-    $role = strtolower($user['role']);
+    $role = $user['role'];
 
-    if ($role === 'admin') {
-        $sql = "SELECT dh.donation_id, dh.campaign_id, dh.donor_id, dh.ngo_id, dh.quantity, dh.donated_at,
-                cd.title AS campaign_title, cd.category, cd.item_type, cd.location,
-                d.username AS donor_name, n.username AS ngo_name
-                FROM donationhistory dh
-                JOIN campaigndetails cd ON dh.campaign_id = cd.campaign_id
-                LEFT JOIN userdetails d ON dh.donor_id = d.user_id
-                LEFT JOIN userdetails n ON dh.ngo_id = n.user_id
-                ORDER BY dh.donated_at DESC";
+    if ($role === 'Admin') {
+        $sql = "SELECT d.*, c.title AS campaign_title, c.item_name, dn.full_name AS donor_name, ng.organization_name AS ngo_name, ng.address AS ngo_address
+                FROM donations d JOIN campaigns c ON d.campaign_id = c.campaign_id JOIN donor dn ON d.donor_id = dn.donor_id JOIN ngo ng ON c.ngo_id = ng.ngo_id
+                WHERE d.status != 'Pending' ORDER BY d.delivered_at DESC, d.requested_at DESC";
         $stmt = $conn->prepare($sql);
+
     } else {
-        $sql = "SELECT dh.donation_id, dh.campaign_id, dh.donor_id, dh.ngo_id, dh.quantity, dh.donated_at,
-                cd.title AS campaign_title, cd.category, cd.item_type, cd.location,
-                d.username AS donor_name, n.username AS ngo_name
-                FROM donationhistory dh
-                JOIN campaigndetails cd ON dh.campaign_id = cd.campaign_id
-                LEFT JOIN userdetails d ON dh.donor_id = d.user_id
-                LEFT JOIN userdetails n ON dh.ngo_id = n.user_id
-                WHERE dh.donor_id = :user_id OR dh.ngo_id = :user_id
-                ORDER BY dh.donated_at DESC";
+        $sql = "SELECT d.*, c.title AS campaign_title, c.item_name, dn.full_name AS donor_name, ng.organization_name AS ngo_name, ng.address AS ngo_address
+                FROM donations d JOIN campaigns c ON d.campaign_id = c.campaign_id JOIN donor dn ON d.donor_id = dn.donor_id JOIN ngo ng ON c.ngo_id = ng.ngo_id
+                WHERE d.donor_id = :uid OR c.ngo_id = :uid
+                ORDER BY d.delivered_at DESC, d.requested_at DESC";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':uid', $user_id, PDO::PARAM_INT);
     }
 
     $stmt->execute();
     $donations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($donations) {
-        echo json_encode([
-            "success" => true,
-            "donations" => $donations
-        ]);
-    } else {
-        echo json_encode([
-            "success" => false,
-            "message" => "No donation history found."
-        ]);
-    }
+    echo json_encode([
+        "success" => true,
+        "donations" => $donations
+    ]);
+
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
         "message" => "Database error: " . $e->getMessage()
     ]);
 }
+
 ?>
