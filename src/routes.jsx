@@ -14,7 +14,6 @@ import EditCampaignPage from "./pages/EditCampaignPage";
 import DashboardPage from "./pages/DashboardPage";
 import CreateCampaignPage from "./pages/CreateCampaignPage";
 import RecordsPage from "./pages/RecordsPage";
-import NotificationsPage from "./pages/NotificationsPage";
 
 const routes = createBrowserRouter([
     {
@@ -32,10 +31,6 @@ const routes = createBrowserRouter([
             {
                 path:"/records",
                 element:<RecordsPage/>
-            },
-            {
-                path:"/notifications",
-                element:<NotificationsPage/>
             },
             {
                 path:"/campaigns",
