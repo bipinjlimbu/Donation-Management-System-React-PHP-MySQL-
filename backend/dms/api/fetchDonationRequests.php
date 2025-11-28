@@ -39,21 +39,13 @@ try {
                 FROM donations d
                 JOIN campaigns c ON d.campaign_id = c.campaign_id
                 JOIN ngo n ON c.ngo_id = n.ngo_id
-                WHERE d.donor_id = :user_id";
+                WHERE d.donor_id = :user_id AND d.status = 'Pending'";
     } elseif ($role === 'NGO') {
         $sql = "SELECT d.*, c.title AS campaign_title, u.full_name AS donor
                 FROM donations d
                 JOIN campaigns c ON d.campaign_id = c.campaign_id
                 JOIN donor u ON d.donor_id = u.donor_id
-                WHERE c.ngo_id = :user_id";
-    } elseif ($role === 'Admin') {
-        $sql = "SELECT d.donation_id, d.quantity, d.status,
-                       c.title AS campaign_name, c.campaign_id,
-                       u.full_name AS donor, n.organization_name AS ngo
-                FROM donations d
-                JOIN campaigns c ON d.campaign_id = c.campaign_id
-                JOIN donor u ON d.donor_id = u.donor_id
-                JOIN ngo n ON c.ngo_id = n.ngo_id";
+                WHERE c.ngo_id = :user_id AND d.status = 'Pending'";
     } else {
         echo json_encode(["success" => false, "message" => "Invalid user role"]);
         exit;
