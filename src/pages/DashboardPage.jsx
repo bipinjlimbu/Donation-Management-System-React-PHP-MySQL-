@@ -7,7 +7,7 @@ import SignUpPage from "./SignUpPage";
 export default function DashboardPage() {
     const { user } = useAuth();
 
-    if (!user) return <p>Loading user...</p>;
+    if (!user) return <SignUpPage />;
 
     switch (user.role) {
         case "Admin":
@@ -17,6 +17,6 @@ export default function DashboardPage() {
         case "NGO":
             return <NgoDashboardPage />;
         default:
-            return <SignUpPage />;
+            return <p>Invalid user role.</p>;
     }
 }
