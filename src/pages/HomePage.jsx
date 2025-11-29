@@ -44,9 +44,20 @@ export default function HomePage() {
 
             <div className={myHome.features}>
                 <h2> Features </h2>
-                <p> For Donors: Easily donate items to various campaigns and track your donation history. </p>
-                <p> For NGOs: Create and manage campaigns, approve donations, and maintain transparent records. </p>
-                <p> User Authentication: Secure login and registration system to protect user data. </p>
+                <div className={myHome.featureList}>
+                    <div className={myHome.featureItem}>
+                        <h3> For Donors </h3>
+                        <p> Easily donate items to NGOs, track your donation history, and stay informed about the impact of your contributions. </p>
+                    </div>
+                    <div className={myHome.featureItem}>
+                        <h3> For NGOs </h3>
+                        <p> Manage donation campaigns, track incoming donations, and maintain transparent records for donors and stakeholders. </p>
+                    </div>
+                    <div className={myHome.featureItem}>
+                        <h3> User Authentication </h3>
+                        <p> Secure login and registration system to protect user data. </p>
+                    </div>
+                </div>
             </div>
 
             <div className={myHome.latestCampaigns}>
