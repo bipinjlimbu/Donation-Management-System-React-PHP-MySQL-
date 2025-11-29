@@ -60,6 +60,11 @@ export default function HomePage() {
                 </div>
             </div>
 
+            <div className={myHome.overview}>
+                <h2> Overview </h2>
+                <p> ShareHope is dedicated to bridging the gap between donors and NGOs. Our platform simplifies the donation process, ensuring that contributions reach those in need efficiently. Whether you're an individual looking to make a difference or an NGO aiming to streamline your operations, ShareHope provides the tools you need to succeed. Join us in making the world a better place, one donation at a time. </p>
+            </div>
+
             <div className={myHome.latestCampaigns}>
                 <h2> Latest Campaigns </h2>
                 <div className={myHome.campaigns}>
