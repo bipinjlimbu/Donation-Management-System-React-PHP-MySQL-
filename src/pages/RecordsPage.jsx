@@ -6,6 +6,7 @@ import axios from "axios";
 export default function RecordsPage() {
     const { user } = useAuth();
     const [records, setRecords] = useState([]);
+    const [filteredRecords, setFilteredRecords] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -17,12 +18,11 @@ export default function RecordsPage() {
             setError(null);
 
             try {
-                const res = await axios.get(
-                    `http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`
-                );
+                const res = await axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`);
 
                 if (res.data.success) {
                     setRecords(res.data.donations || []);
+                    setFilteredRecords(res.data.donations || []); // store both
                 } else {
                     setError(res.data.message || "No donation records found.");
                 }
@@ -36,21 +36,43 @@ export default function RecordsPage() {
 
         fetchHistory();
     }, [user]);
-    
+
     const role = user?.role;
-    
+
+    const filter = () => {
+        const filterValue = document.getElementById("filter").value;
+
+        if (filterValue === "all") {
+            setFilteredRecords(records);
+        } else {
+            const newList = records.filter(
+                (rec) => rec.status.toLowerCase() === filterValue.toLowerCase()
+            );
+            setFilteredRecords(newList);
+        }
+    };
 
     return (
         <div className={myRecords.container}>
             <h1>Records of Donations</h1>
+
             {loading && <p>Loading donation records...</p>}
             {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
 
-            {!loading && !error && records.length === 0 && (
+            {!loading && !error && filteredRecords.length === 0 && (
                 <p>No Records of Donations.</p>
             )}
 
-            {!loading && records.length > 0 && role === "Admin" && (
+            <div className={myRecords.filterBar}>
+                <select name="filter" id="filter">
+                    <option value="all">All Records</option>
+                    <option value="denied">Denied</option>
+                    <option value="delivered">Delivered</option>
+                </select>
+                <button onClick={filter}>Apply Filter</button>
+            </div>
+
+            {!loading && filteredRecords.length > 0 && role === "Admin" && (
                 <table>
                     <thead>
                         <tr>
@@ -65,7 +87,7 @@ export default function RecordsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {records.map((rec) => (
+                        {filteredRecords.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
                                 <td>{rec.item_name}</td>
@@ -81,7 +103,7 @@ export default function RecordsPage() {
                 </table>
             )}
 
-            {!loading && records.length > 0 && role === "Donor" && (
+            {!loading && filteredRecords.length > 0 && role === "Donor" && (
                 <table>
                     <thead>
                         <tr>
@@ -95,7 +117,7 @@ export default function RecordsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {records.map((rec) => (
+                        {filteredRecords.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
                                 <td>{rec.item_name}</td>
@@ -110,7 +132,7 @@ export default function RecordsPage() {
                 </table>
             )}
 
-            {!loading && records.length > 0 && role === "NGO" && (
+            {!loading && filteredRecords.length > 0 && role === "NGO" && (
                 <table>
                     <thead>
                         <tr>
@@ -124,7 +146,7 @@ export default function RecordsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {records.map((rec) => (
+                        {filteredRecords.map((rec) => (
                             <tr key={rec.donation_id}>
                                 <td>{rec.campaign_title}</td>
                                 <td>{rec.item_name}</td>
