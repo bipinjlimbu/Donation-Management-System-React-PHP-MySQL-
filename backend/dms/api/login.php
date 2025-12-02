@@ -21,7 +21,7 @@ if (!$email || !$password) {
     exit;
 }
 
-$sql = "SELECT * FROM Users WHERE email = :email";
+$sql = "SELECT * FROM users WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -39,6 +39,14 @@ if (!password_verify($password, $user['password_hash'])) {
     echo json_encode([
         "success" => false,
         "message" => "Invalid password"
+    ]);
+    exit;
+}
+
+if ($user['status'] !== 'Approved') {
+    echo json_encode([
+        "success" => false,
+        "message" => "Your account is not approved yet."
     ]);
     exit;
 }
