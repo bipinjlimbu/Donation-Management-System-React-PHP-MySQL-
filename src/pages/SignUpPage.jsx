@@ -13,10 +13,15 @@ export default function SignUpPage() {
         registration_number: ""
     });
 
+    const [verificationFile, setVerificationFile] = useState(null);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFileChange = (e) => {
+        setVerificationFile(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
@@ -37,18 +42,32 @@ export default function SignUpPage() {
             return;
         }
 
-        if (formData.role === "NGO" && !formData.registration_number.trim()) {
-            alert("Registration number is required for NGOs!");
-            return;
+        if (formData.role === "NGO") {
+            if (!formData.registration_number.trim()) {
+                alert("Registration number is required for NGOs!");
+                return;
+            }
+            if (!verificationFile) {
+                alert("Please upload verification file!");
+                return;
+            }
         }
 
         try {
-            const response = await axios.post("http://localhost/dms/api/signup.php", {
-                email: formData.email.trim(),
-                password: formData.password.trim(),
-                role: formData.role,
-                registration_number: formData.role === "NGO" ? formData.registration_number.trim() : null
-            });
+            const form = new FormData();
+            form.append("email", formData.email.trim());
+            form.append("password", formData.password.trim());
+            form.append("role", formData.role);
+            form.append("registration_number", formData.registration_number);
+
+            if (verificationFile) {
+                form.append("verification_file", verificationFile);
+            }
+
+            const response = await axios.post("http://localhost/dms/api/signup.php",
+                form,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
 
             if (response.data.success) {
                 alert(response.data.message);
@@ -65,29 +84,27 @@ export default function SignUpPage() {
     return (
         <div className={myLogin.login}>
             <h1>Join Us</h1>
-            <form onSubmit={handleSubmit}>                
+            <form onSubmit={handleSubmit}>
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-                
                 <label>Password:</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-                
                 <label>Confirm Password:</label>
                 <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-                
                 <label>Role:</label>
                 <select name="role" value={formData.role} onChange={handleChange}>
                     <option value="Donor">Donor</option>
                     <option value="NGO">NGO</option>
                 </select>
-
                 {formData.role === "NGO" && (
                     <>
                         <label>Registration Number:</label>
                         <input type="text" name="registration_number" value={formData.registration_number} onChange={handleChange} required />
+
+                        <label>Upload Verification Document:</label>
+                        <input type="file" onChange={handleFileChange} accept=".pdf,.jpg,.png" required />
                     </>
                 )}
-
                 <button type="submit">Sign Up</button>
             </form>
             <p>Already have an account? <Link to="/login">Login here</Link></p>
