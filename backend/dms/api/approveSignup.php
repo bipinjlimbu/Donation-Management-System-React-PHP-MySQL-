@@ -8,7 +8,6 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
-
 $register_id = $data['register_id'] ?? null;
 
 if (!$register_id) {
@@ -17,49 +16,51 @@ if (!$register_id) {
 }
 
 try {
-    $sql = "SELECT * FROM register WHERE register_id = :id";
+    $sql = "SELECT * FROM users WHERE user_id = :id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
-    $request = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$request) {
-        echo json_encode(["success" => false, "message" => "Request not found"]);
+    if (!$user) {
+        echo json_encode(["success" => false, "message" => "User not found"]);
         exit;
     }
 
-    $sql = "INSERT INTO users (email, password_hash, role) 
-            VALUES (:email, :password_hash, :role)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':email', $request['email']);
-    $stmt->bindParam(':password_hash', $request['password_hash']);
-    $stmt->bindParam(':role', $request['role']);
-    $stmt->execute();
-
-    $user_id = $conn->lastInsertId();
-
-    if ($request['role'] === 'Donor') {
-        $sql = "INSERT INTO donor (donor_id) VALUES (:user_id)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->execute();
-    }
-
-    if ($request['role'] === 'NGO') {
-        $sql = "INSERT INTO ngo (ngo_id, registration_number) VALUES (:user_id, :reg_no)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->bindParam(':reg_no', $request['registration_number']);
-        $stmt->execute();
-    }
-
-    $sql = "UPDATE register SET status='Approved' WHERE register_id=:id";
+    $sql = "UPDATE users SET status='Approved', approved_at=NOW() WHERE user_id=:id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
 
-    echo json_encode(["success" => true, "message" => "User approved successfully"]);
+    if ($user['role'] === 'Donor') {
+        $sql = "INSERT INTO donor (donor_id, pending_status, requested_at, approved_at)
+                VALUES (:user_id, 'Approved', :requested_at, NOW())";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $register_id);
+        $stmt->bindParam(':requested_at', $user['requested_at']);
+        $stmt->execute();
+    }
+
+    if ($user['role'] === 'NGO') {
+        $sql = "INSERT INTO ngo (ngo_id, registration_number, pending_status, requested_at, approved_at)
+                VALUES (:user_id, :reg_no, 'Approved', :requested_at, NOW())";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $register_id);
+        $stmt->bindParam(':reg_no', $user['registration_number']);
+        $stmt->bindParam(':requested_at', $user['requested_at']);
+        $stmt->execute();
+    }
+
+    echo json_encode([
+        "success" => true,
+        "message" => "User approved successfully"
+    ]);
+
 } catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Error approving user"]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Error approving user",
+        "error" => $e->getMessage()
+    ]);
 }
 ?>
