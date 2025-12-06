@@ -10,6 +10,9 @@ export default function SignUpPage() {
         password: "",
         confirmPassword: "",
         role: "Donor",
+        name: "",
+        phone: "",
+        address: "",
         registration_number: ""
     });
 
@@ -27,8 +30,8 @@ export default function SignUpPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.email.trim() || !formData.password.trim()) {
-            alert("All fields are required!");
+        if (!formData.email.trim() || !formData.password.trim() || !formData.name.trim()) {
+            alert("All required fields are mandatory!");
             return;
         }
 
@@ -58,11 +61,11 @@ export default function SignUpPage() {
             form.append("email", formData.email.trim());
             form.append("password", formData.password.trim());
             form.append("role", formData.role);
-            form.append("registration_number", formData.registration_number);
-
-            if (verificationFile) {
-                form.append("verification_file", verificationFile);
-            }
+            form.append("name", formData.name.trim());
+            form.append("phone", formData.phone.trim());
+            form.append("address", formData.address.trim());
+            form.append("registration_number", formData.registration_number.trim());
+            if (verificationFile) form.append("verification_file", verificationFile);
 
             const response = await axios.post("http://localhost/dms/api/signup.php",
                 form,
@@ -87,17 +90,43 @@ export default function SignUpPage() {
             <form onSubmit={handleSubmit}>
                 <label>Email:</label>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+
                 <label>Password:</label>
                 <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+
                 <label>Confirm Password:</label>
                 <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+
                 <label>Role:</label>
                 <select name="role" value={formData.role} onChange={handleChange}>
                     <option value="Donor">Donor</option>
                     <option value="NGO">NGO</option>
                 </select>
+
+                {formData.role === "Donor" && (
+                    <>
+                        <label>Full Name:</label>
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+
+                        <label>Phone:</label>
+                        <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
+
+                        <label>Address:</label>
+                        <textarea name="address" value={formData.address} onChange={handleChange} />
+                    </>
+                )}
+
                 {formData.role === "NGO" && (
                     <>
+                        <label>Organization Name:</label>
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+
+                        <label>Phone:</label>
+                        <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
+
+                        <label>Address:</label>
+                        <textarea name="address" value={formData.address} onChange={handleChange} />
+
                         <label>Registration Number:</label>
                         <input type="text" name="registration_number" value={formData.registration_number} onChange={handleChange} required />
 
@@ -105,8 +134,10 @@ export default function SignUpPage() {
                         <input type="file" onChange={handleFileChange} accept=".pdf,.jpg,.png" required />
                     </>
                 )}
+
                 <button type="submit">Sign Up</button>
             </form>
+
             <p>Already have an account? <Link to="/login">Login here</Link></p>
         </div>
     );
