@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import myLogin from "../style/LSPage.module.css";
+import myLogin from "../style/LoginPage.module.css";
 import { useAuth } from "../components/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
