@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import myLogin from "../style/LSPage.module.css";
-import Footer from "../layout/Footer";
 import { useAuth } from "../components/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -51,19 +50,26 @@ export default function LoginPage() {
     };
 
     return (
-        <div className={myLogin.login}>
-            <h1>Welcome Back</h1>
-            <form onSubmit={handleSubmit}>
-                <label>Email:</label>
-                <input type="email" name="email" value={email} onChange={handleChange} required />
-                <br/>
-                <label>Password:</label>
-                <input type="password" name="password" value={password} onChange={handleChange} required />
-                <br/>
-                <button type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
-            </form>
-            <p>Don't have an account? <Link to="/signup">Register here</Link></p>
-            <Footer/>
+        <div className={myLogin.pageWrapper}>
+            <div className={myLogin.loginCard}>
+                <h1 className={myLogin.title}>Welcome Back</h1>
+                
+                <form onSubmit={handleSubmit}>
+
+                    <label className={myLogin.label}>Email:</label>
+                    <input type="email" name="email" value={email} onChange={handleChange} className={myLogin.input} required />
+
+                    <label className={myLogin.label}>Password:</label>
+                    <input type="password" name="password" value={password} onChange={handleChange} className={myLogin.input} required />
+
+                    <button type="submit" disabled={loading} className={myLogin.button}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+
+                </form>
+                
+                <p className={myLogin.footerText}>Don't have an account? <Link to="/signup">Register here</Link></p>
+            </div>
         </div>
     );
 }
