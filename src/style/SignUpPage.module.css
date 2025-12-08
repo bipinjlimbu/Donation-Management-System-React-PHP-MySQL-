@@ -1,6 +1,6 @@
 .pageWrapper {
     min-height: 100vh;
-    background: #e0f0ff; /* light blue background */
+    background: #e0f0ff; 
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
