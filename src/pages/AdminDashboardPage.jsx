@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "../style/AdminDashboard.module.css"; 
+import styles from "../style/AdminDashboardPage.module.css"; 
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
