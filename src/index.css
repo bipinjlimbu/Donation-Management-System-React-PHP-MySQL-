@@ -12,26 +12,36 @@
   padding: 2rem 4rem;
   background-color: black;
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
-.nav h1 {
-  font-size: 1.8rem;
+.nav-left img {
+  width: 150px;
+  height: auto;
+  cursor: pointer;
 }
 
-.nav a {
+.nav-center {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex: 1; 
+}
+
+.nav-center a {
   color: white;
   text-decoration: none;
+  font-weight: bold;
   transition: 0.3s;
 }
 
-.nav nav {
+.nav-center a:hover {
+  color: #d0d0d3;
+}
+
+.nav-right {
   display: flex;
-  gap: 1rem;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .LogBut {
@@ -47,10 +57,6 @@
 
 .LogBut:hover {
   background-color: #1d4ed8;
-}
-
-.nav nav a:hover {
-  color: #d0d0d3;
 }
 
 .profImg {
@@ -81,17 +87,23 @@ th {
 }
 
 @media (max-width: 768px) {
+
   .nav {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem 2rem;
+    gap: 1rem;
+    padding: 1.5rem;
   }
 
-  .nav nav {
+  .nav-center {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .nav-right {
     width: 100%;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
   }
 
   .LogBut {
