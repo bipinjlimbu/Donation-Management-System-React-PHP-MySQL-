@@ -16,50 +16,67 @@ if (!$register_id) {
 }
 
 try {
-    $sql = "SELECT * FROM users WHERE user_id = :id";
+    $sql = "SELECT * FROM register WHERE register_id = :id AND status = 'Pending'";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $reg = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
-        echo json_encode(["success" => false, "message" => "User not found"]);
+    if (!$reg) {
+        echo json_encode(["success" => false, "message" => "Registration request not found or not pending"]);
         exit;
     }
 
-    $sql = "UPDATE users SET status='Approved', approved_at=NOW() WHERE user_id=:id";
+    $sql = "INSERT INTO users (email, password_hash, role) VALUES (:email, :password_hash, :role)";
     $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':email', $reg['email']);
+    $stmt->bindParam(':password_hash', $reg['password_hash']);
+    $stmt->bindParam(':role', $reg['role']);
+    $stmt->execute();
+
+    $user_id = $conn->lastInsertId();
+
+    $sql = "UPDATE register SET status = 'Approved', approved_at = NOW(), user_id = :user_id WHERE register_id = :id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $user_id);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
 
-    if ($user['role'] === 'Donor') {
-        $sql = "INSERT INTO donor (donor_id, pending_status, requested_at, approved_at)
-                VALUES (:user_id, 'Approved', :requested_at, NOW())";
+    if ($reg['role'] === 'Donor') {
+        $sql = "INSERT INTO donor (donor_id, full_name, phone, address, pending_full_name, pending_phone, pending_address, pending_status, requested_at, approved_at)
+                VALUES (:id, :full_name, :phone, :address, NULL, NULL, NULL, 'Approved', :requested_at, NOW())";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':user_id', $register_id);
-        $stmt->bindParam(':requested_at', $user['requested_at']);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->bindParam(':full_name', $reg['name']);
+        $stmt->bindParam(':phone', $reg['phone']);
+        $stmt->bindParam(':address', $reg['address']);
+        $stmt->bindParam(':requested_at', $reg['requested_at']);
         $stmt->execute();
     }
 
-    if ($user['role'] === 'NGO') {
-        $sql = "INSERT INTO ngo (ngo_id, registration_number, pending_status, requested_at, approved_at)
-                VALUES (:user_id, :reg_no, 'Approved', :requested_at, NOW())";
+    if ($reg['role'] === 'NGO') {
+        $sql = "INSERT INTO ngo (ngo_id, organization_name, registration_number, phone, address, pending_organization_name, pending_phone, pending_address, pending_status, requested_at, approved_at)
+                VALUES (:id, :org_name, :reg_no, :phone, :address, NULL, NULL, NULL, 'Approved', :requested_at, NOW())";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':user_id', $register_id);
-        $stmt->bindParam(':reg_no', $user['registration_number']);
-        $stmt->bindParam(':requested_at', $user['requested_at']);
+        $stmt->bindParam(':id', $user_id);
+        $stmt->bindParam(':org_name', $reg['name']);
+        $stmt->bindParam(':reg_no', $reg['registration_number']);
+        $stmt->bindParam(':phone', $reg['phone']);
+        $stmt->bindParam(':address', $reg['address']);
+        $stmt->bindParam(':requested_at', $reg['requested_at']);
         $stmt->execute();
     }
 
     echo json_encode([
         "success" => true,
-        "message" => "User approved successfully"
+        "message" => "Signup approved successfully",
+        "user_id" => $user_id
     ]);
 
 } catch (Exception $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Error approving user",
+        "message" => "Error approving signup",
         "error" => $e->getMessage()
     ]);
 }
