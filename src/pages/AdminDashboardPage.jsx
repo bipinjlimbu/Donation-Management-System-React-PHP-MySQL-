@@ -89,6 +89,9 @@ export default function AdminDashboardPage() {
                     <thead>
                         <tr>
                             <th>Email</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
                             <th>Role</th>
                             <th>Registration Number</th>
                             <th>Verification File</th>
@@ -101,12 +104,36 @@ export default function AdminDashboardPage() {
                         {signupRequests.map(r => (
                             <tr key={r.register_id}>
                                 <td>{r.email}</td>
+                                <td>{r.name}</td>
+                                <td>{r.phone}</td>
+                                <td>{r.address}</td>
                                 <td>{r.role}</td>
                                 <td>{r.role === "NGO" ? r.registration_number : "-"}</td>
-                                <td>{r.role === "NGO" ? <a href={`http://localhost/dms/api/${r.verification_file}`} target="_blank">View File</a> : "-"}</td>
+                                <td>
+                                    {r.role === "NGO"
+                                        ? <a href={`http://localhost/dms/api/${r.verification_file}`} target="_blank">View File</a>
+                                        : "-"
+                                    }
+                                </td>
                                 <td>{r.requested_at}</td>
-                                <td><button className={myDashboard.approveButton} onClick={() => handleSignupApprove(r.register_id)}>Approve</button></td>
-                                <td><button className={myDashboard.denyButton} onClick={() => handleSignupDeny(r.register_id)}>Deny</button></td>
+
+                                <td>
+                                    <button
+                                        className={myDashboard.approveButton}
+                                        onClick={() => handleSignupApprove(r.register_id)}
+                                    >
+                                        Approve
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button
+                                        className={myDashboard.denyButton}
+                                        onClick={() => handleSignupDeny(r.register_id)}
+                                    >
+                                        Deny
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
