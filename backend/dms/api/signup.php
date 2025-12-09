@@ -22,9 +22,7 @@ if (!$email || !$password || !$name) {
     exit;
 }
 
-$sql = "SELECT r.register_id 
-        FROM register r 
-        WHERE r.status = 'Approved' AND r.user_id IN (SELECT user_id FROM users WHERE email = :email)";
+$sql = "SELECT user_id FROM users WHERE email = :email";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':email', $email);
 $stmt->execute();
@@ -34,6 +32,7 @@ if ($stmt->fetch()) {
 }
 
 $verificationFilePath = null;
+
 if ($role === "NGO") {
     if (!isset($_FILES["verification_file"])) {
         echo json_encode(["success" => false, "message" => "Verification file required"]);
@@ -57,11 +56,12 @@ if ($role === "NGO") {
 
 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-$sql = "INSERT INTO register 
-        (user_id, role, name, phone, address, registration_number, verification_file, status, requested_at) 
-        VALUES 
-        (NULL, :role, :name, :phone, :address, :registration_number, :verification_file, 'Pending', :requested_at)";
+$sql = "INSERT INTO register (user_id, email, password_hash, role, name, phone, address, registration_number, verification_file, status, requested_at)
+        VALUES (NULL, :email, :password_hash, :role, :name, :phone, :address, :registration_number, :verification_file, 'Pending', :requested_at)";
+
 $stmt = $conn->prepare($sql);
+$stmt->bindParam(':email', $email);
+$stmt->bindParam(':password_hash', $hashedPassword);
 $stmt->bindParam(':role', $role);
 $stmt->bindParam(':name', $name);
 $stmt->bindParam(':phone', $phone);
@@ -75,4 +75,5 @@ echo json_encode([
     "success" => true,
     "message" => "Signup submitted! Awaiting admin approval."
 ]);
+exit;
 ?>
