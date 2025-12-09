@@ -16,22 +16,22 @@ if (!$register_id) {
 }
 
 try {
-    $sql = "SELECT * FROM users WHERE user_id = :id";
+    $sql = "SELECT * FROM register WHERE register_id = :id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $reg = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
-        echo json_encode(["success" => false, "message" => "User not found"]);
+    if (!$reg) {
+        echo json_encode(["success" => false, "message" => "Registration request not found"]);
         exit;
     }
 
-    if ($user['role'] === 'NGO' && !empty($user['verification_file']) && file_exists($user['verification_file'])) {
-        unlink($user['verification_file']);
+    if (!empty($reg['verification_file']) && file_exists($reg['verification_file'])) {
+        @unlink($reg['verification_file']);
     }
 
-    $sql = "UPDATE users SET status='Denied' WHERE user_id=:id";
+    $sql = "UPDATE register SET status = 'Denied' WHERE register_id = :id";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
@@ -44,7 +44,7 @@ try {
 } catch (Exception $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Error denying request",
+        "message" => "Error denying signup",
         "error" => $e->getMessage()
     ]);
 }
