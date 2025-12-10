@@ -1,35 +1,98 @@
-.container{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    gap: 1.2rem;
-    margin-top: 2rem;
-    font-family: Arial, Helvetica, sans-serif;
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    min-height: 85vh; 
 }
-.filterBar{
+
+.container h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.filterBar {
+    margin: 20px 0;
     display: flex;
-    gap: 0.5rem;
-    align-items: center;
     justify-content: center;
-    margin: 1rem 0;
+    gap: 12px;
 }
-.filterBar input, .filterBar select{
-    padding: 0.4rem;
-    border-radius: 5px;
+
+.filterBar select {
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 6px;
     border: 1px solid #ccc;
-    font-size: 1rem;
 }
-.filterBar button{
-    padding: 0.5rem 1rem;
-    background-color: #28a745;
+
+.filterBar button {
+    padding: 10px 16px;
+    background: #3498db;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1rem;
-    width: 200px;
+    transition: 0.2s;
 }
-.filterBar button:hover{
-    background-color: #218838;
+
+.filterBar button:hover {
+    background: #217dbb;
+}
+
+.tableWrapper {
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;  
+    padding-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+thead th {
+    background: #2c3e50;
+    color: #fff;
+    padding: 12px;
+    font-weight: 600;
+}
+
+tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #ececec;
+    text-align: center;
+}
+
+tbody tr:hover {
+    background: none;
+}
+
+.container p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    table th,
+    table td {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .container {
+        padding: 15px;
+    }
 }
