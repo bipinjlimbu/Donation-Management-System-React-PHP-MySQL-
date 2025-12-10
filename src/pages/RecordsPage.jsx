@@ -74,7 +74,6 @@ export default function RecordsPage() {
                 <button onClick={filter}>Apply Filter</button>
             </div>
 
-            {/* ADMIN TABLE */}
             {!loading && filteredRecords.length > 0 && role === "Admin" && (
                 <div className={myRecords.tableWrapper}>
                     <table>
@@ -108,7 +107,6 @@ export default function RecordsPage() {
                 </div>
             )}
 
-            {/* DONOR TABLE */}
             {!loading && filteredRecords.length > 0 && role === "Donor" && (
                 <div className={myRecords.tableWrapper}>
                     <table>
@@ -140,7 +138,6 @@ export default function RecordsPage() {
                 </div>
             )}
 
-            {/* NGO TABLE */}
             {!loading && filteredRecords.length > 0 && role === "NGO" && (
                 <div className={myRecords.tableWrapper}>
                     <table>
