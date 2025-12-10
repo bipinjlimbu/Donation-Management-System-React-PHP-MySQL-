@@ -18,11 +18,13 @@ export default function RecordsPage() {
             setError(null);
 
             try {
-                const res = await axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`);
+                const res = await axios.get(
+                    `http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`
+                );
 
                 if (res.data.success) {
                     setRecords(res.data.donations || []);
-                    setFilteredRecords(res.data.donations || []); // store both
+                    setFilteredRecords(res.data.donations || []);
                 } else {
                     setError(res.data.message || "No donation records found.");
                 }
@@ -72,93 +74,102 @@ export default function RecordsPage() {
                 <button onClick={filter}>Apply Filter</button>
             </div>
 
+            {/* ADMIN TABLE */}
             {!loading && filteredRecords.length > 0 && role === "Admin" && (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Campaign</th>
-                            <th>Item Name</th>
-                            <th>Quantity</th>
-                            <th>Donor</th>
-                            <th>NGO</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Delivered At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredRecords.map((rec) => (
-                            <tr key={rec.donation_id}>
-                                <td>{rec.campaign_title}</td>
-                                <td>{rec.item_name}</td>
-                                <td>{rec.quantity}</td>
-                                <td>{rec.donor_name}</td>
-                                <td>{rec.ngo_name}</td>
-                                <td>{rec.ngo_address}</td>
-                                <td>{rec.status}</td>
-                                <td>{rec.delivered_at || "-"}</td>
+                <div className={myRecords.tableWrapper}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Donor</th>
+                                <th>NGO</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Delivered At</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredRecords.map((rec) => (
+                                <tr key={rec.donation_id}>
+                                    <td>{rec.campaign_title}</td>
+                                    <td>{rec.item_name}</td>
+                                    <td>{rec.quantity}</td>
+                                    <td>{rec.donor_name}</td>
+                                    <td>{rec.ngo_name}</td>
+                                    <td>{rec.ngo_address}</td>
+                                    <td>{rec.status}</td>
+                                    <td>{rec.delivered_at || "-"}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
 
+            {/* DONOR TABLE */}
             {!loading && filteredRecords.length > 0 && role === "Donor" && (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Campaign</th>
-                            <th>Item Name</th>
-                            <th>Quantity</th>
-                            <th>NGO</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Delivered At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredRecords.map((rec) => (
-                            <tr key={rec.donation_id}>
-                                <td>{rec.campaign_title}</td>
-                                <td>{rec.item_name}</td>
-                                <td>{rec.quantity}</td>
-                                <td>{rec.ngo_name}</td>
-                                <td>{rec.ngo_address}</td>
-                                <td>{rec.status}</td>
-                                <td>{rec.delivered_at || "-"}</td>
+                <div className={myRecords.tableWrapper}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>NGO</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Delivered At</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredRecords.map((rec) => (
+                                <tr key={rec.donation_id}>
+                                    <td>{rec.campaign_title}</td>
+                                    <td>{rec.item_name}</td>
+                                    <td>{rec.quantity}</td>
+                                    <td>{rec.ngo_name}</td>
+                                    <td>{rec.ngo_address}</td>
+                                    <td>{rec.status}</td>
+                                    <td>{rec.delivered_at || "-"}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
 
+            {/* NGO TABLE */}
             {!loading && filteredRecords.length > 0 && role === "NGO" && (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Campaign</th>
-                            <th>Item Name</th>
-                            <th>Quantity</th>
-                            <th>Donor</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Delivered At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredRecords.map((rec) => (
-                            <tr key={rec.donation_id}>
-                                <td>{rec.campaign_title}</td>
-                                <td>{rec.item_name}</td>
-                                <td>{rec.quantity}</td>
-                                <td>{rec.donor_name}</td>
-                                <td>{rec.ngo_address}</td>
-                                <td>{rec.status}</td>
-                                <td>{rec.delivered_at || "-"}</td>
+                <div className={myRecords.tableWrapper}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Donor</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Delivered At</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredRecords.map((rec) => (
+                                <tr key={rec.donation_id}>
+                                    <td>{rec.campaign_title}</td>
+                                    <td>{rec.item_name}</td>
+                                    <td>{rec.quantity}</td>
+                                    <td>{rec.donor_name}</td>
+                                    <td>{rec.ngo_address}</td>
+                                    <td>{rec.status}</td>
+                                    <td>{rec.delivered_at || "-"}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );
