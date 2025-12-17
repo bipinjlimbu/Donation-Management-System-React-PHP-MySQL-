@@ -33,7 +33,7 @@ export default function CreateCampaignPage() {
     try {
       const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
         ...campaign,
-        ngo_id: user?.user_id, 
+        ngo_id: user?.user_id,
       });
 
       if (res.data.success) {
@@ -52,35 +52,61 @@ export default function CreateCampaignPage() {
 
   return (
     <div className={myCampaign.container}>
-      <h1>Create Campaign</h1>
+      <h1 className={myCampaign.heading}>Create Campaign</h1>
 
-      {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
+      {error && <div className={myCampaign.error}>{error}</div>}
 
-      {loading ? (
-        <div>Submitting campaign...</div>
-      ) : (
-        <div className={myCampaign.formContainer}>
-          <form onSubmit={handleSubmit}>
-            <label>Title:</label>
+      <div className={myCampaign.formContainer}>
+        <form onSubmit={handleSubmit} className={myCampaign.form}>
+
+          <div className={myCampaign.field}>
+            <label>Title</label>
             <input type="text" name="title" value={campaign.title} onChange={handleChange} required />
-            <label>Description:</label>
+          </div>
+
+          <div className={`${myCampaign.field} ${myCampaign.fullRow}`}>
+            <label>Description</label>
             <textarea name="description" value={campaign.description} onChange={handleChange} required />
-            <label>Item Name:</label>
-            <input type="text" name="item_name" value={campaign.item_name} onChange={handleChange} required />
-            <label>Unit:</label>
-            <input type="text" name="unit" value={campaign.unit} onChange={handleChange} required />
-            <label>Target Quantity:</label>
-            <input type="number" name="target_quantity" value={campaign.target_quantity} onChange={handleChange} required />
-            <label>Start Date:</label>
-            <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
-            <label>End Date:</label>
-            <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-            <button type="submit" disabled={loading}>
-              {loading ? "Submitting..." : "Submit"}
-            </button>
-          </form>
-        </div>
-      )}
+          </div>
+
+          <div className={myCampaign.grid}>
+            <div className={myCampaign.field}>
+              <label>Item Name</label>
+              <input type="text" name="item_name" value={campaign.item_name} onChange={handleChange} required />
+            </div>
+
+            <div className={myCampaign.field}>
+              <label>Unit</label>
+              <input type="text" name="unit" value={campaign.unit} onChange={handleChange} required />
+            </div>
+
+            <div className={`${myCampaign.field} ${myCampaign.fullRow}`}>
+              <label>Target Quantity</label>
+              <input
+                type="number"
+                name="target_quantity"
+                value={campaign.target_quantity}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className={myCampaign.field}>
+              <label>Start Date</label>
+              <input type="date" name="start_date" value={campaign.start_date} onChange={handleChange} required />
+            </div>
+
+            <div className={myCampaign.field}>
+              <label>End Date</label>
+              <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
+            </div>
+          </div>
+
+          <button type="submit" disabled={loading} className={myCampaign.submitBtn}>
+            {loading ? "Submitting..." : "Submit Campaign"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
