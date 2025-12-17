@@ -60,32 +60,58 @@ export default function EditCampaignPage() {
       .catch(() => alert("Network or server error during update."));
   };
 
-  if (loading) return <div>Loading edit page...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (loading) return <p className={myEditCampaign.center}>Loading edit page...</p>;
+  if (error) return <p className={myEditCampaign.error}>{error}</p>;
 
   return (
-    <div className={myEditCampaign.editCampaign}>
-      <h1>Edit Campaign</h1>
+    <div className={myEditCampaign.page}>
+      <h1 className={myEditCampaign.title}>Edit Campaign</h1>
 
-      <div className={myEditCampaign.formContainer}>
-        <form onSubmit={handleSubmit}>
-          <label>Campaign Title:</label>
+      <form className={myEditCampaign.form} onSubmit={handleSubmit}>
+        <div className={myEditCampaign.field}>
+          <label>Campaign Title</label>
           <input type="text" name="title" value={campaign.title} onChange={handleChange} required />
-          <label>Campaign Description:</label>
-          <textarea name="description" value={campaign.description} onChange={handleChange} required />
-          <label>Target Quantity:</label>
-          <input type="number" name="target_quantity" value={campaign.target_quantity} onChange={handleChange} required />
-          <label>Status:</label>
-          <select name="status" value={campaign.status} onChange={handleChange} required>
-            <option value="Active">Active</option>
-            <option value="Completed">Completed</option>
-          </select>
-          <label>End Date:</label>
-          <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
-          <button type="submit">Update Campaign</button>
-        </form>
+        </div>
 
-      </div>
+        <div className={myEditCampaign.field}>
+          <label>Campaign Description</label>
+          <textarea name="description" value={campaign.description} onChange={handleChange} required />
+        </div>
+
+        <div className={myEditCampaign.row}>
+          <div className={myEditCampaign.field}>
+            <label>Target Quantity</label>
+            <input type="number" name="target_quantity" value={campaign.target_quantity} onChange={handleChange} required />
+          </div>
+
+          <div className={myEditCampaign.field}>
+            <label>Status</label>
+            <select name="status" value={campaign.status} onChange={handleChange} required>
+              <option value="Active">Active</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div className={myEditCampaign.field}>
+          <label>End Date</label>
+          <input type="date" name="end_date" value={campaign.end_date} onChange={handleChange} required />
+        </div>
+
+        <div className={myEditCampaign.actions}>
+          <button type="submit" className={myEditCampaign.primaryBtn}>
+            Update Campaign
+          </button>
+
+          <button
+            type="button"
+            className={myEditCampaign.secondaryBtn}
+            onClick={() => navigate(`/campaigns/${id}`)}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
