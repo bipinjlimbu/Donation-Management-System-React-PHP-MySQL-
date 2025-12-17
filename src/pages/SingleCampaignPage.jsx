@@ -5,63 +5,67 @@ import mySingleCampaign from "../style/SingleCampaignPage.module.css";
 import { useAuth } from "../components/AuthContext";
 
 export default function SingleCampaignPage() {
-    const { id } = useParams();
-    const [campaign, setCampaign] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const { user } = useAuth();
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const [campaign, setCampaign] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        axios.get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
-            .then(res => {
-                if (res.data.success) {
-                    setCampaign(res.data.campaign);
-                } else {
-                    setError(res.data.message);
-                }
-            })
-            .catch(() => setError("Failed to connect to server"))
-            .finally(() => setLoading(false));
-    }, [id]);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-    const handleDonate = () => navigate(`/donate/${campaign.campaign_id}`);
-    const handleEdit = () => navigate(`/edit-campaign/${campaign.campaign_id}`);
-    const handleBack = () => navigate("/campaigns");
+  useEffect(() => {
+    axios
+      .get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
+      .then(res => {
+        if (res.data.success) setCampaign(res.data.campaign);
+        else setError(res.data.message);
+      })
+      .catch(() => setError("Failed to connect to server"))
+      .finally(() => setLoading(false));
+  }, [id]);
 
-    if (loading) return <div>Loading campaign...</div>;
-    if (error) return <div style={{ color: "red" }}>{error}</div>;
-    if (!campaign) return <div>No campaign found.</div>;
+  if (loading) return <p className={mySingleCampaign.center}>Loading campaign...</p>;
+  if (error) return <p className={mySingleCampaign.error}>{error}</p>;
+  if (!campaign) return <p className={mySingleCampaign.center}>No campaign found.</p>;
 
-    return (
-        <div className={mySingleCampaign.campaign}>
-            <h1>{campaign.title}</h1>
-            <p>{campaign.description}</p>
-            <p><strong>Item:</strong> {campaign.item_name}</p>
-            <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
-            <p><strong>Collected:</strong> {campaign.collected_quantity} {campaign.unit}</p>
-            <p><strong>NGO:</strong> {campaign.ngo_name}</p>
-            <p><strong>Status:</strong> {campaign.status}</p>
-            <p><strong>Start Date:</strong> {campaign.start_date}</p>
-            <p><strong>End Date:</strong> {campaign.end_date}</p>
+  return (
+    <div className={mySingleCampaign.page}>
+      <h1 className={mySingleCampaign.title}>{campaign.title}</h1>
 
-            <div className={mySingleCampaign.buttonContainer}>
-                {user?.role === "Donor" && campaign.status === "Active" && (
-                    <button className={mySingleCampaign.donateButton} onClick={handleDonate}>
-                        Donate
-                    </button>
-                )}
+      <p className={mySingleCampaign.description}>
+        {campaign.description}
+      </p>
 
-                {user?.role === "NGO" && user?.user_id === campaign.ngo_id && (
-                    <button className={mySingleCampaign.editButton} onClick={handleEdit}>
-                        Edit Campaign
-                    </button>
-                )}
+      <div className={mySingleCampaign.infoGrid}>
+        <div><span>Item</span><p>{campaign.item_name}</p></div>
+        <div><span>Target</span><p>{campaign.target_quantity} {campaign.unit}</p></div>
+        <div><span>Collected</span><p>{campaign.collected_quantity} {campaign.unit}</p></div>
+        <div><span>Status</span><p>{campaign.status}</p></div>
+        <div><span>NGO</span><p>{campaign.ngo_name}</p></div>
+        <div><span>Start Date</span><p>{campaign.start_date}</p></div>
+        <div><span>End Date</span><p>{campaign.end_date}</p></div>
+      </div>
 
-                <button className={mySingleCampaign.backButton} onClick={handleBack}>
-                    Back
-                </button>
-            </div>
-        </div>
-    );
+      <div className={mySingleCampaign.actions}>
+        {user?.role === "Donor" && campaign.status === "Active" && (
+          <button className={mySingleCampaign.primaryBtn}
+            onClick={() => navigate(`/donate/${campaign.campaign_id}`)}>
+            Donate
+          </button>
+        )}
+
+        {user?.role === "NGO" && user?.user_id === campaign.ngo_id && (
+          <button className={mySingleCampaign.secondaryBtn}
+            onClick={() => navigate(`/edit-campaign/${campaign.campaign_id}`)}>
+            Edit Campaign
+          </button>
+        )}
+
+        <button className={mySingleCampaign.backBtn}
+          onClick={() => navigate("/campaigns")}>
+          Back
+        </button>
+      </div>
+    </div>
+  );
 }
