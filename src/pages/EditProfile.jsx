@@ -67,29 +67,56 @@ export default function EditProfile() {
     }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) return <p className={myEdit.loading}>Loading...</p>;
 
   return (
     <div className={myEdit.container}>
-      <h1>Edit Your Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">
-          {user.role === "Donor" ? "Full Name" : "Organization Name"}:
-        </label>
-        <input type="text" id="name" name="name" value={profile.name} onChange={handleChange} />
-        <label htmlFor="phone">Phone:</label>
-        <input type="text" id="phone" name="phone" value={profile.phone} onChange={handleChange} />
-        <label htmlFor="address">Address:</label>
-        <textarea id="address" name="address" value={profile.address} onChange={handleChange} />
-        <div className={myEdit.buttons}>
-          <button type="submit" disabled={loading}>
-            {loading ? "Submitting..." : "Submit"}
-          </button>
-          <button type="button" onClick={() => navigate("/profile")}>
-            Cancel
-          </button>
-        </div>
-      </form>
+      <h1 className={myEdit.heading}>Edit Your Profile</h1>
+
+      <div className={myEdit.card}>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="name">
+            {user.role === "Donor" ? "Full Name" : "Organization Name"}:
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={profile.name}
+            onChange={handleChange}
+          />
+
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            value={profile.phone}
+            onChange={handleChange}
+          />
+
+          <label htmlFor="address">Address:</label>
+          <textarea
+            id="address"
+            name="address"
+            value={profile.address}
+            onChange={handleChange}
+          />
+
+          <div className={myEdit.buttons}>
+            <button type="submit" className={myEdit.submitBtn} disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+            <button
+              type="button"
+              className={myEdit.cancelBtn}
+              onClick={() => navigate("/profile")}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
