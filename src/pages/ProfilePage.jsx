@@ -33,35 +33,40 @@ export default function ProfilePage() {
     navigate("/");
   };
 
-  if (loading) return <p>Loading profile...</p>;
-  if (!profile) return <p>Profile not found.</p>;
+  if (loading) return <p className={myProfile.loading}>Loading profile...</p>;
+  if (!profile) return <p className={myProfile.error}>Profile not found.</p>;
 
   return (
     <div className={myProfile.container}>
-      <h1>My Profile</h1>
-      <p><strong>Email:</strong> {profile.email}</p>
-      <p><strong>Role:</strong> {profile.role}</p>
+      <h1 className={myProfile.heading}>My Profile</h1>
+
+      <div className={myProfile.card}>
+        <p><strong>Email:</strong> {profile.email}</p>
+        <p><strong>Role:</strong> {profile.role}</p>
+      </div>
 
       {profile.role === "Donor" && (
-        <>
+        <div className={myProfile.card}>
           <p><strong>Full Name:</strong> {profile.full_name}</p>
           <p><strong>Phone:</strong> {profile.phone}</p>
           <p><strong>Address:</strong> {profile.address}</p>
-        </>
+        </div>
       )}
 
       {profile.role === "NGO" && (
-        <>
+        <div className={myProfile.card}>
           <p><strong>Organization Name:</strong> {profile.organization_name}</p>
           <p><strong>Registration Number:</strong> {profile.registration_number}</p>
           <p><strong>Phone:</strong> {profile.phone}</p>
           <p><strong>Address:</strong> {profile.address}</p>
-        </>
+        </div>
       )}
 
       <div className={myProfile.buttons}>
-        <button onClick={() => navigate("/editProfile")}>Edit Profile</button>
-        <button onClick={handleLogout}>{loading ? "Logging out..." : "Logout"}</button>
+        <button className={myProfile.editBtn} onClick={() => navigate("/editProfile")}>Edit Profile</button>
+        <button className={myProfile.logoutBtn} onClick={handleLogout}>
+          {loading ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </div>
   );
