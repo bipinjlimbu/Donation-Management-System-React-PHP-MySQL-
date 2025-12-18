@@ -1,63 +1,128 @@
-.container{
-    max-width: 400px;
-    margin: 120px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.container {
+    max-width: 600px;
+    min-height: 70vh;
+    margin: 50px auto;
+    padding: 30px 25px;
+    background-color: #f5f6fa;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    border: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    box-sizing: border-box;
+}
+
+.heading {
     text-align: center;
-    line-height: 1.6;
-    font-size: 16px;
-    gap: 10px;
-    
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #2c3e50;
 }
-.container h1{
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+
+.card {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
-.container form {
-    display: flex;
-    flex-direction: column;
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
-.container label {
-    margin-bottom: 8px;
-    font-weight: bold;
-    font-size: 20px;
-    color: #555;
+
+.card label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    color: #34495e;
 }
-.container input, .container select {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+
+.card input,
+.card textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #dcdde1;
+    font-size: 1rem;
+    box-sizing: border-box;
+    resize: vertical;
+    transition: border 0.2s;
 }
+
+.card input:focus,
+.card textarea:focus {
+    border-color: #2980b9;
+    outline: none;
+}
+
 .buttons {
     display: flex;
-    justify-content: space-between;
-    margin-left: 37px;
-    gap: 10%;
-    width: 100%;
-    max-width: 100px;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
 }
-.buttons button {
-    padding: 10px;
-    background-color: #007BFF;
+
+.submitBtn {
+    background-color: #2980b9;
     color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
 }
-.buttons button:hover {
-    background-color: #0056b3;
+
+.submitBtn:hover {
+    background-color: #1f6391;
+    transform: translateY(-2px);
+}
+
+.cancelBtn {
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.cancelBtn:hover {
+    background-color: #606c76;
+    transform: translateY(-2px);
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-top: 50px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 20px 15px;
+        padding: 20px 15px;
+    }
+
+    .heading {
+        font-size: 1.7rem;
+    }
+
+    .card input,
+    .card textarea {
+        font-size: 0.95rem;
+    }
+
+    .submitBtn,
+    .cancelBtn {
+        padding: 8px 18px;
+        font-size: 0.95rem;
+    }
 }
