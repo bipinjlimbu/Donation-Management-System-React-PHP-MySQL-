@@ -35,7 +35,7 @@ export default function DonorDashboardPage() {
 
     return (
         <div className={myDashboard.container}>
-            <h1>{user.username} Dashboard</h1>
+            <h1>Donor Dashboard</h1>
 
             <div className={myDashboard.sectionCard}>
                 <h2 className={myDashboard.sectionTitle}>Pending Donation Requests</h2>
