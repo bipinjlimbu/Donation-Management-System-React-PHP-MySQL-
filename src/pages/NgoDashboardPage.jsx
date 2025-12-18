@@ -63,7 +63,7 @@ export default function NgoDashboardPage() {
 
     return (
         <div className={myDashboard.container}>
-            <h1 className={myDashboard.heading}>{user.username} Dashboard</h1>
+            <h1 className={myDashboard.heading}>NGO Dashboard</h1>
 
             <div className={myDashboard.section}>
                 <h2 className={myDashboard.sectionTitle}>
