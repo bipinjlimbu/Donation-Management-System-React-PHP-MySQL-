@@ -33,6 +33,10 @@ const routes = createBrowserRouter([
                 element:<RecordsPage/>
             },
             {
+                path:"/notifications",
+                element:<h1>Notifications Page - Coming Soon!</h1>
+            },
+            {
                 path:"/campaigns",
                 children: [
                     {
