@@ -1,13 +1,13 @@
 import { useAuth } from "../components/AuthContext";
 import AdminDashboardPage from "./AdminDashboardPage";
 import DonorDashboardPage from "./DonorDashboardPage";
+import LoginPage from "./LoginPage";
 import NgoDashboardPage from "./NgoDashboardPage";
-import SignUpPage from "./SignUpPage";
 
 export default function DashboardPage() {
     const { user } = useAuth();
 
-    if (!user) return <SignUpPage />;
+    if (!user) return <LoginPage />;
 
     switch (user.role) {
         case "Admin":
