@@ -17,7 +17,11 @@ if (!$campaignID) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM campaigns WHERE campaign_id = :id AND status = 'Pending'");
+    $stmt = $conn->prepare("
+        SELECT campaign_id, title, ngo_id 
+        FROM campaigns 
+        WHERE campaign_id = :id AND status = 'Pending'
+    ");
     $stmt->bindParam(":id", $campaignID);
     $stmt->execute();
     $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,12 +31,37 @@ try {
         exit;
     }
 
-    $update = $conn->prepare("UPDATE campaigns SET status = 'Approved', approved_at = NOW() WHERE campaign_id = :id");
+    $update = $conn->prepare("
+        UPDATE campaigns 
+        SET status = 'Approved', approved_at = NOW() 
+        WHERE campaign_id = :id
+    ");
     $update->bindParam(":id", $campaignID);
     $update->execute();
 
-    echo json_encode(["success" => true, "message" => "Campaign approved and is now Approved."]);
+    $notify = $conn->prepare("
+        INSERT INTO notifications (user_id, title, message, status, created_at)
+        VALUES (:user_id, :title, :message, 'unread', NOW())
+    ");
+
+    $title = "Campaign Approved";
+    $message = "Your campaign \"{$campaign['title']}\" has been approved and is now live.";
+
+    $notify->bindParam(":user_id", $campaign['ngo_id']);
+    $notify->bindParam(":title", $title);
+    $notify->bindParam(":message", $message);
+    $notify->execute();
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Campaign approved and notification sent."
+    ]);
+
 } catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Database error",
+        "error" => $e->getMessage()
+    ]);
 }
 ?>
