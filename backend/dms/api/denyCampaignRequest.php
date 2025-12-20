@@ -17,7 +17,11 @@ if (!$campaignID) {
 }
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM campaigns WHERE campaign_id = :id AND status = 'Pending'");
+    $stmt = $conn->prepare("
+        SELECT campaign_id, title, ngo_id 
+        FROM campaigns 
+        WHERE campaign_id = :id AND status = 'Pending'
+    ");
     $stmt->bindParam(":id", $campaignID);
     $stmt->execute();
     $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,16 +31,37 @@ try {
         exit;
     }
 
-    $update = $conn->prepare("UPDATE campaigns SET status = 'Denied' WHERE campaign_id = :id");
+    $update = $conn->prepare("
+        UPDATE campaigns 
+        SET status = 'Denied' 
+        WHERE campaign_id = :id
+    ");
     $update->bindParam(":id", $campaignID);
     $update->execute();
 
-    echo json_encode(["success" => true, "message" => "Campaign request denied successfully."]);
+    $notify = $conn->prepare("
+        INSERT INTO notifications (user_id, title, message, status, created_at)
+        VALUES (:user_id, :title, :message, 'unread', NOW())
+    ");
+
+    $title = "Campaign Denied";
+    $message = "Your campaign \"{$campaign['title']}\" was denied by the admin.";
+
+    $notify->bindParam(":user_id", $campaign['ngo_id']);
+    $notify->bindParam(":title", $title);
+    $notify->bindParam(":message", $message);
+    $notify->execute();
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Campaign denied and notification sent."
+    ]);
 
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error: " . $e->getMessage()
+        "message" => "Database error",
+        "error" => $e->getMessage()
     ]);
 }
 ?>
