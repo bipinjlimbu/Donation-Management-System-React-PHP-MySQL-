@@ -8,14 +8,17 @@ export default function NotificationsPage() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showAll, setShowAll] = useState(false);
+
     useEffect(() => {
         if (user?.user_id) {
             const fetchNotifications = async () => {
                 setLoading(true);
                 setError(null);
                 try {
-                    const res = await axios.get(
-                        `http://localhost/dms/api/fetchNotifications.php?user_id=${user.user_id}`
+                    const res = await axios.post(
+                        "http://localhost/dms/api/fetchNotifications.php",
+                        { user_id: user.user_id }
                     );
                     if (res.data.success) {
                         setNotifications(res.data.notifications || []);
@@ -34,14 +37,8 @@ export default function NotificationsPage() {
     }, [user]);
 
     if (!user) return <LoginPage />;
-    else{
-        return (
-            <div>
-                <h1>Notifications</h1>
 
-                <h2> Your Notifications </h2>
-
-            </div>
-        );
-    }
+    return (
+            <h1>Notifications</h1>
+    );
 }
