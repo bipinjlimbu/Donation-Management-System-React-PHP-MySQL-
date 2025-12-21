@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import LoginPage from "./LoginPage";
 import axios from "axios";
+import myNotify from "../style/NotificationsPage.module.css";
 
 export default function NotificationsPage() {
     const { user } = useAuth();
@@ -9,7 +10,6 @@ export default function NotificationsPage() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [selectedNotification, setSelectedNotification] = useState(null);
 
     useEffect(() => {
@@ -39,21 +39,26 @@ export default function NotificationsPage() {
 
     if (!user) return <LoginPage />;
     if (loading) return <p>Loading notifications...</p>;
-    if (error) return <p style={{ color: "red" }}>{error}</p>;
+    if (error) return <p className={myNotify.error}>{error}</p>;
 
     return (
-        <div>
-            <h1>Notifications</h1>
+        <div className={myNotify.container}>
+            <h1 className={myNotify.heading}>Notifications</h1>
 
             {notifications.length === 0 ? (
-                <p>No notifications available.</p>
+                <p className={myNotify.empty}>No notifications available.</p>
             ) : (
-                <ul>
+                <ul className={myNotify.list}>
                     {notifications.map((n) => (
-                        <li key={n.notification_id} style={{ marginBottom: "12px" }}>
-                            <strong>{n.title}</strong>
-                            <br />
-                            <button onClick={() => setSelectedNotification(n)}>
+                        <li key={n.notification_id} className={myNotify.card}>
+                            <div>
+                                <h3 className={myNotify.title}>{n.title}</h3>
+                                <span className={myNotify.date}>{n.created_at}</span>
+                            </div>
+                            <button
+                                className={myNotify.viewBtn}
+                                onClick={() => setSelectedNotification(n)}
+                            >
                                 View
                             </button>
                         </li>
@@ -62,12 +67,15 @@ export default function NotificationsPage() {
             )}
 
             {selectedNotification && (
-                <div style={overlayStyle}>
-                    <div style={modalStyle}>
-                        <h3>{selectedNotification.title}</h3>
+                <div className={myNotify.overlay}>
+                    <div className={myNotify.modal}>
+                        <h2>{selectedNotification.title}</h2>
                         <p>{selectedNotification.message}</p>
 
-                        <button onClick={() => setSelectedNotification(null)}>
+                        <button
+                            className={myNotify.closeBtn}
+                            onClick={() => setSelectedNotification(null)}
+                        >
                             Close
                         </button>
                     </div>
