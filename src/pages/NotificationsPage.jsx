@@ -27,7 +27,8 @@ export default function NotificationsPage() {
                     } else {
                         setError(res.data.message || "No notifications found.");
                     }
-                } catch {
+                } catch (err) {
+                    console.error(err);
                     setError("Failed to connect to the server.");
                 } finally {
                     setLoading(false);
@@ -40,23 +41,26 @@ export default function NotificationsPage() {
     const handleView = async (notification) => {
         setSelectedNotification(notification);
 
-        if (notification.status === "Read") return;
+        // Only mark as read if currently unread
+        if (notification.status === "unread") {
+            try {
+                const res = await axios.post(
+                    "http://localhost/dms/api/markNotificationRead.php",
+                    { notification_id: notification.notification_id }
+                );
 
-        try {
-            await axios.post(
-                "http://localhost/dms/api/markNotificationRead.php",
-                { notification_id: notification.id }
-            );
-
-            setNotifications(prev =>
-                prev.map(n =>
-                    n.id === notification.id
-                        ? { ...n, status: "Read" }
-                        : n
-                )
-            );
-        } catch (err) {
-            console.error("Failed to mark notification as read", err);
+                if (res.data.success) {
+                    setNotifications(prev =>
+                        prev.map(n =>
+                            n.notification_id === notification.notification_id
+                                ? { ...n, status: "read" }
+                                : n
+                        )
+                    );
+                }
+            } catch (err) {
+                console.error("Failed to mark notification as read", err);
+            }
         }
     };
 
@@ -76,10 +80,8 @@ export default function NotificationsPage() {
             <div className={styles.list}>
                 {notifications.map((n) => (
                     <div
-                        key={n.id}
-                        className={`${styles.card} ${
-                            n.status === "Unread" ? styles.unread : ""
-                        }`}
+                        key={n.notification_id}
+                        className={`${styles.card} ${n.status === "unread" ? styles.unread : ""}`}
                     >
                         <div className={styles.text}>
                             <h3 className={styles.title}>{n.title}</h3>
@@ -108,9 +110,7 @@ export default function NotificationsPage() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h2>{selectedNotification.title}</h2>
-                        <p className={styles.modalMsg}>
-                            {selectedNotification.message}
-                        </p>
+                        <p className={styles.modalMsg}>{selectedNotification.message}</p>
                         <button
                             className={styles.closeBtn}
                             onClick={() => setSelectedNotification(null)}
