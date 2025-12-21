@@ -21,6 +21,7 @@ export default function NotificationsPage() {
                         "http://localhost/dms/api/fetchNotifications.php",
                         { user_id: user.user_id }
                     );
+
                     if (res.data.success) {
                         setNotifications(res.data.notifications || []);
                     } else {
@@ -35,6 +36,29 @@ export default function NotificationsPage() {
             fetchNotifications();
         }
     }, [user]);
+
+    const handleView = async (notification) => {
+        setSelectedNotification(notification);
+
+        if (notification.status === "Read") return;
+
+        try {
+            await axios.post(
+                "http://localhost/dms/api/markNotificationRead.php",
+                { notification_id: notification.id }
+            );
+
+            setNotifications(prev =>
+                prev.map(n =>
+                    n.id === notification.id
+                        ? { ...n, status: "Read" }
+                        : n
+                )
+            );
+        } catch (err) {
+            console.error("Failed to mark notification as read", err);
+        }
+    };
 
     if (!user) return <LoginPage />;
 
@@ -51,7 +75,12 @@ export default function NotificationsPage() {
 
             <div className={styles.list}>
                 {notifications.map((n) => (
-                    <div key={n.id} className={styles.card}>
+                    <div
+                        key={n.id}
+                        className={`${styles.card} ${
+                            n.status === "Unread" ? styles.unread : ""
+                        }`}
+                    >
                         <div className={styles.text}>
                             <h3 className={styles.title}>{n.title}</h3>
                             <p className={styles.date}>
@@ -61,7 +90,7 @@ export default function NotificationsPage() {
 
                         <button
                             className={styles.viewBtn}
-                            onClick={() => setSelectedNotification(n)}
+                            onClick={() => handleView(n)}
                         >
                             View
                         </button>
