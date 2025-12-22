@@ -41,7 +41,6 @@ export default function NotificationsPage() {
     const handleView = async (notification) => {
         setSelectedNotification(notification);
 
-        // Only mark as read if currently unread
         if (notification.status === "unread") {
             try {
                 const res = await axios.post(
