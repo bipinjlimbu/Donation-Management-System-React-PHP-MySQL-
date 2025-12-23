@@ -80,6 +80,38 @@ export default function HomePage() {
                 </div>
             </div>
         </section>
+
+        <section className={myHome.latestCampaignsSection}>
+            <h2 className={myHome.sectionTitle}>Latest Campaigns</h2>
+            <div className={myHome.campaignCards}>
+                {campaigns.slice(0, 4).map(campaign => (
+                <div key={campaign.campaign_id} className={myHome.campaignCard}>
+                    <div className={myHome.cardHeader}>
+                    <h3>{campaign.title}</h3>
+                    <span className={`${myHome.statusBadge} ${myHome[campaign.status.toLowerCase()]}`}>
+                        {campaign.status}
+                    </span>
+                    </div>
+                    <p className={myHome.cardDescription}>{campaign.description}</p>
+                    <div className={myHome.cardFooter}>
+                    <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
+                    <p><strong>Collected:</strong> {campaign.collected_quantity} {campaign.unit}</p>
+                    </div>
+                    <button 
+                    className={myHome.viewDetailsBtn} 
+                    onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}
+                    >
+                    View Details
+                    </button>
+                </div>
+                ))}
+            </div>
+
+            <button className={myHome.moreCampaignsBtn} onClick={() => navigate("/campaigns")}>
+                View All Campaigns
+            </button>
+        </section>
+
         </div>
     )
 }
