@@ -113,6 +113,46 @@ export default function HomePage() {
             </button>
         </section>
 
+        <section className={myHome.howItWorks}>
+            <h2 className={myHome.sectionTitle}>How It Works</h2>
+            <div className={myHome.stepsContainer}>
+
+                <div className={myHome.stepCard}>
+                <div className={myHome.stepIcon}>📦</div>
+                <h3 className={myHome.stepTitle}>Select a Campaign</h3>
+                <p className={myHome.stepDescription}>
+                    Browse through trusted NGO campaigns and choose the one you want to support.
+                </p>
+                </div>
+
+                <div className={myHome.stepCard}>
+                <div className={myHome.stepIcon}>✍️</div>
+                <h3 className={myHome.stepTitle}>Make a Donation</h3>
+                <p className={myHome.stepDescription}>
+                    Donate items or funds securely through our platform with ease.
+                </p>
+                </div>
+
+                <div className={myHome.stepCard}>
+                <div className={myHome.stepIcon}>🤝</div>
+                <h3 className={myHome.stepTitle}>Track Your Impact</h3>
+                <p className={myHome.stepDescription}>
+                    See your donations reach those in need and track your contribution history.
+                </p>
+                </div>
+
+                <div className={myHome.stepCard}>
+                <div className={myHome.stepIcon}>🌟</div>
+                <h3 className={myHome.stepTitle}>Make a Difference</h3>
+                <p className={myHome.stepDescription}>
+                    Feel the joy of giving and help NGOs achieve their goals efficiently.
+                </p>
+                </div>
+
+            </div>
+        </section>
+
+
         </div>
     )
 }
