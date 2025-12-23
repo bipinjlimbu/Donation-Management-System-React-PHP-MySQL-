@@ -59,43 +59,27 @@ export default function HomePage() {
             </div>
         </section>
 
-            <div className={myHome.features}>
-                <h2> Features </h2>
-                <div className={myHome.featureList}>
-                    <div className={myHome.featureItem}>
-                        <h3> For Donors </h3>
-                        <p> Easily donate items to NGOs, track your donation history, and stay informed about the impact of your contributions. </p>
-                    </div>
-                    <div className={myHome.featureItem}>
-                        <h3> For NGOs </h3>
-                        <p> Manage donation campaigns, track incoming donations, and maintain transparent records for donors and stakeholders. </p>
-                    </div>
-                    <div className={myHome.featureItem}>
-                        <h3> User Authentication </h3>
-                        <p> Secure login and registration system to protect user data. </p>
-                    </div>
+        <section className={myHome.impactSection}>
+            <h2 className={myHome.sectionTitle}>Our Impact So Far</h2>
+            <div className={myHome.impactCards}>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>1,250</h3>
+                <p className={myHome.impactLabel}>Items Donated</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>120</h3>
+                <p className={myHome.impactLabel}>Verified NGOs</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>500+</h3>
+                <p className={myHome.impactLabel}>Active Donors</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>75</h3>
+                <p className={myHome.impactLabel}>Active Campaigns</p>
                 </div>
             </div>
-
-            <div className={myHome.overview}>
-                <h2> Overview </h2>
-                <p> ShareHope is dedicated to bridging the gap between donors and NGOs. Our platform simplifies the donation process, ensuring that contributions reach those in need efficiently. Whether you're an individual looking to make a difference or an NGO aiming to streamline your operations, ShareHope provides the tools you need to succeed. Join us in making the world a better place, one donation at a time. </p>
-            </div>
-
-            <div className={myHome.latestCampaigns}>
-                <h2> Latest Campaigns </h2>
-                <div className={myHome.campaigns}>
-                    {campaigns.slice(0, 3).map(campaign =>(
-                        <div key={campaign.campaign_id} className={myHome.campaignCard}>
-                            <h3> {campaign.title} </h3>
-                            <p> {campaign.description} </p>
-                            <p> <strong> Status: </strong>{campaign.status} </p>
-                            <button onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}>View Details</button>
-                        </div>
-                    ))}
-                </div> 
-                <button onClick={() => navigate("/campaigns")} className={myHome.moreButton}> View All Campaigns </button> 
-            </div>
+        </section>
         </div>
     )
 }
