@@ -29,28 +29,32 @@ export default function HomePage() {
         <div className={myHome.container}>
         <section className={myHome.hero}>
             <div className={myHome.heroOverlay}>
-                <h1 className={myHome.heroTitle}>Welcome to ShareHope</h1>
-
+                <h1 className={myHome.heroTitle}>
+                Welcome to <span className={myHome.heroHighlight}>ShareHope</span>
+                </h1>
                 <p className={myHome.heroSubtitle}>
-                    Donate with purpose through trusted NGO campaigns
+                Donate with purpose through trusted NGO campaigns
+                </p>
+
+                <p className={myHome.heroImpact}>
+                Trusted by <span>500+</span> donors and <span>120+</span> NGOs
                 </p>
 
                 <div className={myHome.heroButtons}>
+                <button
+                    className={myHome.primaryBtn}
+                    onClick={() => navigate("/campaigns")}
+                >
+                    Browse Campaigns
+                </button>
+                {!user && (
                     <button
-                        className={myHome.primaryBtn}
-                        onClick={() => navigate("/campaigns")}
+                    className={myHome.secondaryBtn}
+                    onClick={() => navigate("/signup")}
                     >
-                        Browse Campaigns
+                    Get Started
                     </button>
-
-                    {!user && (
-                        <button
-                            className={myHome.secondaryBtn}
-                            onClick={() => navigate("/signup")}
-                        >
-                            Get Started
-                        </button>
-                    )}
+                )}
                 </div>
             </div>
         </section>
