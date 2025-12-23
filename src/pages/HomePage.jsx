@@ -27,20 +27,33 @@ export default function HomePage() {
 
     return (
         <div className={myHome.container}>
-            <div className={myHome.home}>
-                <h1> Welcome to ShareHope </h1>
-                <p> This platform helps NGOs track item donations, monitor campaigns, and maintain transparent donor records all in one place. You can also donate items easily and make a meaningful impact. </p>
-                {!user? (
-                    <div className={myHome.authButtons}>
-                        <button onClick={() => navigate("/login")}> Login </button>
-                        <button onClick={() => navigate("/signup")}> Register </button>
-                    </div>
-                ):(
-                    <div className={myHome.authButtons}>
-                        <button onClick={() => navigate("/profile")}> View Profile </button>
-                    </div>
-                )}
+        <section className={myHome.hero}>
+            <div className={myHome.heroOverlay}>
+                <h1 className={myHome.heroTitle}>Welcome to ShareHope</h1>
+
+                <p className={myHome.heroSubtitle}>
+                    Donate with purpose through trusted NGO campaigns
+                </p>
+
+                <div className={myHome.heroButtons}>
+                    <button
+                        className={myHome.primaryBtn}
+                        onClick={() => navigate("/campaigns")}
+                    >
+                        Browse Campaigns
+                    </button>
+
+                    {!user && (
+                        <button
+                            className={myHome.secondaryBtn}
+                            onClick={() => navigate("/signup")}
+                        >
+                            Get Started
+                        </button>
+                    )}
+                </div>
             </div>
+        </section>
 
             <div className={myHome.features}>
                 <h2> Features </h2>
