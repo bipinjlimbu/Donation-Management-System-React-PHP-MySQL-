@@ -113,3 +113,76 @@
         padding: 40px 20px;
     }
 }
+
+.impactSection {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: #f8f9fa; 
+}
+
+.sectionTitle {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    margin-bottom: 50px;
+    color: #2c3e50;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeInUp 1s forwards;
+}
+
+.impactCards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.impactCard {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 15px;
+    min-width: 150px;
+    max-width: 200px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    animation: fadeInUp 1s forwards;
+}
+
+.impactCard:nth-child(1) { animation-delay: 0.2s; }
+.impactCard:nth-child(2) { animation-delay: 0.4s; }
+.impactCard:nth-child(3) { animation-delay: 0.6s; }
+.impactCard:nth-child(4) { animation-delay: 0.8s; }
+
+.impactCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.impactNumber {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+.impactLabel {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .impactCards {
+        gap: 20px;
+    }
+
+    .impactCard {
+        min-width: 120px;
+        max-width: 150px;
+        padding: 20px 15px;
+    }
+}
