@@ -86,13 +86,14 @@ export default function HomePage() {
             <div className={myHome.campaignCards}>
                 {campaigns.slice(0, 4).map(campaign => (
                 <div key={campaign.campaign_id} className={myHome.campaignCard}>
-                    <div className={myHome.cardHeader}>
-                    <h3>{campaign.title}</h3>
-                    <span className={`${myHome.statusBadge} ${myHome[campaign.status.toLowerCase()]}`}>
-                        {campaign.status}
-                    </span>
-                    </div>
+                    <h3 className={myHome.cardTitle}>{campaign.title}</h3>
                     <p className={myHome.cardDescription}>{campaign.description}</p>
+
+                    {/* Status Badge below description */}
+                    <span className={`${myHome.statusBadge} ${myHome[campaign.status.toLowerCase()]}`}>
+                    {campaign.status}
+                    </span>
+
                     <div className={myHome.cardFooter}>
                     <p><strong>Target:</strong> {campaign.target_quantity} {campaign.unit}</p>
                     <p><strong>Collected:</strong> {campaign.collected_quantity} {campaign.unit}</p>
