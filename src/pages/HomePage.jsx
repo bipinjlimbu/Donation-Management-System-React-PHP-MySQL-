@@ -150,32 +150,26 @@ export default function HomePage() {
         </div>
         </section>
 
-        <section className={myHome.impact}>
-        <h2 className={myHome.sectionTitle}>Our Impact</h2>
-
-        <div className={myHome.impactGrid}>
-
-            <div className={myHome.impactCard}>
-            <h3>120+</h3>
-            <p>Active Campaigns</p>
+        <section className={myHome.impactSection}>
+            <h2 className={myHome.sectionTitle}>Our Impact So Far</h2>
+            <div className={myHome.impactCards}>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>1,250</h3>
+                <p className={myHome.impactLabel}>Items Donated</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>120</h3>
+                <p className={myHome.impactLabel}>Verified NGOs</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>500+</h3>
+                <p className={myHome.impactLabel}>Active Donors</p>
+                </div>
+                <div className={myHome.impactCard}>
+                <h3 className={myHome.impactNumber}>75</h3>
+                <p className={myHome.impactLabel}>Active Campaigns</p>
+                </div>
             </div>
-
-            <div className={myHome.impactCard}>
-            <h3>850+</h3>
-            <p>Donations Made</p>
-            </div>
-
-            <div className={myHome.impactCard}>
-            <h3>45+</h3>
-            <p>Verified NGOs</p>
-            </div>
-
-            <div className={myHome.impactCard}>
-            <h3>3000+</h3>
-            <p>Items Collected</p>
-            </div>
-
-        </div>
         </section>
 
         <section className={myHome.latestCampaignsSection}>
