@@ -242,6 +242,42 @@ export default function HomePage() {
             </div>
         </section>
 
+        <section className={myHome.trust}>
+        <h2 className={myHome.sectionTitle}>Trust & Transparency</h2>
+
+        <div className={myHome.trustGrid}>
+
+            <div className={myHome.trustCard}>
+            <h3>Verified NGOs</h3>
+            <p>
+                All NGOs are verified by admins before they can create campaigns.
+            </p>
+            </div>
+
+            <div className={myHome.trustCard}>
+            <h3>Admin Approved Campaigns</h3>
+            <p>
+                Every campaign goes through an approval process to ensure authenticity.
+            </p>
+            </div>
+
+            <div className={myHome.trustCard}>
+            <h3>Transparent Tracking</h3>
+            <p>
+                Donors can track donation status from request to delivery.
+            </p>
+            </div>
+
+            <div className={myHome.trustCard}>
+            <h3>Real-time Notifications</h3>
+            <p>
+                Users receive notifications for approvals, donations, and updates.
+            </p>
+            </div>
+
+        </div>
+        </section>
+
 
         </div>
     )
