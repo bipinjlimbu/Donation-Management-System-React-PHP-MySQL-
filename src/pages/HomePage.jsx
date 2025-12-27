@@ -130,7 +130,6 @@ export default function HomePage() {
                     <h3 className={myHome.cardTitle}>{campaign.title}</h3>
                     <p className={myHome.cardDescription}>{campaign.description}</p>
 
-                    {/* Status Badge below description */}
                     <span className={`${myHome.statusBadge} ${myHome[campaign.status.toLowerCase()]}`}>
                     {campaign.status}
                     </span>
