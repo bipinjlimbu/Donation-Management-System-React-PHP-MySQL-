@@ -278,6 +278,32 @@ export default function HomePage() {
         </div>
         </section>
 
+        <section className={myHome.cta}>
+        <h2>Ready to Make a Difference?</h2>
+
+        <p>
+            Join ShareHope today and help NGOs reach communities in need through
+            transparent and impactful donations.
+        </p>
+
+        <div className={myHome.ctaButtons}>
+            <button
+            className={myHome.ctaPrimary}
+            onClick={() => navigate("/campaigns")}
+            >
+            Browse Campaigns
+            </button>
+
+            {!user && (
+            <button
+                className={myHome.ctaSecondary}
+                onClick={() => navigate("/signup")}
+            >
+                Get Started
+            </button>
+            )}
+        </div>
+        </section>
 
         </div>
     )
