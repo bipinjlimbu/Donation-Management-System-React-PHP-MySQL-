@@ -445,3 +445,42 @@
     transform: translateY(-6px);
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
 }
+
+.features {
+    padding: 90px 20px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.featureCard {
+    background-color: #f9fafb;
+    padding: 35px 30px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.featureCard h3 {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+.featureCard p {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.featureCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
