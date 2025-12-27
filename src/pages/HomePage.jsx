@@ -99,6 +99,56 @@ export default function HomePage() {
             </div>
         </section>
 
+        <section className={myHome.features}>
+        <h2 className={myHome.sectionTitle}>Platform Features</h2>
+
+        <div className={myHome.featuresGrid}>
+
+            <div className={myHome.featureCard}>
+            <h3>Easy Item Donations</h3>
+            <p>
+                Donate essential items directly to NGO campaigns with full transparency
+                and tracking.
+            </p>
+            </div>
+
+            <div className={myHome.featureCard}>
+            <h3>Campaign Management</h3>
+            <p>
+                NGOs can create, manage, and track donation campaigns efficiently in one place.
+            </p>
+            </div>
+
+            <div className={myHome.featureCard}>
+            <h3>Notifications System</h3>
+            <p>
+                Stay updated with real-time notifications on approvals, donations, and updates.
+            </p>
+            </div>
+
+            <div className={myHome.featureCard}>
+            <h3>Secure Authentication</h3>
+            <p>
+                Role-based access for Donors, NGOs, and Admins ensures data safety.
+            </p>
+            </div>
+
+            <div className={myHome.featureCard}>
+            <h3>Donation Tracking</h3>
+            <p>
+                Monitor donation status from request to delivery with complete visibility.
+            </p>
+            </div>
+
+            <div className={myHome.featureCard}>
+            <h3>Admin Verification</h3>
+            <p>
+                Campaigns and users are verified by admins to ensure platform trust.
+            </p>
+            </div>
+
+        </div>
+        </section>
 
         <section className={myHome.impactSection}>
             <h2 className={myHome.sectionTitle}>Our Impact So Far</h2>
