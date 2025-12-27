@@ -59,6 +59,47 @@ export default function HomePage() {
             </div>
         </section>
 
+        <section className={myHome.quickAccess}>
+            <h2 className={myHome.sectionTitle}>Quick Access</h2>
+
+            <div className={myHome.quickGrid}>
+
+                <div
+                className={myHome.quickCard}
+                onClick={() => navigate("/dashboard")}
+                >
+                <h3>Dashboard</h3>
+                <p>View your activity and account overview</p>
+                </div>
+
+                <div
+                className={myHome.quickCard}
+                onClick={() => navigate("/notifications")}
+                >
+                <h3>Notifications</h3>
+                <p>Check approvals, updates, and alerts</p>
+                </div>
+
+                <div
+                className={myHome.quickCard}
+                onClick={() => navigate("/donations")}
+                >
+                <h3>My Donations</h3>
+                <p>Track your donation history</p>
+                </div>
+
+                <div
+                className={myHome.quickCard}
+                onClick={() => navigate("/campaigns")}
+                >
+                <h3>Campaigns</h3>
+                <p>Browse or manage donation campaigns</p>
+                </div>
+
+            </div>
+        </section>
+
+
         <section className={myHome.impactSection}>
             <h2 className={myHome.sectionTitle}>Our Impact So Far</h2>
             <div className={myHome.impactCards}>
