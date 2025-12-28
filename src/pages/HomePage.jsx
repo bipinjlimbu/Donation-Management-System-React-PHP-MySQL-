@@ -305,6 +305,46 @@ export default function HomePage() {
         </div>
         </section>
 
+        <section className={myHome.testimonials}>
+        <h2 className={myHome.sectionTitle}>What People Say About Us</h2>
+
+        <div className={myHome.testimonialGrid}>
+            {testimonials.length === 0 ? (
+            <p className={myHome.noTestimonials}>
+                No testimonials available yet.
+            </p>
+            ) : (
+            testimonials.map(testimonial => (
+                <div
+                key={testimonial.testimonial_id}
+                className={myHome.testimonialCard}
+                >
+                <p className={myHome.testimonialMessage}>
+                    “{testimonial.message}”
+                </p>
+
+                <div className={myHome.testimonialFooter}>
+                    <span className={myHome.testimonialName}>
+                    {testimonial.name}
+                    </span>
+
+                    <span className={myHome.testimonialRole}>
+                    {testimonial.role}
+                    </span>
+                </div>
+
+                {testimonial.rating && (
+                    <div className={myHome.testimonialRating}>
+                    {"★".repeat(testimonial.rating)}
+                    {"☆".repeat(5 - testimonial.rating)}
+                    </div>
+                )}
+                </div>
+            ))
+            )}
+        </div>
+        </section>
+
         </div>
     )
 }
