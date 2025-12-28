@@ -10,6 +10,7 @@ export default function HomePage() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [campaigns, setCampaigns] = useState([]);
+    const [testimonials, setTestimonials] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost/dms/api/campaigns.php')
@@ -23,6 +24,21 @@ export default function HomePage() {
             .catch(err => {
                 console.error('Failed to fetch campaigns:', err);
             });
+    }, []);
+
+    useEffect(() => {
+    axios
+        .get("http://localhost/dms/api/testimonials.php")
+        .then(res => {
+        if (res.data.success) {
+            setTestimonials(res.data.testimonials);
+        } else {
+            console.error(res.data.message || "Failed to load testimonials");
+        }
+        })
+        .catch(err => {
+        console.error("Failed to fetch testimonials:", err);
+        });
     }, []);
 
     return (
@@ -278,33 +294,6 @@ export default function HomePage() {
         </div>
         </section>
 
-        <section className={myHome.cta}>
-        <h2>Ready to Make a Difference?</h2>
-
-        <p>
-            Join ShareHope today and help NGOs reach communities in need through
-            transparent and impactful donations.
-        </p>
-
-        <div className={myHome.ctaButtons}>
-            <button
-            className={myHome.ctaPrimary}
-            onClick={() => navigate("/campaigns")}
-            >
-            Browse Campaigns
-            </button>
-
-            {!user && (
-            <button
-                className={myHome.ctaSecondary}
-                onClick={() => navigate("/signup")}
-            >
-                Get Started
-            </button>
-            )}
-        </div>
-        </section>
-
         <section className={myHome.testimonials}>
         <h2 className={myHome.sectionTitle}>What People Say About Us</h2>
 
@@ -341,6 +330,33 @@ export default function HomePage() {
                 )}
                 </div>
             ))
+            )}
+        </div>
+        </section>
+
+        <section className={myHome.cta}>
+        <h2>Ready to Make a Difference?</h2>
+
+        <p>
+            Join ShareHope today and help NGOs reach communities in need through
+            transparent and impactful donations.
+        </p>
+
+        <div className={myHome.ctaButtons}>
+            <button
+            className={myHome.ctaPrimary}
+            onClick={() => navigate("/campaigns")}
+            >
+            Browse Campaigns
+            </button>
+
+            {!user && (
+            <button
+                className={myHome.ctaSecondary}
+                onClick={() => navigate("/signup")}
+            >
+                Get Started
+            </button>
             )}
         </div>
         </section>
