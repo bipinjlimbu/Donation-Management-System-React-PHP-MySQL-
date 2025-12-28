@@ -98,7 +98,7 @@ export default function HomePage() {
 
                 <div
                 className={myHome.quickCard}
-                onClick={() => navigate("/donations")}
+                onClick={() => navigate("/records")}
                 >
                 <h3>My Donations</h3>
                 <p>Track your donation history</p>
