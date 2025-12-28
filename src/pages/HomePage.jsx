@@ -303,7 +303,7 @@ export default function HomePage() {
                 No testimonials available yet.
             </p>
             ) : (
-            testimonials.map(testimonial => (
+            testimonials.slice(0, 3).map(testimonial => (
                 <div
                 key={testimonial.testimonial_id}
                 className={myHome.testimonialCard}
@@ -331,6 +331,24 @@ export default function HomePage() {
                 </div>
             ))
             )}
+        </div>
+
+        <div className={myHome.testimonialActions}>
+            {user && (
+            <button
+                className={myHome.primaryBtn}
+                onClick={() => navigate("/testimonials/create")}
+            >
+                Write a Testimonial
+            </button>
+            )}
+
+            <button
+            className={myHome.secondaryBtn}
+            onClick={() => navigate("/testimonials")}
+            >
+            View All Testimonials
+            </button>
         </div>
         </section>
 
