@@ -15,6 +15,8 @@ import DashboardPage from "./pages/DashboardPage";
 import CreateCampaignPage from "./pages/CreateCampaignPage";
 import RecordsPage from "./pages/RecordsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import TestimonialPage from "./pages/TestimonialPage";
+import CreateTestimonialPage from "./pages/CreateTestimonialPage";
 
 const routes = createBrowserRouter([
     {
@@ -67,11 +69,11 @@ const routes = createBrowserRouter([
                 children:[
                     {
                         index:true,
-                        element:<h1>Testimonials Page</h1>
+                        element:<TestimonialPage/>
                     },
                     {
                         path:"create",
-                        element:<h1>Create Testimonial Page</h1>
+                        element:<CreateTestimonialPage/>
                     }
                 ]
             },
