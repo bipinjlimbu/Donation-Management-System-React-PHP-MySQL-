@@ -63,6 +63,19 @@ const routes = createBrowserRouter([
                 element:<EditCampaignPage/>
             },
             {
+                path:"/testimonials",
+                children:[
+                    {
+                        index:true,
+                        element:<h1>Testimonials Page</h1>
+                    },
+                    {
+                        path:"create",
+                        element:<h1>Create Testimonial Page</h1>
+                    }
+                ]
+            },
+            {
                 path:"/contact",
                 element:<ContactPage/>,
             },
