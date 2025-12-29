@@ -10,25 +10,28 @@ export default function AdminDashboardPage() {
 
     const [signupRequests, setSignupRequests] = useState([]);
     const [userRequests, setUserRequests] = useState([]);
-       const [campaignRequests, setCampaignRequests] = useState([]);
+    const [campaignRequests, setCampaignRequests] = useState([]);
     const [records, setRecords] = useState([]);
+    const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [signRes, userRes, campRes, historyRes] = await Promise.all([
+                const [signRes, userRes, campRes, historyRes, testRes] = await Promise.all([
                     axios.get("http://localhost/dms/api/fetchSignupRequests.php"),
                     axios.get("http://localhost/dms/api/fetchUserRequests.php"),
                     axios.get("http://localhost/dms/api/fetchCampaignRequests.php"),
-                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`)
+                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
+                    axios.get("http://localhost/dms/api/fetchTestimonials.php")
                 ]);
 
                 if (signRes.data.success) setSignupRequests(signRes.data.requests);
                 if (userRes.data.success) setUserRequests(userRes.data.requests);
                 if (campRes.data.success) setCampaignRequests(campRes.data.requests);
                 if (historyRes.data.success) setRecords(historyRes.data.donations);
+                if (testRes.data.success) setTestimonials(testRes.data.testimonials);
 
             } catch {
                 setError("Failed loading admin dashboard data.");
@@ -238,6 +241,53 @@ export default function AdminDashboardPage() {
                         </tbody>
                     </table>
                 ) : <p>No campaign requests.</p>}
+            </div>
+
+             <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>Pending Testimonials</h2>
+
+                {testimonials.length > 0 ? (
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Message</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Submitted At</th>
+                                <th>Approve</th>
+                                <th>Deny</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {testimonials.map(t => (
+                                <tr key={t.testimonial_id}>
+                                    <td>{t.email}</td>
+                                    <td>{t.role}</td>
+                                    <td>{t.message}</td>
+                                    <td>{t.rating}</td>
+                                    <td>{t.status}</td>
+                                    <td>{t.created_at}</td>
+
+                                    <td>
+                                        <button className={styles.approveBtn}
+                                            onClick={() => handleTestimonialApprove(t.testimonial_id)}>
+                                            Approve
+                                        </button>
+                                    </td>
+
+                                    <td>
+                                        <button className={styles.denyBtn}
+                                            onClick={() => handleTestimonialDeny(t.testimonial_id)}>
+                                            Deny
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : <p>No pending testimonials.</p>}
             </div>
 
             <div className={styles.section}>
