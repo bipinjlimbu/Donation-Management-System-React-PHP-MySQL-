@@ -16,6 +16,7 @@ export default function Navbar() {
                 <Link to="/records">Records</Link>
                 <Link to="/notifications">Notifications</Link>
                 <Link to="/campaigns">Campaigns</Link>
+                <Link to="/testimonials">Testimonials</Link>
                 <Link to="/contact">Contact</Link>
                 <Link to="/about">About</Link>
             </nav>
