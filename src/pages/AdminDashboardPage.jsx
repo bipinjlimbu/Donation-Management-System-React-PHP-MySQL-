@@ -79,6 +79,18 @@ export default function AdminDashboardPage() {
             setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
     };
 
+    const handleTestimonialApprove = async (id) => {
+        const res = await axios.post("http://localhost/dms/api/approveTestimonial.php", { testimonial_id: id });
+        if (res.data.success)
+            setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
+    };
+
+    const handleTestimonialDeny = async (id) => {
+        const res = await axios.post("http://localhost/dms/api/denyTestimonial.php", { testimonial_id: id });
+        if (res.data.success)
+            setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
+    };
+
     if (loading) return <p>Loading Admin Dashboard...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
 
