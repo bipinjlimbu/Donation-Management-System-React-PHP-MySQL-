@@ -9,7 +9,8 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
-    $stmt = $conn->prepare("SELECT * FROM testimonials ORDER BY created_at DESC");
+    $stmt = $conn->prepare("SELECT * FROM testimonials
+                                    WHERE status = 'Approved' ORDER BY created_at DESC");
     $stmt->execute();
     $testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
