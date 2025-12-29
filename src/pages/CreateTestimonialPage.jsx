@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import myTestimonials from "../style/CreateTestimonialPage.module.css";
 
 export default function CreateTestimonialPage() {
     const { user } = useAuth();
@@ -18,7 +19,7 @@ export default function CreateTestimonialPage() {
         }
 
         try {
-            const res = await axios.post("http://localhost/dms/api/createtestimonials.php", {
+            const res = await axios.post("http://localhost/dms/api/testimonials_create.php", {
                 user_id: user.user_id,
                 message,
                 rating
@@ -36,27 +37,29 @@ export default function CreateTestimonialPage() {
     };
 
     return (
-        <div>
-            <h1>Create Testimonial</h1>
+        <div className={myTestimonials.page}>
+            <h1 className={myTestimonials.title}>Create Testimonial</h1>
 
-            {error && <p>{error}</p>}
+            {error && <p className={myTestimonials.error}>{error}</p>}
 
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form onSubmit={handleSubmit} className={myTestimonials.form}>
+                <label className={myTestimonials.label}>
                     Your Message:
                     <textarea
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         rows="5"
                         required
+                        className={myTestimonials.textarea}
                     />
                 </label>
 
-                <label>
+                <label className={myTestimonials.label}>
                     Rating:
                     <select
                         value={rating}
                         onChange={(e) => setRating(Number(e.target.value))}
+                        className={myTestimonials.select}
                     >
                         {[5, 4, 3, 2, 1].map(num => (
                             <option key={num} value={num}>{num} Star{num > 1 ? "s" : ""}</option>
@@ -64,7 +67,7 @@ export default function CreateTestimonialPage() {
                     </select>
                 </label>
 
-                <button type="submit">
+                <button type="submit" className={myTestimonials.submitBtn}>
                     Submit Testimonial
                 </button>
             </form>
