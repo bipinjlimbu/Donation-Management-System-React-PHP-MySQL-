@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 import myTestimonial from "../style/TestimonialPage.module.css";
 
 export default function TestimonialPage() {
     const [testimonials, setTestimonials] = useState([]);
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios
@@ -26,6 +30,17 @@ export default function TestimonialPage() {
                     Hear from donors and NGOs who use ShareHope
                 </p>
             </div>
+
+            {user && (
+                <div className={myTestimonial.createWrapper}>
+                    <button
+                        className={myTestimonial.primaryBtn}
+                        onClick={() => navigate("/testimonials/create")}
+                    >
+                        Write a Testimonial
+                    </button>
+                </div>
+            )}
 
             <div className={myTestimonial.grid}>
                 {testimonials.length === 0 ? (
