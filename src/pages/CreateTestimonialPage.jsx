@@ -19,7 +19,7 @@ export default function CreateTestimonialPage() {
         }
 
         try {
-            const res = await axios.post("http://localhost/dms/api/testimonials_create.php", {
+            const res = await axios.post("http://localhost/dms/api/createtestimonial.php", {
                 user_id: user.user_id,
                 message,
                 rating
