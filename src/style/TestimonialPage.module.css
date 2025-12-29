@@ -1,0 +1,92 @@
+.page {
+    padding: 80px 20px;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.title {
+    font-size: 2.4rem;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.empty {
+    text-align: center;
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+.card {
+    background: #ffffff;
+    padding: 35px 28px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+}
+
+.message {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.9rem;
+}
+
+.role {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.rating {
+    font-size: 1rem;
+    color: #fbbf24;
+}
+
+@media (max-width: 600px) {
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
