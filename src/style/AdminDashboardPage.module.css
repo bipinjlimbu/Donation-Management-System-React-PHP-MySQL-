@@ -13,7 +13,6 @@
     color: #2c3e50;
 }
 
-/* ---------- Section ---------- */
 .section {
     max-width: 1400px;
     width: 95%;
@@ -45,7 +44,6 @@
     margin: 50px 0;
 }
 
-/* ---------- Tables ---------- */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -72,7 +70,6 @@
     background-color: transparent;
 }
 
-/* ---------- Buttons ---------- */
 .approveBtn {
     background-color: #27ae60;
     color: white;
@@ -120,7 +117,6 @@
     background-color: #1f6391;
 }
 
-/* ---------- Testimonials Grid ---------- */
 .cardGrid {
     display: flex;
     justify-content: center;
@@ -129,7 +125,6 @@
     flex-wrap: wrap;
 }
 
-/* ---------- Testimonial Card ---------- */
 .testimonialCard {
     width: 360px;
     background-color: #f9f9f9;
@@ -142,7 +137,6 @@
     justify-content: space-between;
 }
 
-/* ---------- Message ---------- */
 .testimonialMessage {
     font-style: italic;
     font-size: 0.95rem;
@@ -151,7 +145,6 @@
     line-height: 1.5;
 }
 
-/* ---------- User Info ---------- */
 .testimonialInfo {
     display: flex;
     flex-direction: column;
@@ -180,14 +173,12 @@
     font-size: 0.8rem;
 }
 
-/* ---------- Rating ---------- */
 .testimonialRating {
     color: #f39c12;
     font-size: 1rem;
     margin: 12px 0 18px 0;
 }
 
-/* ---------- Card Buttons ---------- */
 .cardButtons {
     display: flex;
     gap: 12px;
@@ -224,7 +215,6 @@
     transform: translateY(-2px);
 }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
     .table {
         min-width: 700px;
