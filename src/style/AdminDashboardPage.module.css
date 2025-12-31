@@ -13,6 +13,7 @@
     color: #2c3e50;
 }
 
+/* ---------- Section ---------- */
 .section {
     max-width: 1400px;
     width: 95%;
@@ -44,6 +45,7 @@
     margin: 50px 0;
 }
 
+/* ---------- Tables ---------- */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -52,17 +54,17 @@
     text-align: center;
 }
 
-.table th, .table td {
+.table th,
+.table td {
     padding: 12px 15px;
     border-bottom: 1px solid #e0e0e0;
     font-size: 0.95rem;
-    color: #2c3e50;;
-    text-align: center;
+    color: #2c3e50;
 }
 
 .table th {
-    background: #2c3e50;;
-    color: #fff; 
+    background: #2c3e50;
+    color: #fff;
     font-weight: 600;
 }
 
@@ -70,6 +72,7 @@
     background-color: transparent;
 }
 
+/* ---------- Buttons ---------- */
 .approveBtn {
     background-color: #27ae60;
     color: white;
@@ -117,47 +120,18 @@
     background-color: #1f6391;
 }
 
-@media (max-width: 1400px) {
-    .table {
-        min-width: 800px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .table {
-        min-width: 700px;
-    }
-}
-
-@media (max-width: 768px) {
-    .table th, .table td {
-        padding: 8px 10px;
-        font-size: 0.85rem;
-    }
-
-    .section {
-        padding: 15px;
-    }
-
-    .heading {
-        font-size: 1.8rem;
-    }
-
-    .sectionTitle {
-        font-size: 1.3rem;
-    }
-}
-
+/* ---------- Testimonials Grid ---------- */
 .cardGrid {
     display: flex;
-    justify-content: center;   
+    justify-content: center;
     gap: 25px;
     margin-top: 25px;
-    flex-wrap: wrap;         
+    flex-wrap: wrap;
 }
 
+/* ---------- Testimonial Card ---------- */
 .testimonialCard {
-    width: 360px;             
+    width: 360px;
     background-color: #f9f9f9;
     border-radius: 14px;
     padding: 22px;
@@ -168,6 +142,7 @@
     justify-content: space-between;
 }
 
+/* ---------- Message ---------- */
 .testimonialMessage {
     font-style: italic;
     font-size: 0.95rem;
@@ -176,28 +151,43 @@
     line-height: 1.5;
 }
 
+/* ---------- User Info ---------- */
 .testimonialInfo {
     display: flex;
-    justify-content: space-between;
-    font-weight: 600;
+    flex-direction: column;
+    gap: 4px;
     margin-bottom: 10px;
-}
-
-.testimonialUser {
-    color: #2c3e50;
-}
-
-.testimonialRole {
-    color: #7f8c8d;
     font-size: 0.85rem;
 }
 
+.testimonialName {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.testimonialUser {
+    color: #555;
+}
+
+.testimonialRole {
+    color: #2980b9;
+    font-weight: 600;
+}
+
+.testimonialPhone,
+.testimonialAddress {
+    color: #7f8c8d;
+    font-size: 0.8rem;
+}
+
+/* ---------- Rating ---------- */
 .testimonialRating {
     color: #f39c12;
     font-size: 1rem;
-    margin-bottom: 18px;
+    margin: 12px 0 18px 0;
 }
 
+/* ---------- Card Buttons ---------- */
 .cardButtons {
     display: flex;
     gap: 12px;
@@ -232,4 +222,36 @@
 .cardButtons .denyBtn:hover {
     background-color: #922b21;
     transform: translateY(-2px);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .table {
+        min-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .section {
+        padding: 15px;
+    }
+
+    .heading {
+        font-size: 1.8rem;
+    }
+
+    .sectionTitle {
+        font-size: 1.3rem;
+    }
+
+    .testimonialCard {
+        width: 100%;
+        max-width: 380px;
+    }
 }

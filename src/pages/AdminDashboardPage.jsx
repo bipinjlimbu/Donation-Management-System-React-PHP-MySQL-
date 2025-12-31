@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
         };
 
         fetchData();
-    }, []);
+    }, []);    
 
     const handleSignupApprove = async (id) => {
         const res = await axios.post("http://localhost/dms/api/approveSignup.php", { register_id: id });
@@ -263,16 +263,45 @@ export default function AdminDashboardPage() {
                         {testimonials.map(t => (
                             <div key={t.testimonial_id} className={styles.testimonialCard}>
                                 <p className={styles.testimonialMessage}>“{t.message}”</p>
+
                                 <div className={styles.testimonialInfo}>
-                                    <span className={styles.testimonialUser}>{t.email}</span>
-                                    <span className={styles.testimonialRole}>{t.role}</span>
+                                    {(() => {
+                                        const name =
+                                            t.role === "NGO" ? t.ngo_name : t.donor_name;
+                                        const phone =
+                                            t.role === "NGO" ? t.ngo_phone : t.donor_phone;
+                                        const address =
+                                            t.role === "NGO" ? t.ngo_address : t.donor_address;
+
+                                        return (
+                                            <>
+                                                <span className={styles.testimonialName}>{name}</span>
+                                                <span className={styles.testimonialUser}>{t.email}</span>
+                                                <span className={styles.testimonialRole}>{t.role}</span>
+                                                <span className={styles.testimonialPhone}>{phone}</span>
+                                                <span className={styles.testimonialAddress}>{address}</span>
+                                            </>
+                                        );
+                                    })()}
                                 </div>
+
                                 <div className={styles.testimonialRating}>
                                     {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
                                 </div>
+
                                 <div className={styles.cardButtons}>
-                                    <button className={styles.approveBtn} onClick={() => handleTestimonialApprove(t.testimonial_id)}>Approve</button>
-                                    <button className={styles.denyBtn} onClick={() => handleTestimonialDeny(t.testimonial_id)}>Deny</button>
+                                    <button
+                                        className={styles.approveBtn}
+                                        onClick={() => handleTestimonialApprove(t.testimonial_id)}
+                                    >
+                                        Approve
+                                    </button>
+                                    <button
+                                        className={styles.denyBtn}
+                                        onClick={() => handleTestimonialDeny(t.testimonial_id)}
+                                    >
+                                        Deny
+                                    </button>
                                 </div>
                             </div>
                         ))}
