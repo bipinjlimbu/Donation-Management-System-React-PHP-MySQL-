@@ -33,6 +33,7 @@ try {
         JOIN users u ON t.user_id = u.user_id
         LEFT JOIN donor d ON u.user_id = d.donor_id
         LEFT JOIN ngo n ON u.user_id = n.ngo_id
+        WHERE t.status = 'Pending'
         ORDER BY t.created_at DESC
     ";
 
@@ -48,7 +49,8 @@ try {
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error: " . $e->getMessage()
+        "message" => "Database error",
+        "error" => $e->getMessage()
     ]);
 }
 ?>
