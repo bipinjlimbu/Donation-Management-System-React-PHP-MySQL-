@@ -41,43 +41,54 @@ export default function TestimonialPage() {
             )}
 
             <div className={myTestimonial.grid}>
-                {testimonials.map(t => {
-                    const isOwner = user && user.user_id === t.user_id;
-                    const name = t.role === "NGO" ? t.ngo_name : t.donor_name;
+                {testimonials.length === 0 ? (
+                    <p className={myTestimonial.empty}>No testimonials available.</p>
+                ) : (
+                    testimonials.map(t => {
+                        const name =
+                            t.role === "NGO" ? t.ngo_name : t.donor_name;
 
-                    return (
-                        <div key={t.testimonial_id} className={myTestimonial.card}>
-                            <p className={myTestimonial.message}>“{t.message}”</p>
+                        const isOwner = user && user.user_id === t.user_id;
 
-                            <div className={myTestimonial.info}>
-                                <span className={myTestimonial.name}>{name}</span>
-                                <span className={myTestimonial.role}>{t.role}</span>
-                            </div>
+                        return (
+                            <div key={t.testimonial_id} className={myTestimonial.card}>
 
-                            <div className={myTestimonial.rating}>
-                                {"★".repeat(t.rating)}
-                                {"☆".repeat(5 - t.rating)}
-                            </div>
-
-                            {isOwner && (
-                                <div className={myTestimonial.actions}>
-                                    <button
-                                        className={myTestimonial.editBtn}
-                                        onClick={() => navigate(`/testimonials/edit/${t.testimonial_id}`)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className={myTestimonial.deleteBtn}
-                                        onClick={() => navigate(`/testimonials/delete/${t.testimonial_id}`)}
-                                    >
-                                        Delete
-                                    </button>
+                                <div className={myTestimonial.cardHeader}>
+                                    <div className={myTestimonial.avatar}>
+                                        {name?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div className={myTestimonial.name}>{name}</div>
+                                        <div className={myTestimonial.role}>{t.role}</div>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                    );
-                })}
+
+                                <div className={myTestimonial.messageBox}>
+                                    “{t.message}”
+                                </div>
+
+                                <div className={myTestimonial.cardFooter}>
+                                    <div className={myTestimonial.rating}>
+                                        {"★".repeat(t.rating)}
+                                        {"☆".repeat(5 - t.rating)}
+                                    </div>
+
+                                    {isOwner && (
+                                        <div className={myTestimonial.actions}>
+                                            <button className={myTestimonial.editBtn}>
+                                                Edit
+                                            </button>
+                                            <button className={myTestimonial.deleteBtn}>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                            </div>
+                        );
+                    })
+                )}
             </div>
         </div>
     );
