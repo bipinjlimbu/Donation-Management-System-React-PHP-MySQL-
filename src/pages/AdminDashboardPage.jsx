@@ -255,50 +255,28 @@ export default function AdminDashboardPage() {
                 ) : <p>No campaign requests.</p>}
             </div>
 
-             <div className={styles.section}>
+            <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Testimonials</h2>
 
                 {testimonials.length > 0 ? (
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Role</th>
-                                <th>Message</th>
-                                <th>Rating</th>
-                                <th>Status</th>
-                                <th>Submitted At</th>
-                                <th>Approve</th>
-                                <th>Deny</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {testimonials.map(t => (
-                                <tr key={t.testimonial_id}>
-                                    <td>{t.email}</td>
-                                    <td>{t.role}</td>
-                                    <td>{t.message}</td>
-                                    <td>{t.rating}</td>
-                                    <td>{t.status}</td>
-                                    <td>{t.created_at}</td>
-
-                                    <td>
-                                        <button className={styles.approveBtn}
-                                            onClick={() => handleTestimonialApprove(t.testimonial_id)}>
-                                            Approve
-                                        </button>
-                                    </td>
-
-                                    <td>
-                                        <button className={styles.denyBtn}
-                                            onClick={() => handleTestimonialDeny(t.testimonial_id)}>
-                                            Deny
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className={styles.cardGrid}>
+                        {testimonials.map(t => (
+                            <div key={t.testimonial_id} className={styles.testimonialCard}>
+                                <p className={styles.testimonialMessage}>“{t.message}”</p>
+                                <div className={styles.testimonialInfo}>
+                                    <span className={styles.testimonialUser}>{t.email}</span>
+                                    <span className={styles.testimonialRole}>{t.role}</span>
+                                </div>
+                                <div className={styles.testimonialRating}>
+                                    {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
+                                </div>
+                                <div className={styles.cardButtons}>
+                                    <button className={styles.approveBtn} onClick={() => handleTestimonialApprove(t.testimonial_id)}>Approve</button>
+                                    <button className={styles.denyBtn} onClick={() => handleTestimonialDeny(t.testimonial_id)}>Deny</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : <p>No pending testimonials.</p>}
             </div>
 
