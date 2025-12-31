@@ -260,51 +260,52 @@ export default function AdminDashboardPage() {
 
                 {testimonials.length > 0 ? (
                     <div className={styles.cardGrid}>
-                        {testimonials.map(t => (
-                            <div key={t.testimonial_id} className={styles.testimonialCard}>
-                                <p className={styles.testimonialMessage}>“{t.message}”</p>
+                        {testimonials.map(t => {
+                            const name =
+                                t.role === "NGO" ? t.ngo_name : t.donor_name;
 
-                                <div className={styles.testimonialInfo}>
-                                    {(() => {
-                                        const name =
-                                            t.role === "NGO" ? t.ngo_name : t.donor_name;
-                                        const phone =
-                                            t.role === "NGO" ? t.ngo_phone : t.donor_phone;
-                                        const address =
-                                            t.role === "NGO" ? t.ngo_address : t.donor_address;
+                            return (
+                                <div key={t.testimonial_id} className={styles.testimonialCard}>
+                                    
+                                    <div className={styles.cardHeader}>
+                                        <div className={styles.avatar}>
+                                            {name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <div className={styles.testimonialName}>{name}</div>
+                                            <div className={styles.testimonialRole}>{t.role}</div>
+                                            <div className={styles.testimonialEmail}>{t.email}</div>
+                                        </div>
+                                    </div>
 
-                                        return (
-                                            <>
-                                                <span className={styles.testimonialName}>{name}</span>
-                                                <span className={styles.testimonialUser}>{t.email}</span>
-                                                <span className={styles.testimonialRole}>{t.role}</span>
-                                                <span className={styles.testimonialPhone}>{phone}</span>
-                                                <span className={styles.testimonialAddress}>{address}</span>
-                                            </>
-                                        );
-                                    })()}
+                                    <div className={styles.messageBox}>
+                                        “{t.message}”
+                                    </div>
+
+                                    <div className={styles.cardFooter}>
+                                        <div className={styles.testimonialRating}>
+                                            {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
+                                        </div>
+
+                                        <div className={styles.cardButtons}>
+                                            <button
+                                                className={styles.approveBtn}
+                                                onClick={() => handleTestimonialApprove(t.testimonial_id)}
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                className={styles.denyBtn}
+                                                onClick={() => handleTestimonialDeny(t.testimonial_id)}
+                                            >
+                                                Deny
+                                            </button>
+                                        </div>
+                                    </div>
+
                                 </div>
-
-                                <div className={styles.testimonialRating}>
-                                    {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
-                                </div>
-
-                                <div className={styles.cardButtons}>
-                                    <button
-                                        className={styles.approveBtn}
-                                        onClick={() => handleTestimonialApprove(t.testimonial_id)}
-                                    >
-                                        Approve
-                                    </button>
-                                    <button
-                                        className={styles.denyBtn}
-                                        onClick={() => handleTestimonialDeny(t.testimonial_id)}
-                                    >
-                                        Deny
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 ) : <p>No pending testimonials.</p>}
             </div>
