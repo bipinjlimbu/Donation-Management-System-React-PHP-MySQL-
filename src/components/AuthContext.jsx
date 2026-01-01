@@ -4,29 +4,30 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) setUser(JSON.parse(storedUser));
+        fetch("http://localhost/dms/api/checkAuth.php", { credentials: "include" })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data?.authenticated) setUser(data.user);
+                else setUser(null);
+            })
+            .finally(() => setLoading(false));
     }, []);
 
-    const login = (userData) => {
-        setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
-    };
+    const login = (userData) => setUser(userData);
 
-    const logout = () => {
+    const logout = async () => {
+        await fetch("http://localhost/dms/api/logout.php", { credentials: "include" });
         setUser(null);
-        localStorage.removeItem("user");
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-export function useAuth() {
-    return useContext(AuthContext);
-}
+export const useAuth = () => useContext(AuthContext);
