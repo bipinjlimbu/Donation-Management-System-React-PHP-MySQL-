@@ -1,13 +1,25 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Content-Type: application/json");
 
-include 'connectDB.php';
-$objDb = new connectDB();
-$conn = $objDb->connect();
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
+include 'session.php';
+include 'connectDB.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'NGO') {
+    http_response_code(401);
+    echo json_encode(["success" => false, "message" => "Unauthorized"]);
+    exit;
+}
+
+$conn = (new connectDB())->connect();
 $data = json_decode(file_get_contents("php://input"), true);
 
 $title = trim($data['title'] ?? '');
@@ -17,15 +29,15 @@ $unit = trim($data['unit'] ?? '');
 $target_quantity = intval($data['target_quantity'] ?? 0);
 $start_date = trim($data['start_date'] ?? '');
 $end_date = trim($data['end_date'] ?? '');
-$ngo_id = intval($data['ngo_id'] ?? 0);
+$ngo_id = $_SESSION['user_id']; // ✅ Use session ID
 
 $status = "Pending";
 $requested_at = date("Y-m-d H:i:s");
 
 if (
     empty($title) || empty($description) || empty($item_name) ||
-    empty($unit) || empty($target_quantity) || empty($start_date) ||
-    empty($end_date) || $ngo_id <= 0
+    empty($unit) || $target_quantity <= 0 || empty($start_date) ||
+    empty($end_date)
 ) {
     echo json_encode([
         "success" => false,
@@ -63,4 +75,3 @@ try {
         "message" => "Database error: " . $e->getMessage()
     ]);
 }
-?>
