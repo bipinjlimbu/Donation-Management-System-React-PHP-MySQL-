@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import myCampaigns from "../style/CampaignsPage.module.css";
+import myCampaigns from "../style/CampaignsPage.module.css"; // ✅ your CSS
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState([]);
@@ -13,22 +13,16 @@ export default function CampaignsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) return setLoading(false);
+
     axios.get("http://localhost/dms/api/campaigns.php", {
-      params: {
-        role: user?.role,
-        user_id: user?.user_id,
-      }
+      withCredentials: true // ✅ send session cookie
     })
-      .then((res) => {
-        if (res.data.success) {
-          setCampaigns(res.data.campaigns);
-        } else {
-          setError(res.data.message || "Failed to load campaigns.");
-        }
+      .then(res => {
+        if (res.data.success) setCampaigns(res.data.campaigns);
+        else setError(res.data.message || "Failed to load campaigns");
       })
-      .catch(() => {
-        setError("Failed to connect to the server.");
-      })
+      .catch(() => setError("Failed to connect to server"))
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -52,25 +46,20 @@ export default function CampaignsPage() {
 
       <div className={myCampaigns.grid}>
         {campaigns.length > 0 ? (
-          campaigns.map((campaign) => (
-            <div key={campaign.campaign_id} className={myCampaigns.card}>
-              <h3 className={myCampaigns.title}>{campaign.title}</h3>
-
+          campaigns.map(c => (
+            <div key={c.campaign_id} className={myCampaigns.card}>
+              <h3 className={myCampaigns.title}>{c.title}</h3>
               <p className={myCampaigns.description}>
-                {campaign.description?.length > 120
-                  ? campaign.description.slice(0, 120) + "..."
-                  : campaign.description}
+                {c.description?.length > 120 ? c.description.slice(0, 120) + "..." : c.description}
               </p>
-
               <div className={myCampaigns.meta}>
-                <span><strong>Status:</strong> {campaign.status}</span>
-                <span><strong>Start:</strong> {campaign.start_date}</span>
-                <span><strong>End:</strong> {campaign.end_date}</span>
+                <span><strong>Status:</strong> {c.status}</span>
+                <span><strong>Start:</strong> {c.start_date}</span>
+                <span><strong>End:</strong> {c.end_date}</span>
               </div>
-
               <button
                 className={myCampaigns.viewBtn}
-                onClick={() => navigate(`/campaigns/${campaign.campaign_id}`)}
+                onClick={() => navigate(`/campaigns/${c.campaign_id}`)}
               >
                 View Details
               </button>
