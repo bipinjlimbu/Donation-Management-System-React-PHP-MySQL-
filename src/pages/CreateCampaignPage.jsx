@@ -20,6 +20,10 @@ export default function CreateCampaignPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  if (!user || user.role !== "NGO") {
+    navigate("/campaigns");
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCampaign((prev) => ({ ...prev, [name]: value }));
@@ -31,10 +35,11 @@ export default function CreateCampaignPage() {
     setError(null);
 
     try {
-      const res = await axios.post("http://localhost/dms/api/createcampaign.php", {
-        ...campaign,
-        ngo_id: user?.user_id,
-      });
+      const res = await axios.post(
+        "http://localhost/dms/api/createcampaign.php",
+        campaign,
+        { withCredentials: true }
+      );
 
       if (res.data.success) {
         alert(res.data.message);
