@@ -29,14 +29,14 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const response = await axios.post("http://localhost/dms/api/login.php", {
-                email: email.trim(),
-                password: password.trim()
-            });
+            const response = await axios.post(
+                "http://localhost/dms/api/login.php",
+                { email: email.trim(), password: password.trim() },
+                { withCredentials: true }
+            );
 
             if (response.data.success) {
-                localStorage.setItem("user", JSON.stringify(response.data.user));
-                login(response.data.user);
+                login(response.data.user); 
                 navigate("/");
             } else {
                 alert("Login failed: " + response.data.message);
@@ -55,20 +55,34 @@ export default function LoginPage() {
                 <h1 className={myLogin.title}>Welcome Back</h1>
                 
                 <form onSubmit={handleSubmit}>
-
                     <label className={myLogin.label}>Email:</label>
-                    <input type="email" name="email" value={email} onChange={handleChange} className={myLogin.input} required />
+                    <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        onChange={handleChange}
+                        className={myLogin.input}
+                        required
+                    />
 
                     <label className={myLogin.label}>Password:</label>
-                    <input type="password" name="password" value={password} onChange={handleChange} className={myLogin.input} required />
+                    <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={handleChange}
+                        className={myLogin.input}
+                        required
+                    />
 
                     <button type="submit" disabled={loading} className={myLogin.button}>
                         {loading ? "Logging in..." : "Login"}
                     </button>
-
                 </form>
                 
-                <p className={myLogin.footerText}>Don't have an account? <Link to="/signup">Register here</Link></p>
+                <p className={myLogin.footerText}>
+                    Don't have an account? <Link to="/signup">Register here</Link>
+                </p>
             </div>
         </div>
     );
