@@ -29,7 +29,7 @@ $unit = trim($data['unit'] ?? '');
 $target_quantity = intval($data['target_quantity'] ?? 0);
 $start_date = trim($data['start_date'] ?? '');
 $end_date = trim($data['end_date'] ?? '');
-$ngo_id = $_SESSION['user_id']; // ✅ Use session ID
+$ngo_id = $_SESSION['user_id'];
 
 $status = "Pending";
 $requested_at = date("Y-m-d H:i:s");
