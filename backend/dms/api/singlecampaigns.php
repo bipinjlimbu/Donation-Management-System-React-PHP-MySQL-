@@ -1,12 +1,19 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Content-Type: application/json");
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+include 'session.php';
 include 'connectDB.php';
-$objDb = new connectDB();
-$conn = $objDb->connect();
+
+$conn = (new connectDB())->connect();
 
 $campaignId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -15,29 +22,58 @@ if ($campaignId <= 0) {
     exit;
 }
 
-try {
-    $activate = $conn->prepare("UPDATE campaigns SET status = 'Active', approved_at = NOW()
-        WHERE status = 'Approved' AND start_date <= CURDATE()");
-    $activate->execute();
+$conn->prepare("
+    UPDATE campaigns 
+    SET status = 'Active', approved_at = NOW()
+    WHERE status = 'Approved' AND start_date <= CURDATE()
+")->execute();
 
-    $complete = $conn->prepare("UPDATE campaigns SET status = 'Completed'
-        WHERE status = 'Active' AND (end_date < CURDATE() OR collected_quantity >= target_quantity)");
-    $complete->execute();
+$conn->prepare("
+    UPDATE campaigns 
+    SET status = 'Completed'
+    WHERE status = 'Active'
+    AND (end_date < CURDATE() OR collected_quantity >= target_quantity)
+")->execute();
 
-    $stmt = $conn->prepare("SELECT c.campaign_id, c.ngo_id, c.title, c.description, c.item_name, c.target_quantity, c.collected_quantity, c.unit, c.status, c.start_date, c.end_date, u.organization_name AS ngo_name
-        FROM campaigns c JOIN ngo u ON c.ngo_id = u.ngo_id WHERE c.campaign_id = :id");
-    $stmt->bindParam(':id', $campaignId, PDO::PARAM_INT);
-    $stmt->execute();
+$stmt = $conn->prepare("
+    SELECT 
+        c.campaign_id,
+        c.ngo_id,
+        c.title,
+        c.description,
+        c.item_name,
+        c.target_quantity,
+        c.collected_quantity,
+        c.unit,
+        c.status,
+        c.start_date,
+        c.end_date,
+        n.organization_name AS ngo_name
+    FROM campaigns c
+    JOIN ngo n ON c.ngo_id = n.ngo_id
+    WHERE c.campaign_id = :id
+");
+$stmt->bindParam(':id', $campaignId, PDO::PARAM_INT);
+$stmt->execute();
 
-    $campaign = $stmt->fetch(PDO::FETCH_ASSOC);
+$campaign = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($campaign) {
-        echo json_encode(["success" => true, "campaign" => $campaign]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Campaign not found"]);
-    }
-
-} catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+if (!$campaign) {
+    echo json_encode(["success" => false, "message" => "Campaign not found"]);
+    exit;
 }
-?>
+
+$userId = $_SESSION['user_id'] ?? null;
+$role = $_SESSION['role'] ?? null;
+
+$isOwner = ($role === 'NGO' && $userId == $campaign['ngo_id']);
+
+if (!$isOwner && !in_array($campaign['status'], ['Active', 'Completed'])) {
+    echo json_encode(["success" => false, "message" => "Unauthorized access"]);
+    exit;
+}
+
+echo json_encode([
+    "success" => true,
+    "campaign" => $campaign
+]);
