@@ -1,36 +1,63 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Content-Type: application/json");
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode([
+        "success" => false,
+        "message" => "Unauthorized"
+    ]);
+    exit;
+}
+
 include 'connectDB.php';
-$objDb = new connectDB();
-$conn = $objDb->connect();
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$user_id = intval($data['user_id'] ?? 0);
-$role = $data['role'] ?? '';
 $name = trim($data['name'] ?? '');
 $phone = trim($data['phone'] ?? '');
 $address = trim($data['address'] ?? '');
+$role = $data['role'] ?? '';
+$user_id = $_SESSION['user_id'];
 $requested_at = date("Y-m-d H:i:s");
 
-if (!$user_id || !$role || !$name) {
+if (!$name || !$role) {
     echo json_encode([
         "success" => false,
-        "message" => "User ID, role, and name are required"
+        "message" => "Name and role are required"
     ]);
     exit;
 }
 
 try {
+    $conn = (new connectDB())->connect();
+
     if ($role === "Donor") {
-        $sql = "UPDATE donor SET pending_full_name = :name, pending_phone = :phone, pending_address = :address, pending_status = 'Pending', requested_at = :requested_at
+        $sql = "UPDATE donor
+                SET pending_full_name = :name,
+                    pending_phone = :phone,
+                    pending_address = :address,
+                    pending_status = 'Pending',
+                    requested_at = :requested_at
                 WHERE donor_id = :user_id";
     } elseif ($role === "NGO") {
-        $sql = "UPDATE ngo SET pending_organization_name = :name, pending_phone = :phone, pending_address = :address, pending_status = 'Pending', requested_at = :requested_at
+        $sql = "UPDATE ngo
+                SET pending_organization_name = :name,
+                    pending_phone = :phone,
+                    pending_address = :address,
+                    pending_status = 'Pending',
+                    requested_at = :requested_at
                 WHERE ngo_id = :user_id";
     } else {
         echo json_encode([
@@ -41,10 +68,10 @@ try {
     }
 
     $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-    $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
-    $stmt->bindParam(':address', $address, PDO::PARAM_STR);
-    $stmt->bindParam(':requested_at', $requested_at, PDO::PARAM_STR);
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':phone', $phone);
+    $stmt->bindParam(':address', $address);
+    $stmt->bindParam(':requested_at', $requested_at);
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
 
@@ -54,9 +81,9 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    http_response_code(500);
     echo json_encode([
         "success" => false,
         "message" => "Database error: " . $e->getMessage()
     ]);
 }
-?>
