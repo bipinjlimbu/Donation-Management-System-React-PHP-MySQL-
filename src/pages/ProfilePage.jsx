@@ -14,30 +14,47 @@ export default function ProfilePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true; 
+
     const fetchProfile = async () => {
       try {
         setLoading(true);
         const res = await axios.get("http://localhost/dms/api/profile.php", {
           withCredentials: true
         });
-        if (res.data.success) setProfile(res.data.user);
-        else setError(res.data.message || "Failed to load profile");
+        if (isMounted) {
+          if (res.data.success) {
+            setProfile(res.data.user);
+            setError(null);
+          } else {
+            setProfile(null);
+            setError(res.data.message || "Failed to load profile");
+          }
+        }
       } catch (err) {
         console.error(err);
-        setError("Network or server error");
+        if (isMounted) {
+          setProfile(null);
+          setError("Network or server error");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchProfile();
+
+    return () => { isMounted = false; }; // cleanup
   }, []);
 
   const handleLogout = async () => {
     setActionLoading(true);
-    await logout();
-    setActionLoading(false);
-    navigate("/");
+    try {
+      await logout();
+      navigate("/");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -56,7 +73,7 @@ export default function ProfilePage() {
         await logout();
         navigate("/");
       } else {
-        alert(res.data.message);
+        alert(res.data.message || "Delete failed");
       }
     } catch (err) {
       console.error(err);
@@ -74,10 +91,10 @@ export default function ProfilePage() {
     );
   }
 
-  if (error || !profile) {
+  if (error) {
     return (
       <div className={myProfile.container}>
-        <p className={myProfile.error}>{error || "Profile not found"}</p>
+        <p className={myProfile.error}>{error}</p>
       </div>
     );
   }
