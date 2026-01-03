@@ -1,33 +1,36 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import myCampaigns from "../style/CampaignsPage.module.css"; // ✅ your CSS
+import myCampaigns from "../style/CampaignsPage.module.css";
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) return setLoading(false);
+    if (authLoading) return;
 
-    axios.get("http://localhost/dms/api/campaigns.php", {
-      withCredentials: true // ✅ send session cookie
-    })
+    axios
+      .get("http://localhost/dms/api/campaigns.php", {
+        withCredentials: true
+      })
       .then(res => {
         if (res.data.success) setCampaigns(res.data.campaigns);
-        else setError(res.data.message || "Failed to load campaigns");
+        else setError(res.data.message);
       })
       .catch(() => setError("Failed to connect to server"))
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [authLoading]);
 
-  if (loading) return <div className={myCampaigns.center}>Loading campaigns...</div>;
-  if (error) return <div className={myCampaigns.error}>{error}</div>;
+  const visibleCampaigns = campaigns.filter(c => {
+    if (user?.role === "NGO" && c.ngo_id === user.user_id) return true;
+    return c.status === "Active" || c.status === "Completed";
+  });
 
   return (
     <div className={myCampaigns.container}>
@@ -44,31 +47,38 @@ export default function CampaignsPage() {
         )}
       </div>
 
-      <div className={myCampaigns.grid}>
-        {campaigns.length > 0 ? (
-          campaigns.map(c => (
-            <div key={c.campaign_id} className={myCampaigns.card}>
-              <h3 className={myCampaigns.title}>{c.title}</h3>
-              <p className={myCampaigns.description}>
-                {c.description?.length > 120 ? c.description.slice(0, 120) + "..." : c.description}
-              </p>
-              <div className={myCampaigns.meta}>
-                <span><strong>Status:</strong> {c.status}</span>
-                <span><strong>Start:</strong> {c.start_date}</span>
-                <span><strong>End:</strong> {c.end_date}</span>
+      {loading ? (
+        <div className={myCampaigns.center}>Loading campaigns...</div>
+      ) : error ? (
+        <div className={myCampaigns.error}>{error}</div>
+      ) : (
+        <div className={myCampaigns.grid}>
+          {visibleCampaigns.length ? (
+            visibleCampaigns.map(c => (
+              <div key={c.campaign_id} className={myCampaigns.card}>
+                <h3 className={myCampaigns.title}>{c.title}</h3>
+                <p className={myCampaigns.description}>
+                  {c.description?.length > 120
+                    ? c.description.slice(0, 120) + "..."
+                    : c.description}
+                </p>
+                <div className={myCampaigns.meta}>
+                  <span><strong>Status:</strong> {c.status}</span>
+                  <span><strong>Start:</strong> {c.start_date}</span>
+                </div>
+                <button
+                  className={myCampaigns.viewBtn}
+                  onClick={() => navigate(`/campaigns/${c.campaign_id}`)}
+                >
+                  View Details
+                </button>
               </div>
-              <button
-                className={myCampaigns.viewBtn}
-                onClick={() => navigate(`/campaigns/${c.campaign_id}`)}
-              >
-                View Details
-              </button>
-            </div>
-          ))
-        ) : (
-          <div className={myCampaigns.center}>No campaigns found.</div>
-        )}
-      </div>
+            ))
+          ) : (
+            <div className={myCampaigns.center}>No campaigns found.</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
