@@ -7,29 +7,55 @@ import axios from "axios";
 export default function EditProfile() {
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const [profile, setProfile] = useState({
     name: "",
     phone: "",
     address: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      if (user.role === "Donor") {
-        setProfile({
-          name: user.pending_full_name || user.full_name || "",
-          phone: user.pending_phone || user.phone || "",
-          address: user.pending_address || user.address || "",
+    const fetchProfile = async () => {
+      if (!user) return;
+      try {
+        setLoading(true);
+        const res = await axios.get("http://localhost/dms/api/profile.php", {
+          withCredentials: true,
         });
-      } else if (user.role === "NGO") {
-        setProfile({
-          name: user.pending_organization_name || user.organization_name || "",
-          phone: user.pending_phone || user.phone || "",
-          address: user.pending_address || user.address || "",
-        });
+
+        if (res.data.success) {
+          const data = res.data.user;
+
+          if (data.role === "Donor") {
+            setProfile({
+              name: data.pending_full_name || data.full_name || "",
+              phone: data.pending_phone || data.phone || "",
+              address: data.pending_address || data.address || "",
+            });
+          } else if (data.role === "NGO") {
+            setProfile({
+              name: data.pending_organization_name || data.organization_name || "",
+              phone: data.pending_phone || data.phone || "",
+              address: data.pending_address || data.address || "",
+            });
+          }
+
+          setError(null);
+        } else {
+          setError(res.data.message || "Failed to load profile");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Network error while fetching profile");
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchProfile();
   }, [user]);
 
   const handleChange = (e) => {
@@ -45,29 +71,47 @@ export default function EditProfile() {
       return;
     }
 
-    setLoading(true);
+    setSubmitLoading(true);
     try {
-      const response = await axios.post("http://localhost/dms/api/profileEditRequest.php", {
-        user_id: user.user_id,
-        role: user.role,
-        ...profile,
-      });
+      const res = await axios.post(
+        "http://localhost/dms/api/profileEditRequest.php",
+        {
+          user_id: user.user_id,
+          role: user.role,
+          ...profile,
+        },
+        { withCredentials: true }
+      );
 
-      if (response.data.success) {
+      if (res.data.success) {
         alert("Profile change requested successfully!");
         navigate("/profile");
       } else {
-        alert("Failed to request: " + response.data.message);
+        alert(res.data.message || "Request failed");
       }
     } catch (err) {
       console.error(err);
       alert("Network or server error");
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
   };
 
-  if (!user) return <p className={myEdit.loading}>Loading...</p>;
+  if (loading) {
+    return (
+      <div className={myEdit.container}>
+        <p className={myEdit.loading}>Loading profile...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={myEdit.container}>
+        <p className={myEdit.error}>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className={myEdit.container}>
@@ -104,13 +148,14 @@ export default function EditProfile() {
           />
 
           <div className={myEdit.buttons}>
-            <button type="submit" className={myEdit.submitBtn} disabled={loading}>
-              {loading ? "Submitting..." : "Submit"}
+            <button type="submit" className={myEdit.submitBtn} disabled={submitLoading}>
+              {submitLoading ? "Submitting..." : "Submit"}
             </button>
             <button
               type="button"
               className={myEdit.cancelBtn}
               onClick={() => navigate("/profile")}
+              disabled={submitLoading}
             >
               Cancel
             </button>
