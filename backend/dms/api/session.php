@@ -1,7 +1,16 @@
 <?php
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_strict_mode', 1);
+
 session_set_cookie_params([
-    'httponly' => true,
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => 'localhost',
     'secure' => false,
-    'samesite' => 'None'
+    'httponly' => true,
+    'samesite' => 'Lax'
 ]);
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
