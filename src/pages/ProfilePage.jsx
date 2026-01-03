@@ -7,34 +7,80 @@ import axios from "axios";
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user?.user_id) {
-      axios
-        .get(`http://localhost/dms/api/profile.php?user_id=${user.user_id}`)
-        .then(res => {
-          if (res.data.success) {
-            setProfile(res.data.user);
-          }
-        })
-        .catch(err => {
-          console.error("Failed to fetch profile:", err);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [user]);
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get("http://localhost/dms/api/profile.php", {
+          withCredentials: true
+        });
+        if (res.data.success) setProfile(res.data.user);
+        else setError(res.data.message || "Failed to load profile");
+      } catch (err) {
+        console.error(err);
+        setError("Network or server error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleLogout = async () => {
-    setLoading(true);
+    setActionLoading(true);
     await logout();
-    setLoading(false);
+    setActionLoading(false);
     navigate("/");
   };
 
-  if (loading) return <p className={myProfile.loading}>Loading profile...</p>;
-  if (!profile) return <p className={myProfile.error}>Profile not found.</p>;
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete your profile?")) return;
+    setActionLoading(true);
+
+    try {
+      const res = await axios.post(
+        "http://localhost/dms/api/deleteProfile.php",
+        {},
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        alert("Profile deleted successfully");
+        await logout();
+        navigate("/");
+      } else {
+        alert(res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={myProfile.container}>
+        <p className={myProfile.loading}>Loading profile...</p>
+      </div>
+    );
+  }
+
+  if (error || !profile) {
+    return (
+      <div className={myProfile.container}>
+        <p className={myProfile.error}>{error || "Profile not found"}</p>
+      </div>
+    );
+  }
 
   return (
     <div className={myProfile.container}>
@@ -63,9 +109,26 @@ export default function ProfilePage() {
       )}
 
       <div className={myProfile.buttons}>
-        <button className={myProfile.editBtn} onClick={() => navigate("/editProfile")}>Edit Profile</button>
-        <button className={myProfile.logoutBtn} onClick={handleLogout}>
-          {loading ? "Logging out..." : "Logout"}
+        <button
+          className={myProfile.editBtn}
+          onClick={() => navigate("/editProfile")}
+          disabled={actionLoading}
+        >
+          Edit Profile
+        </button>
+        <button
+          className={myProfile.deleteBtn}
+          onClick={handleDelete}
+          disabled={actionLoading}
+        >
+          {actionLoading ? "Processing..." : "Delete Profile"}
+        </button>
+        <button
+          className={myProfile.logoutBtn}
+          onClick={handleLogout}
+          disabled={actionLoading}
+        >
+          {actionLoading ? "Logging out..." : "Logout"}
         </button>
       </div>
     </div>
