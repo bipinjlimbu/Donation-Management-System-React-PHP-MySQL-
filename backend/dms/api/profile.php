@@ -1,23 +1,27 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Content-Type: application/json");
 
-include 'connectDB.php';
-$objDb = new connectDB();
-$conn = $objDb->connect();
-
-$user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 0;
-
-if (!$user_id) {
-    http_response_code(400);
-    echo json_encode([
-        "success" => false,
-        "message" => "Missing user_id"
-    ]);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
     exit;
 }
+
+include 'session.php';
+include 'connectDB.php';
+
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(["success" => false, "message" => "Unauthorized"]);
+    exit;
+}
+
+$user_id = $_SESSION['user_id']; // Fetch current logged-in user
+
+$conn = (new connectDB())->connect();
 
 try {
     $stmt = $conn->prepare("SELECT user_id, email, role FROM users WHERE user_id = :user_id");
@@ -27,22 +31,19 @@ try {
 
     if (!$user) {
         http_response_code(404);
-        echo json_encode([
-            "success" => false,
-            "message" => "User not found"
-        ]);
+        echo json_encode(["success" => false, "message" => "User not found"]);
         exit;
     }
 
     if ($user['role'] === 'Donor') {
-        $stmt = $conn->prepare("SELECT full_name, phone, address FROM donor WHERE donor_id = :donor_id");
-        $stmt->bindParam(':donor_id', $user_id, PDO::PARAM_INT);
+        $stmt = $conn->prepare("SELECT full_name, phone, address FROM donor WHERE donor_id = :id");
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         $details = $stmt->fetch(PDO::FETCH_ASSOC);
         $user = array_merge($user, $details ?: []);
     } elseif ($user['role'] === 'NGO') {
-        $stmt = $conn->prepare("SELECT organization_name, registration_number, phone, address FROM ngo WHERE ngo_id = :ngo_id");
-        $stmt->bindParam(':ngo_id', $user_id, PDO::PARAM_INT);
+        $stmt = $conn->prepare("SELECT organization_name, registration_number, phone, address FROM ngo WHERE ngo_id = :id");
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
         $details = $stmt->fetch(PDO::FETCH_ASSOC);
         $user = array_merge($user, $details ?: []);
