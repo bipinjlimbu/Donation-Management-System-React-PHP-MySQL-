@@ -1,4 +1,6 @@
 <?php
+require_once 'session.php';
+
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -10,21 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-include 'session.php';
-include 'connectDB.php';
-
 if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
     echo json_encode(["authenticated" => false]);
     exit;
 }
 
+require_once 'connectDB.php';
 $conn = (new connectDB())->connect();
-$stmt = $conn->prepare(
-    "SELECT user_id, email, role FROM users WHERE user_id = :id"
-);
-$stmt->bindParam(':id', $_SESSION['user_id']);
-$stmt->execute();
+
+$stmt = $conn->prepare("SELECT user_id, email, role FROM users WHERE user_id = :id");
+$stmt->execute(['id' => $_SESSION['user_id']]);
 
 echo json_encode([
     "authenticated" => true,
