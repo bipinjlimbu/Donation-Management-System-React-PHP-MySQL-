@@ -1,6 +1,6 @@
 .container {
     max-width: 700px;
-    min-height: 70vh;
+    min-height: 80vh;
     margin: 50px auto;
     padding: 30px 25px;
     background-color: #f5f6fa;
@@ -8,6 +8,9 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .heading {
@@ -66,6 +69,23 @@
     transform: translateY(-2px);
 }
 
+.deleteBtn {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.deleteBtn:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
 .logoutBtn {
     background-color: #e74c3c;
     color: white;
@@ -104,7 +124,7 @@
         font-size: 0.95rem;
     }
 
-    .editBtn, .logoutBtn {
+    .editBtn, .deleteBtn, .logoutBtn {
         padding: 8px 18px;
         font-size: 0.95rem;
     }
