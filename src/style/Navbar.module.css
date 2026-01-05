@@ -1,0 +1,119 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    background-color: black;
+    color: white;
+    width: 100%;
+    position: relative;
+}
+
+.navLeft img {
+    width: 150px;
+    height: auto;
+    cursor: pointer;
+}
+
+.navCenter {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex: 1;
+    transition: max-height 0.3s ease;
+}
+
+.navCenter a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navCenter a:hover {
+    color: #d0d0d3;
+}
+
+.navRight {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.LogBut {
+    background-color: #2563eb; 
+    color: white;
+    padding: 0.5rem 1.4rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+.LogBut:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+    transform: translateY(-1px);
+}
+
+.LogBut:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.profImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .nav {
+        padding: 1rem 2rem;
+    }
+
+    .navCenter {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: black;
+        flex-direction: column;
+        align-items: center;
+        max-height: 0;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .navCenter.active {
+        max-height: 500px;
+        padding: 1rem 0;
+    }
+
+    .navRight {
+        gap: 0.5rem;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
