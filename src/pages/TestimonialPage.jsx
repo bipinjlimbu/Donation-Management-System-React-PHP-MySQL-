@@ -10,11 +10,17 @@ export default function TestimonialPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost/dms/api/testimonials.php")
+        axios
+            .get("http://localhost/dms/api/testimonials.php", {
+                withCredentials: true
+            })
             .then(res => {
                 if (res.data.success) {
                     setTestimonials(res.data.testimonials);
                 }
+            })
+            .catch(err => {
+                console.error("Error fetching testimonials:", err);
             });
     }, []);
 
@@ -42,24 +48,33 @@ export default function TestimonialPage() {
 
             <div className={myTestimonial.grid}>
                 {testimonials.length === 0 ? (
-                    <p className={myTestimonial.empty}>No testimonials available.</p>
+                    <p className={myTestimonial.empty}>
+                        No testimonials available.
+                    </p>
                 ) : (
                     testimonials.map(t => {
                         const name =
                             t.role === "NGO" ? t.ngo_name : t.donor_name;
 
-                        const isOwner = user && user.user_id === t.user_id;
+                        const isOwner =
+                            user && Number(user.user_id) === Number(t.user_id);
 
                         return (
-                            <div key={t.testimonial_id} className={myTestimonial.card}>
-
+                            <div
+                                key={t.testimonial_id}
+                                className={myTestimonial.card}
+                            >
                                 <div className={myTestimonial.cardHeader}>
                                     <div className={myTestimonial.avatar}>
                                         {name?.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div className={myTestimonial.name}>{name}</div>
-                                        <div className={myTestimonial.role}>{t.role}</div>
+                                        <div className={myTestimonial.name}>
+                                            {name}
+                                        </div>
+                                        <div className={myTestimonial.role}>
+                                            {t.role}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -75,16 +90,23 @@ export default function TestimonialPage() {
 
                                     {isOwner && (
                                         <div className={myTestimonial.actions}>
-                                            <button className={myTestimonial.editBtn}>
+                                            <button
+                                                className={
+                                                    myTestimonial.editBtn
+                                                }
+                                            >
                                                 Edit
                                             </button>
-                                            <button className={myTestimonial.deleteBtn}>
+                                            <button
+                                                className={
+                                                    myTestimonial.deleteBtn
+                                                }
+                                            >
                                                 Delete
                                             </button>
                                         </div>
                                     )}
                                 </div>
-
                             </div>
                         );
                     })
