@@ -12,30 +12,32 @@ export default function NotificationsPage() {
     const [selectedNotification, setSelectedNotification] = useState(null);
 
     useEffect(() => {
-        if (user?.user_id) {
-            const fetchNotifications = async () => {
-                setLoading(true);
-                setError(null);
-                try {
-                    const res = await axios.post(
-                        "http://localhost/dms/api/fetchNotifications.php",
-                        { user_id: user.user_id }
-                    );
+        if (!user) return;
 
-                    if (res.data.success) {
-                        setNotifications(res.data.notifications || []);
-                    } else {
-                        setError(res.data.message || "No notifications found.");
-                    }
-                } catch (err) {
-                    console.error(err);
-                    setError("Failed to connect to the server.");
-                } finally {
-                    setLoading(false);
+        const fetchNotifications = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const res = await axios.get(
+                    "http://localhost/dms/api/fetchNotifications.php",
+                    { withCredentials: true }
+                );
+
+                if (res.data.success) {
+                    setNotifications(res.data.notifications || []);
+                } else {
+                    setError(res.data.message || "No notifications found.");
                 }
-            };
-            fetchNotifications();
-        }
+            } catch (err) {
+                console.error(err);
+                setError("Failed to connect to the server.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNotifications();
     }, [user]);
 
     const handleView = async (notification) => {
@@ -45,7 +47,8 @@ export default function NotificationsPage() {
             try {
                 const res = await axios.post(
                     "http://localhost/dms/api/markNotificationRead.php",
-                    { notification_id: notification.notification_id }
+                    { notification_id: notification.notification_id },
+                    { withCredentials: true }
                 );
 
                 if (res.data.success) {
@@ -80,7 +83,9 @@ export default function NotificationsPage() {
                 {notifications.map((n) => (
                     <div
                         key={n.notification_id}
-                        className={`${styles.card} ${n.status === "unread" ? styles.unread : ""}`}
+                        className={`${styles.card} ${
+                            n.status === "unread" ? styles.unread : ""
+                        }`}
                     >
                         <div className={styles.text}>
                             <h3 className={styles.title}>{n.title}</h3>
@@ -109,7 +114,9 @@ export default function NotificationsPage() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h2>{selectedNotification.title}</h2>
-                        <p className={styles.modalMsg}>{selectedNotification.message}</p>
+                        <p className={styles.modalMsg}>
+                            {selectedNotification.message}
+                        </p>
                         <button
                             className={styles.closeBtn}
                             onClick={() => setSelectedNotification(null)}
