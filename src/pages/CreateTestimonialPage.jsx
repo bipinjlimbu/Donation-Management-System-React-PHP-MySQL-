@@ -13,17 +13,23 @@ export default function CreateTestimonialPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (!user) {
             setError("You must be logged in to submit a testimonial.");
             return;
         }
 
         try {
-            const res = await axios.post("http://localhost/dms/api/createtestimonial.php", {
-                user_id: user.user_id,
-                message,
-                rating
-            });
+            const res = await axios.post(
+                "http://localhost/dms/api/createtestimonial.php",
+                {
+                    message,
+                    rating
+                },
+                {
+                    withCredentials: true
+                }
+            );
 
             if (res.data.success) {
                 navigate("/testimonials");
@@ -31,8 +37,8 @@ export default function CreateTestimonialPage() {
                 setError(res.data.message || "Failed to create testimonial.");
             }
         } catch (err) {
-            setError("Server error. Please try again later.");
             console.error(err);
+            setError("Server error. Please try again later.");
         }
     };
 
@@ -62,7 +68,9 @@ export default function CreateTestimonialPage() {
                         className={myTestimonials.select}
                     >
                         {[5, 4, 3, 2, 1].map(num => (
-                            <option key={num} value={num}>{num} Star{num > 1 ? "s" : ""}</option>
+                            <option key={num} value={num}>
+                                {num} Star{num > 1 ? "s" : ""}
+                            </option>
                         ))}
                     </select>
                 </label>
