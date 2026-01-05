@@ -6,16 +6,19 @@ import axios from "axios";
 
 export default function DonationPage() {
     const { id } = useParams();
-    const [campaign, setCampaign] = useState(null);
-    const [quantity, setQuantity] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    const [campaign, setCampaign] = useState(null);
+    const [quantity, setQuantity] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
     useEffect(() => {
         axios
-            .get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`)
+            .get(`http://localhost/dms/api/singlecampaigns.php?id=${id}`, {
+                withCredentials: true
+            })
             .then(res => {
                 if (res.data.success) {
                     setCampaign(res.data.campaign);
@@ -23,43 +26,47 @@ export default function DonationPage() {
                     setError(res.data.message || "Failed to load campaign");
                 }
             })
-            .catch(err => {
-                console.error("Failed to fetch campaign:", err);
-                setError("Failed to connect to the server.");
-            })
+            .catch(() => setError("Failed to connect to the server"))
             .finally(() => setLoading(false));
     }, [id]);
-
-    if (loading) return <div>Loading donation page...</div>;
-    if (error) return <div style={{ color: "red" }}>{error}</div>;
-    if (!campaign) return <div>No campaign found.</div>;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!user || user.role !== "Donor") {
+            alert("Only donors can donate.");
+            return;
+        }
+
         if (!quantity || quantity <= 0) {
-            alert("Please enter a valid quantity to donate.");
+            alert("Please enter a valid quantity.");
             return;
         }
 
         try {
-            const res = await axios.post("http://localhost/dms/api/donate.php", {
-                donor_id: user.user_id,
-                campaign_id: campaign.campaign_id,
-                quantity: quantity 
-            });
+            const res = await axios.post(
+                "http://localhost/dms/api/donate.php",
+                {
+                    campaign_id: campaign.campaign_id,
+                    quantity: quantity
+                },
+                { withCredentials: true }
+            );
 
             if (res.data.success) {
                 alert("Donation request submitted successfully!");
                 navigate("/campaigns");
             } else {
-                alert("Donation failed: " + res.data.message);
+                alert(res.data.message || "Donation failed");
             }
-        } catch (err) {
-            console.error("Donation error:", err);
+        } catch {
             alert("Network or server error during donation.");
         }
     };
+
+    if (loading) return <div>Loading donation page...</div>;
+    if (error) return <div style={{ color: "red" }}>{error}</div>;
+    if (!campaign) return <div>No campaign found.</div>;
 
     return (
         <div className={myDonation.donationPage}>
@@ -71,8 +78,13 @@ export default function DonationPage() {
 
             <div className={myDonation.donationForm}>
                 <form onSubmit={handleSubmit}>
-                    <label>Quantity to Donate: </label>
-                    <input type="number" name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+                    <label>Quantity to Donate</label>
+                    <input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        required
+                    />
                     <button type="submit">Donate</button>
                 </form>
             </div>
