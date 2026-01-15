@@ -1,7 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: POST");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
@@ -23,13 +26,11 @@ try {
                 SET pending_full_name = NULL, pending_phone = NULL, pending_address = NULL, 
                     pending_status = 'Denied', approved_at = NOW() 
                 WHERE donor_id = :id";
-        $userColumn = "full_name";
     } elseif ($role === "NGO") {
         $sql = "UPDATE ngo 
                 SET pending_organization_name = NULL, pending_phone = NULL, pending_address = NULL, 
                     pending_status = 'Denied', approved_at = NOW() 
                 WHERE ngo_id = :id";
-        $userColumn = "organization_name";
     } else {
         echo json_encode(["success" => false, "message" => "Invalid role"]);
         exit;
