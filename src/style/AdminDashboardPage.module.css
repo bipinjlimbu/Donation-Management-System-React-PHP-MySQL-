@@ -111,6 +111,7 @@
     flex-wrap: wrap;
     margin-top: 25px;
 }
+
 .testimonialCard {
     width: 360px;
     background-color: #ffffff;
@@ -202,6 +203,7 @@
 }
 
 @media (max-width: 768px) {
+
     .table th,
     .table td {
         padding: 8px 10px;

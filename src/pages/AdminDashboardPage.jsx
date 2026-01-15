@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "../style/AdminDashboardPage.module.css"; 
+import styles from "../style/AdminDashboardPage.module.css";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -13,18 +13,18 @@ export default function AdminDashboardPage() {
     const [campaignRequests, setCampaignRequests] = useState([]);
     const [records, setRecords] = useState([]);
     const [testimonials, setTestimonials] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // Fetch all data on load
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [signRes, userRes, campRes, historyRes, testRes] = await Promise.all([
-                    axios.get("http://localhost/dms/api/fetchSignupRequests.php"),
-                    axios.get("http://localhost/dms/api/fetchUserRequests.php"),
-                    axios.get("http://localhost/dms/api/fetchCampaignRequests.php"),
-                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`),
-                    axios.get("http://localhost/dms/api/fetchTestimonials.php")
+                    axios.get("http://localhost/dms/api/fetchSignupRequests.php", { withCredentials: true }),
+                    axios.get("http://localhost/dms/api/fetchUserRequests.php", { withCredentials: true }),
+                    axios.get("http://localhost/dms/api/fetchCampaignRequests.php", { withCredentials: true }),
+                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user?.user_id}`, { withCredentials: true }),
+                    axios.get("http://localhost/dms/api/fetchTestimonials.php", { withCredentials: true }),
                 ]);
 
                 if (signRes.data.success) setSignupRequests(signRes.data.requests);
@@ -35,274 +35,161 @@ export default function AdminDashboardPage() {
 
             } catch {
                 setError("Failed loading admin dashboard data.");
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchData();
-    }, []);    
+    }, [user]);
 
+    // ---------------- Handlers ----------------
     const handleSignupApprove = async (id) => {
-        const res = await axios.post("http://localhost/dms/api/approveSignup.php", { register_id: id });
-        if (res.data.success)
-            setSignupRequests(prev => prev.filter(r => r.register_id !== id));
+        const res = await axios.post("http://localhost/dms/api/approveSignup.php", { register_id: id }, { withCredentials: true });
+        if (res.data.success) setSignupRequests(prev => prev.filter(r => r.register_id !== id));
     };
-
     const handleSignupDeny = async (id) => {
-        const res = await axios.post("http://localhost/dms/api/denySignup.php", { register_id: id });
-        if (res.data.success)
-            setSignupRequests(prev => prev.filter(r => r.register_id !== id));
+        const res = await axios.post("http://localhost/dms/api/denySignup.php", { register_id: id }, { withCredentials: true });
+        if (res.data.success) setSignupRequests(prev => prev.filter(r => r.register_id !== id));
     };
-
     const handleUserApprove = async (id, role) => {
-        const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { user_id: id, role });
-        if (res.data.success)
-            setUserRequests(prev => prev.filter(r => r.user_id !== id));
+        const res = await axios.post("http://localhost/dms/api/approveUserRequest.php", { user_id: id, role }, { withCredentials: true });
+        if (res.data.success) setUserRequests(prev => prev.filter(r => r.user_id !== id));
     };
-
     const handleUserDeny = async (id, role) => {
-        const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { user_id: id, role });
-        if (res.data.success)
-            setUserRequests(prev => prev.filter(r => r.user_id !== id));
+        const res = await axios.post("http://localhost/dms/api/denyUserRequest.php", { user_id: id, role }, { withCredentials: true });
+        if (res.data.success) setUserRequests(prev => prev.filter(r => r.user_id !== id));
     };
-
-    const handleCampaignApprove = async (campaign_id) => {
-        const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id });
-        if (res.data.success)
-            setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
+    const handleCampaignApprove = async (id) => {
+        const res = await axios.post("http://localhost/dms/api/approveCampaignRequest.php", { campaign_id: id }, { withCredentials: true });
+        if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.campaign_id !== id));
     };
-
-    const handleCampaignDeny = async (campaign_id) => {
-        const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id });
-        if (res.data.success)
-            setCampaignRequests(prev => prev.filter(r => r.campaign_id !== campaign_id));
+    const handleCampaignDeny = async (id) => {
+        const res = await axios.post("http://localhost/dms/api/denyCampaignRequest.php", { campaign_id: id }, { withCredentials: true });
+        if (res.data.success) setCampaignRequests(prev => prev.filter(r => r.campaign_id !== id));
     };
-
     const handleTestimonialApprove = async (id) => {
-        const res = await axios.post("http://localhost/dms/api/approveTestimonial.php", { testimonial_id: id });
-        if (res.data.success)
-            setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
+        const res = await axios.post("http://localhost/dms/api/approveTestimonial.php", { testimonial_id: id }, { withCredentials: true });
+        if (res.data.success) setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
     };
-
     const handleTestimonialDeny = async (id) => {
-        const res = await axios.post("http://localhost/dms/api/denyTestimonial.php", { testimonial_id: id });
-        if (res.data.success)
-            setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
+        const res = await axios.post("http://localhost/dms/api/denyTestimonial.php", { testimonial_id: id }, { withCredentials: true });
+        if (res.data.success) setTestimonials(prev => prev.filter(t => t.testimonial_id !== id));
     };
 
-    if (loading) return <p>Loading Admin Dashboard...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
 
     return (
         <div className={styles.container}>
             <h1 className={styles.heading}>Admin Dashboard</h1>
 
+            {/* ---------- Signup Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Signup Requests</h2>
-
                 {signupRequests.length > 0 ? (
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>Role</th>
-                                <th>Registration Number</th>
-                                <th>Verification File</th>
-                                <th>Requested At</th>
-                                <th>Approve</th>
-                                <th>Deny</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {signupRequests.map(r => (
-                                <tr key={r.register_id}>
-                                    <td>{r.email}</td>
-                                    <td>{r.name}</td>
-                                    <td>{r.phone}</td>
-                                    <td>{r.address}</td>
-                                    <td>{r.role}</td>
-                                    <td>{r.role === "NGO" ? r.registration_number : "-"}</td>
-                                    <td>
-                                        {r.role === "NGO"
-                                            ? <a href={`http://localhost/dms/api/${r.verification_file}`} target="_blank">View File</a>
-                                            : "-"
-                                        }
-                                    </td>
-                                    <td>{r.requested_at}</td>
-
-                                    <td>
-                                        <button className={styles.approveBtn}
-                                            onClick={() => handleSignupApprove(r.register_id)}>
-                                            Approve
-                                        </button>
-                                    </td>
-
-                                    <td>
-                                        <button className={styles.denyBtn}
-                                            onClick={() => handleSignupDeny(r.register_id)}>
-                                            Deny
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className={styles.cardGrid}>
+                        {signupRequests.map(r => (
+                            <div key={r.register_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    <span>{r.name} ({r.role})</span>
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>Email:</b> {r.email}</p>
+                                    <p><b>Phone:</b> {r.phone}</p>
+                                    <p><b>Address:</b> {r.address}</p>
+                                    {r.role === "NGO" && (
+                                        <>
+                                            <p><b>Registration No:</b> {r.registration_number}</p>
+                                            <p><b>Verification File:</b> <a href={`http://localhost/dms/api/${r.verification_file}`} target="_blank">View</a></p>
+                                        </>
+                                    )}
+                                    <p><b>Requested At:</b> {r.requested_at}</p>
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    <button className={styles.approveBtn} onClick={() => handleSignupApprove(r.register_id)}>Approve</button>
+                                    <button className={styles.denyBtn} onClick={() => handleSignupDeny(r.register_id)}>Deny</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : <p>No new signup requests.</p>}
             </div>
 
+            {/* ---------- User Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending User Profile Change Requests</h2>
-
                 {userRequests.length > 0 ? (
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Role</th>
-                                <th>Current Name</th>
-                                <th>New Name</th>
-                                <th>Current Phone</th>
-                                <th>New Phone</th>
-                                <th>Current Address</th>
-                                <th>New Address</th>
-                                <th>Status</th>
-                                <th>Requested At</th>
-                                <th>Approve</th>
-                                <th>Deny</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userRequests.map(req => (
-                                <tr key={req.user_id}>
-                                    <td>{req.user_id}</td>
-                                    <td>{req.role}</td>
-                                    <td>{req.current_name}</td>
-                                    <td>{req.new_name}</td>
-                                    <td>{req.current_phone}</td>
-                                    <td>{req.new_phone}</td>
-                                    <td>{req.current_address}</td>
-                                    <td>{req.new_address}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.requested_at}</td>
-
-                                    <td>
-                                        <button className={styles.approveBtn}
-                                            onClick={() => handleUserApprove(req.user_id, req.role)}>
-                                            Approve
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button className={styles.denyBtn}
-                                            onClick={() => handleUserDeny(req.user_id, req.role)}>
-                                            Deny
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className={styles.cardGrid}>
+                        {userRequests.map(req => (
+                            <div key={req.user_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    <span>{req.current_name} ({req.role})</span>
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>Current Phone:</b> {req.current_phone}</p>
+                                    <p><b>New Phone:</b> {req.new_phone}</p>
+                                    <p><b>Current Address:</b> {req.current_address}</p>
+                                    <p><b>New Address:</b> {req.new_address}</p>
+                                    <p><b>Status:</b> {req.status}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    <button className={styles.approveBtn} onClick={() => handleUserApprove(req.user_id, req.role)}>Approve</button>
+                                    <button className={styles.denyBtn} onClick={() => handleUserDeny(req.user_id, req.role)}>Deny</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : <p>No user requests.</p>}
             </div>
 
+            {/* ---------- Campaign Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Campaign Creation Requests</h2>
-
                 {campaignRequests.length > 0 ? (
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Target Qty</th>
-                                <th>Status</th>
-                                <th>Requested By</th>
-                                <th>Requested At</th>
-                                <th>Approve</th>
-                                <th>Deny</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {campaignRequests.map(req => (
-                                <tr key={req.campaign_id}>
-                                    <td>{req.title}</td>
-                                    <td>{req.description}</td>
-                                    <td>{req.target_quantity}</td>
-                                    <td>{req.status}</td>
-                                    <td>{req.ngo_name}</td>
-                                    <td>{req.requested_at}</td>
-
-                                    <td>
-                                        <button className={styles.approveBtn}
-                                            onClick={() => handleCampaignApprove(req.campaign_id)}>
-                                            Approve
-                                        </button>
-                                    </td>
-
-                                    <td>
-                                        <button className={styles.denyBtn}
-                                            onClick={() => handleCampaignDeny(req.campaign_id)}>
-                                            Deny
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className={styles.cardGrid}>
+                        {campaignRequests.map(req => (
+                            <div key={req.campaign_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    <span>{req.title}</span>
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>Description:</b> {req.description}</p>
+                                    <p><b>Target Qty:</b> {req.target_quantity}</p>
+                                    <p><b>Status:</b> {req.status}</p>
+                                    <p><b>Requested By:</b> {req.ngo_name}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    <button className={styles.approveBtn} onClick={() => handleCampaignApprove(req.campaign_id)}>Approve</button>
+                                    <button className={styles.denyBtn} onClick={() => handleCampaignDeny(req.campaign_id)}>Deny</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : <p>No campaign requests.</p>}
             </div>
 
+            {/* ---------- Testimonials ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Testimonials</h2>
-
                 {testimonials.length > 0 ? (
-                    <div className={styles.cardGrid}>
+                    <div className={styles.testimonialGrid}>
                         {testimonials.map(t => {
-                            const name =
-                                t.role === "NGO" ? t.ngo_name : t.donor_name;
-
+                            const name = t.role === "NGO" ? t.ngo_name : t.donor_name;
                             return (
                                 <div key={t.testimonial_id} className={styles.testimonialCard}>
-                                    
                                     <div className={styles.cardHeader}>
-                                        <div className={styles.avatar}>
-                                            {name?.charAt(0).toUpperCase()}
-                                        </div>
+                                        <div className={styles.avatar}>{name?.charAt(0).toUpperCase()}</div>
                                         <div>
                                             <div className={styles.testimonialName}>{name}</div>
                                             <div className={styles.testimonialRole}>{t.role}</div>
                                             <div className={styles.testimonialEmail}>{t.email}</div>
                                         </div>
                                     </div>
-
-                                    <div className={styles.messageBox}>
-                                        “{t.message}”
-                                    </div>
-
+                                    <div className={styles.messageBox}>“{t.message}”</div>
                                     <div className={styles.cardFooter}>
-                                        <div className={styles.testimonialRating}>
-                                            {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
-                                        </div>
-
-                                        <div className={styles.cardButtons}>
-                                            <button
-                                                className={styles.approveBtn}
-                                                onClick={() => handleTestimonialApprove(t.testimonial_id)}
-                                            >
-                                                Approve
-                                            </button>
-                                            <button
-                                                className={styles.denyBtn}
-                                                onClick={() => handleTestimonialDeny(t.testimonial_id)}
-                                            >
-                                                Deny
-                                            </button>
-                                        </div>
+                                        <button className={styles.approveBtn} onClick={() => handleTestimonialApprove(t.testimonial_id)}>Approve</button>
+                                        <button className={styles.denyBtn} onClick={() => handleTestimonialDeny(t.testimonial_id)}>Deny</button>
                                     </div>
-
                                 </div>
                             );
                         })}
@@ -310,9 +197,9 @@ export default function AdminDashboardPage() {
                 ) : <p>No pending testimonials.</p>}
             </div>
 
+            {/* ---------- Donation History ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>All Donation History</h2>
-
                 {records.length > 0 ? (
                     <>
                         <table className={styles.table}>
@@ -343,15 +230,10 @@ export default function AdminDashboardPage() {
                                 ))}
                             </tbody>
                         </table>
-
-                        <button className={styles.viewBtn}
-                            onClick={() => navigate("/records")}>
-                            View All Records
-                        </button>
+                        <button className={styles.viewBtn} onClick={() => navigate("/records")}>View All Records</button>
                     </>
                 ) : <p>No donation history.</p>}
             </div>
-
         </div>
     );
 }
