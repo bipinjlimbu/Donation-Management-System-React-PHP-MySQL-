@@ -1,7 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
@@ -9,6 +12,14 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
+    if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'Admin') {
+        echo json_encode([
+            "success" => false,
+            "message" => "Unauthorized"
+        ]);
+        exit;
+    }
+
     $sql = "
         SELECT 
             t.testimonial_id,
@@ -39,18 +50,15 @@ try {
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
-    $testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         "success" => true,
-        "testimonials" => $testimonials
+        "testimonials" => $stmt->fetchAll(PDO::FETCH_ASSOC)
     ]);
 
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error",
-        "error" => $e->getMessage()
+        "message" => "Database error"
     ]);
 }
-?>
