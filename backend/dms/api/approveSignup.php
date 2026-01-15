@@ -1,7 +1,16 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Headers: *");
+
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'Admin') {
+    echo json_encode(["success" => false, "message" => "Unauthorized"]);
+    exit;
+}
 
 include 'connectDB.php';
 $objDb = new connectDB();
@@ -43,8 +52,8 @@ try {
     $stmt->execute();
 
     if ($reg['role'] === 'Donor') {
-        $sql = "INSERT INTO donor (donor_id, full_name, phone, address, pending_full_name, pending_phone, pending_address, pending_status, requested_at, approved_at)
-                VALUES (:id, :full_name, :phone, :address, NULL, NULL, NULL, 'Approved', :requested_at, NOW())";
+        $sql = "INSERT INTO donor (donor_id, full_name, phone, address, pending_status, requested_at, approved_at)
+                VALUES (:id, :full_name, :phone, :address, 'Approved', :requested_at, NOW())";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $user_id);
         $stmt->bindParam(':full_name', $reg['name']);
@@ -55,8 +64,8 @@ try {
     }
 
     if ($reg['role'] === 'NGO') {
-        $sql = "INSERT INTO ngo (ngo_id, organization_name, registration_number, phone, address, pending_organization_name, pending_phone, pending_address, pending_status, requested_at, approved_at)
-                VALUES (:id, :org_name, :reg_no, :phone, :address, NULL, NULL, NULL, 'Approved', :requested_at, NOW())";
+        $sql = "INSERT INTO ngo (ngo_id, organization_name, registration_number, phone, address, pending_status, requested_at, approved_at)
+                VALUES (:id, :org_name, :reg_no, :phone, :address, 'Approved', :requested_at, NOW())";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $user_id);
         $stmt->bindParam(':org_name', $reg['name']);
@@ -67,17 +76,9 @@ try {
         $stmt->execute();
     }
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Signup approved successfully",
-        "user_id" => $user_id
-    ]);
+    echo json_encode(["success" => true, "message" => "Signup approved successfully", "user_id" => $user_id]);
 
 } catch (Exception $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Error approving signup",
-        "error" => $e->getMessage()
-    ]);
+    echo json_encode(["success" => false, "message" => "Error approving signup", "error" => $e->getMessage()]);
 }
 ?>
