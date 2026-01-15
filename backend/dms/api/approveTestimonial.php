@@ -1,12 +1,23 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
 $objDb = new connectDB();
 $conn = $objDb->connect();
+
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'Admin') {
+    echo json_encode([
+        "success" => false,
+        "message" => "Unauthorized"
+    ]);
+    exit;
+}
 
 $data = json_decode(file_get_contents("php://input"), true);
 $testimonialID = intval($data['testimonial_id'] ?? 0);
@@ -70,4 +81,3 @@ try {
         "error" => $e->getMessage()
     ]);
 }
-?>
