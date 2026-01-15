@@ -1,8 +1,23 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: POST");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit;
+}
+
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Unauthorized"
+    ]);
+    exit;
+}
 
 include 'connectDB.php';
 
@@ -10,17 +25,11 @@ try {
     $conn = (new connectDB())->connect();
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $data = json_decode(file_get_contents("php://input"), true);
-    $user_id = intval($data['user_id'] ?? 0);
+    $user_id = (int) $_SESSION['user_id'];
 
-    if (!$user_id) {
-        echo json_encode(["success" => false, "message" => "Missing user_id"]);
-        exit;
-    }
-
-    $sql = "SELECT notification_id, title, message, status, created_at 
-            FROM notifications 
-            WHERE user_id = :user_id 
+    $sql = "SELECT notification_id, title, message, status, created_at
+            FROM notifications
+            WHERE user_id = :user_id
             ORDER BY created_at DESC";
 
     $stmt = $conn->prepare($sql);
@@ -37,14 +46,6 @@ try {
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error",
-        "error" => $e->getMessage()
-    ]);
-} catch (Exception $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Unexpected error",
-        "error" => $e->getMessage()
+        "message" => "Database error"
     ]);
 }
-?>
