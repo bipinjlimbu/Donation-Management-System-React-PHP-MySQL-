@@ -15,7 +15,6 @@ export default function AdminDashboardPage() {
     const [testimonials, setTestimonials] = useState([]);
     const [error, setError] = useState("");
 
-    // Fetch all data on load
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -41,7 +40,6 @@ export default function AdminDashboardPage() {
         fetchData();
     }, [user]);
 
-    // ---------------- Handlers ----------------
     const handleSignupApprove = async (id) => {
         const res = await axios.post("http://localhost/dms/api/approveSignup.php", { register_id: id }, { withCredentials: true });
         if (res.data.success) setSignupRequests(prev => prev.filter(r => r.register_id !== id));
@@ -81,7 +79,6 @@ export default function AdminDashboardPage() {
         <div className={styles.container}>
             <h1 className={styles.heading}>Admin Dashboard</h1>
 
-            {/* ---------- Signup Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Signup Requests</h2>
                 {signupRequests.length > 0 ? (
@@ -113,7 +110,6 @@ export default function AdminDashboardPage() {
                 ) : <p>No new signup requests.</p>}
             </div>
 
-            {/* ---------- User Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending User Profile Change Requests</h2>
                 {userRequests.length > 0 ? (
@@ -141,7 +137,6 @@ export default function AdminDashboardPage() {
                 ) : <p>No user requests.</p>}
             </div>
 
-            {/* ---------- Campaign Requests ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Campaign Creation Requests</h2>
                 {campaignRequests.length > 0 ? (
@@ -168,7 +163,6 @@ export default function AdminDashboardPage() {
                 ) : <p>No campaign requests.</p>}
             </div>
 
-            {/* ---------- Testimonials ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Testimonials</h2>
                 {testimonials.length > 0 ? (
@@ -197,7 +191,6 @@ export default function AdminDashboardPage() {
                 ) : <p>No pending testimonials.</p>}
             </div>
 
-            {/* ---------- Donation History ---------- */}
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>All Donation History</h2>
                 {records.length > 0 ? (
