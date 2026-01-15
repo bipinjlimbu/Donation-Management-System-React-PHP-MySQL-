@@ -1,3 +1,4 @@
+/* ---------- General Container ---------- */
 .container {
     width: 100%;
     padding: 30px 20px;
@@ -6,6 +7,7 @@
     box-sizing: border-box;
 }
 
+/* ---------- Headings ---------- */
 .heading {
     text-align: center;
     font-size: 2.2rem;
@@ -38,6 +40,145 @@
     margin: 40px 0;
 }
 
+/* ---------- Request Card Grid ---------- */
+.cardGrid {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* ---------- Request Card ---------- */
+.requestCard {
+    width: 360px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cardHeaderUnderline {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #2980b9;
+    padding-bottom: 5px;
+}
+
+.cardBody p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    color: #34495e;
+}
+
+.cardFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.approveBtn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.approveBtn:hover {
+    background-color: #1e8449;
+}
+
+.denyBtn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.denyBtn:hover {
+    background-color: #c0392b;
+}
+
+/* ---------- Testimonials (unique) ---------- */
+.testimonialGrid {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.testimonialCard {
+    width: 360px;
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cardHeader {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: #2980b9;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.testimonialName {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.testimonialRole {
+    font-size: 0.85rem;
+    color: #2980b9;
+    font-weight: 600;
+}
+
+.testimonialEmail {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+.testimonialCard .messageBox {
+    background-color: #f4f6f8;
+    border-left: 4px solid #2980b9;
+    padding: 14px;
+    border-radius: 8px;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* ---------- Donation History Table ---------- */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -60,34 +201,6 @@
     font-weight: 600;
 }
 
-.approveBtn {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.approveBtn:hover {
-    background-color: #1e8449;
-}
-
-.denyBtn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.denyBtn:hover {
-    background-color: #c0392b;
-}
-
 .viewBtn {
     display: block;
     margin: 20px auto 0 auto;
@@ -98,134 +211,25 @@
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .viewBtn:hover {
     background-color: #1f6391;
 }
 
-.cardGrid {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.testimonialCard {
-    width: 360px;
-    background-color: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.cardHeader {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.avatar {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background-color: #2980b9;
-    color: #ffffff;
-    font-weight: bold;
-    font-size: 1.2rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.testimonialName {
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.testimonialRole {
-    font-size: 0.85rem;
-    color: #2980b9;
-    font-weight: 600;
-}
-
-.testimonialEmail {
-    font-size: 0.8rem;
-    color: #7f8c8d;
-}
-
-.messageBox {
-    background-color: #f4f6f8;
-    border-left: 4px solid #2980b9;
-    padding: 14px;
-    border-radius: 8px;
-    font-style: italic;
-    font-size: 0.9rem;
-    color: #333;
-    line-height: 1.5;
-}
-
-.cardFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.testimonialRating {
-    color: #f39c12;
-    font-size: 1rem;
-}
-
-.cardButtons {
-    display: flex;
-    gap: 10px;
-}
-
-.cardButtons .approveBtn,
-.cardButtons .denyBtn {
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-}
-
-@media (max-width: 1024px) {
-    .table {
-        min-width: 700px;
-    }
-}
-
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
 
-    .table th,
-    .table td {
-        padding: 8px 10px;
-        font-size: 0.85rem;
+    .cardGrid,
+    .testimonialGrid {
+        flex-direction: column;
+        align-items: center;
     }
 
-    .heading {
-        font-size: 1.8rem;
-    }
-
-    .sectionTitle {
-        font-size: 1.3rem;
-    }
-
+    .requestCard,
     .testimonialCard {
         width: 100%;
         max-width: 380px;
-    }
-
-    .cardFooter {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
     }
 }
