@@ -1,7 +1,16 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
-header("Access-Control-Allow-Headers: *");
+
+if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'Admin') {
+    echo json_encode(["success" => false, "message" => "Unauthorized"]);
+    exit;
+}
 
 include 'connectDB.php';
 $objDb = new connectDB();
@@ -36,16 +45,9 @@ try {
     $stmt->bindParam(':id', $register_id);
     $stmt->execute();
 
-    echo json_encode([
-        "success" => true,
-        "message" => "Signup request denied"
-    ]);
+    echo json_encode(["success" => true, "message" => "Signup request denied"]);
 
 } catch (Exception $e) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Error denying signup",
-        "error" => $e->getMessage()
-    ]);
+    echo json_encode(["success" => false, "message" => "Error denying signup", "error" => $e->getMessage()]);
 }
 ?>
