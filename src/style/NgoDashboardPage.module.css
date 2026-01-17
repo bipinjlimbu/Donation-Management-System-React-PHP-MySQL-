@@ -21,7 +21,7 @@
     background-color: #ffffff;
     border-radius: 12px;
     padding: 25px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .sectionTitle {
@@ -48,13 +48,13 @@
     background: #ffffff;
     border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .requestCard:hover {
     transform: translateY(-6px);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
 }
 
 .cardTitle {

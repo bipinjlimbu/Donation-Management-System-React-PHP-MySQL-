@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import myDashboard from "../style/NgoDashboardPage.module.css";
+import styles from "../style/AdminDashboardPage.module.css"; // reuse same CSS
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -10,108 +10,93 @@ export default function NgoDashboardPage() {
 
     const [donationRequests, setDonationRequests] = useState([]);
     const [records, setRecords] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        const load = async () => {
-            const donationReq = await axios.get(
-                `http://localhost/dms/api/fetchDonationRequests.php?user_id=${user.user_id}`
-            );
-            const history = await axios.get(
-                `http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`
-            );
+        if (!user) return;
 
-            if (donationReq.data.success) setDonationRequests(donationReq.data.donations);
-            if (history.data.success) setRecords(history.data.donations);
+        const fetchData = async () => {
+            try {
+                const [donationRes, historyRes] = await Promise.all([
+                    axios.get("http://localhost/dms/api/fetchDonationRequests.php", { withCredentials: true }),
+                    axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`, { withCredentials: true }),
+                ]);
 
-            setLoading(false);
-        };
-        load();
-    }, []);
-
-    const handleApprove = async (req, e) => {
-        e.preventDefault();
-
-        const res = await axios.post(
-            "http://localhost/dms/api/approveDonationRequest.php",
-            {
-                donation_id: req.donation_id,
-                campaign_id: req.campaign_id,
-                quantity: req.quantity
+                if (donationRes.data.success) setDonationRequests(donationRes.data.donations || []);
+                if (historyRes.data.success) setRecords(historyRes.data.donations || []);
+            } catch {
+                setError("Failed loading NGO dashboard data.");
             }
-        );
+        };
 
-        if (res.data.success)
-            setDonationRequests(prev =>
-                prev.filter(r => r.donation_id !== req.donation_id)
+        fetchData();
+    }, [user]);
+
+    const handleApprove = async (req) => {
+        try {
+            const res = await axios.post(
+                "http://localhost/dms/api/approveDonationRequest.php",
+                {
+                    donation_id: req.donation_id,
+                    campaign_id: req.campaign_id,
+                    quantity: req.quantity
+                },
+                { withCredentials: true }
             );
+            if (res.data.success)
+                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
+        } catch { }
     };
 
     const handleDeny = async (req) => {
-        const res = await axios.post(
-            "http://localhost/dms/api/denyDonationRequest.php",
-            { donation_id: req.donation_id }
-        );
-
-        if (res.data.success)
-            setDonationRequests(prev =>
-                prev.filter(r => r.donation_id !== req.donation_id)
+        try {
+            const res = await axios.post(
+                "http://localhost/dms/api/denyDonationRequest.php",
+                { donation_id: req.donation_id },
+                { withCredentials: true }
             );
+            if (res.data.success)
+                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
+        } catch { }
     };
 
-    if (loading) return <p>Loading NGO Dashboard...</p>;
+    if (error) return <p style={{ color: "red" }}>{error}</p>;
 
     return (
-        <div className={myDashboard.container}>
-            <h1 className={myDashboard.heading}>NGO Dashboard</h1>
+        <div className={styles.container}>
+            <h1 className={styles.heading}>NGO Dashboard</h1>
 
-            <div className={myDashboard.section}>
-                <h2 className={myDashboard.sectionTitle}>
-                    Pending Donation Approvals
-                </h2>
-
+            <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>Pending Donation Requests</h2>
                 {donationRequests.length > 0 ? (
-                    <div className={myDashboard.cardGrid}>
+                    <div className={styles.cardGrid}>
                         {donationRequests.map(req => (
-                            <div key={req.pending_id} className={myDashboard.requestCard}>
-                                <h3 className={myDashboard.cardTitle}>
-                                    {req.campaign_title}
-                                </h3>
-
-                                <p><strong>Donor:</strong> {req.donor}</p>
-                                <p><strong>Quantity:</strong> {req.quantity}</p>
-
-                                <div className={myDashboard.cardActions}>
-                                    <button
-                                        className={myDashboard.approveButton}
-                                        onClick={(e) => handleApprove(req, e)}
-                                    >
-                                        Approve
-                                    </button>
-
-                                    <button
-                                        className={myDashboard.denyButton}
-                                        onClick={() => handleDeny(req)}
-                                    >
-                                        Deny
-                                    </button>
+                            <div key={req.donation_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    <span>{req.campaign_title}</span>
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>Donor:</b> {req.donor_name}</p>
+                                    <p><b>Item:</b> {req.item_name}</p>
+                                    <p><b>Quantity:</b> {req.quantity}</p>
+                                    <p><b>Status:</b> {req.status}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                                <div className={styles.cardFooter}>
+                                    <button className={styles.approveBtn} onClick={() => handleApprove(req)}>Approve</button>
+                                    <button className={styles.denyBtn} onClick={() => handleDeny(req)}>Deny</button>
                                 </div>
                             </div>
                         ))}
                     </div>
-                ) : (
-                    <p className={myDashboard.centerText}>
-                        No pending donation requests.
-                    </p>
-                )}
+                ) : <p>No pending donation requests.</p>}
             </div>
 
-            <div className={myDashboard.section}>
-                <h2 className={myDashboard.sectionTitle}>Donation Records</h2>
-
+            <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>Donation History</h2>
                 {records.length > 0 ? (
                     <>
-                        <table className={myDashboard.table}>
+                        <table className={styles.table}>
                             <thead>
                                 <tr>
                                     <th>Campaign</th>
@@ -135,19 +120,9 @@ export default function NgoDashboardPage() {
                                 ))}
                             </tbody>
                         </table>
-
-                        <button
-                            className={myDashboard.viewBtn}
-                            onClick={() => navigate("/records")}
-                        >
-                            View All Records
-                        </button>
+                        <button className={styles.viewBtn} onClick={() => navigate("/records")}>View All Records</button>
                     </>
-                ) : (
-                    <p className={myDashboard.centerText}>
-                        No donation records.
-                    </p>
-                )}
+                ) : <p>No donation history.</p>}
             </div>
         </div>
     );
