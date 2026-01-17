@@ -1,6 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+session_start();
+
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
 include 'connectDB.php';
@@ -8,64 +12,39 @@ $objDb = new connectDB();
 $conn = $objDb->connect();
 
 try {
-    $user_id = isset($_GET['user_id']) ? (int) $_GET['user_id'] : 0;
-
-    if (!$user_id) {
-        echo json_encode([
-            "success" => false,
-            "message" => "Missing user_id"
-        ]);
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode(["success" => false, "message" => "Unauthorized"]);
         exit;
     }
 
-    $roleQuery = "SELECT role FROM users WHERE user_id = :user_id";
-    $roleStmt = $conn->prepare($roleQuery);
-    $roleStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $roleStmt->execute();
-    $roleResult = $roleStmt->fetch(PDO::FETCH_ASSOC);
+    $user_id = $_SESSION['user_id'];
 
-    if (!$roleResult) {
-        echo json_encode([
-            "success" => false,
-            "message" => "User not found"
-        ]);
-        exit;
-    }
-
-    $role = $roleResult['role'];
-
-    if ($role === 'Donor') {
-        $sql = "SELECT d.*, c.title AS campaign_title, n.organization_name AS ngo
-                FROM donations d
-                JOIN campaigns c ON d.campaign_id = c.campaign_id
-                JOIN ngo n ON c.ngo_id = n.ngo_id
-                WHERE d.donor_id = :user_id AND d.status = 'Pending'";
-    } elseif ($role === 'NGO') {
-        $sql = "SELECT d.*, c.title AS campaign_title, u.full_name AS donor
-                FROM donations d
-                JOIN campaigns c ON d.campaign_id = c.campaign_id
-                JOIN donor u ON d.donor_id = u.donor_id
-                WHERE c.ngo_id = :user_id AND d.status = 'Pending'";
-    } else {
-        echo json_encode(["success" => false, "message" => "Invalid user role"]);
-        exit;
-    }
+    $sql = "
+        SELECT d.donation_id, d.quantity, d.status, d.requested_at,
+               c.campaign_id, c.title AS campaign_title,
+               u.full_name AS donor_name
+        FROM donations d
+        INNER JOIN campaigns c ON d.campaign_id = c.campaign_id
+        INNER JOIN donor u ON d.donor_id = u.donor_id
+        WHERE c.ngo_id = :ngo_id
+          AND d.status = 'Pending'
+        ORDER BY d.requested_at DESC
+    ";
 
     $stmt = $conn->prepare($sql);
-    if ($role !== 'Admin')
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':ngo_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
-    $donations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         "success" => true,
-        "donations" => $donations
+        "donations" => $stmt->fetchAll(PDO::FETCH_ASSOC),
+        "session_user_id" => $_SESSION['user_id']
     ]);
 
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error: " . $e->getMessage()
+        "message" => "Database error",
+        "error" => $e->getMessage()
     ]);
 }
-?>
