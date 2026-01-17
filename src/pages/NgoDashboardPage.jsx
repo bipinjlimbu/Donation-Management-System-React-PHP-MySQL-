@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "../style/NGODashboardPage.module.css"; // reuse same CSS
+import styles from "../style/NGODashboardPage.module.css";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
