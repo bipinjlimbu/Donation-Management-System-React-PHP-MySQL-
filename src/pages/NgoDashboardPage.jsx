@@ -10,6 +10,8 @@ export default function NgoDashboardPage() {
 
     const [donationRequests, setDonationRequests] = useState([]);
     const [records, setRecords] = useState([]);
+    const [campaignRequests, setCampaignRequests] = useState([]);
+    const [profileRequests, setProfileRequests] = useState([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -17,13 +19,34 @@ export default function NgoDashboardPage() {
 
         const fetchData = async () => {
             try {
-                const [donationRes, historyRes] = await Promise.all([
+                const [
+                    donationRes,
+                    historyRes,
+                    campaignRes,
+                    profileRes
+                ] = await Promise.all([
                     axios.get("http://localhost/dms/api/fetchDonationRequests.php", { withCredentials: true }),
                     axios.get(`http://localhost/dms/api/fetchDonationHistory.php?user_id=${user.user_id}`, { withCredentials: true }),
+                    axios.get("http://localhost/dms/api/fetchCampaignRequests.php", { withCredentials: true }),
+                    axios.get("http://localhost/dms/api/fetchUserRequests.php", { withCredentials: true })
                 ]);
 
-                if (donationRes.data.success) setDonationRequests(donationRes.data.donations || []);
-                if (historyRes.data.success) setRecords(historyRes.data.donations || []);
+                if (donationRes.data.success)
+                    setDonationRequests(donationRes.data.donations || []);
+
+                if (historyRes.data.success)
+                    setRecords(historyRes.data.donations || []);
+
+                if (campaignRes.data.success)
+                    setCampaignRequests(
+                        campaignRes.data.requests.filter(r => Number(r.ngo_id) === Number(user.user_id))
+                    );
+
+                if (profileRes.data.success)
+                    setProfileRequests(
+                        profileRes.data.requests.filter(r => Number(r.user_id) === Number(user.user_id))
+                    );
+
             } catch {
                 setError("Failed loading NGO dashboard data.");
             }
@@ -33,31 +56,35 @@ export default function NgoDashboardPage() {
     }, [user]);
 
     const handleApprove = async (req) => {
-        try {
-            const res = await axios.post(
-                "http://localhost/dms/api/approveDonationRequest.php",
-                {
-                    donation_id: req.donation_id,
-                    campaign_id: req.campaign_id,
-                    quantity: req.quantity
-                },
-                { withCredentials: true }
+        const res = await axios.post(
+            "http://localhost/dms/api/approveDonationRequest.php",
+            {
+                donation_id: req.donation_id,
+                campaign_id: req.campaign_id,
+                quantity: req.quantity
+            },
+            { withCredentials: true }
+        );
+
+        if (res.data.success) {
+            setDonationRequests(prev =>
+                prev.filter(r => r.donation_id !== req.donation_id)
             );
-            if (res.data.success)
-                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
-        } catch { }
+        }
     };
 
     const handleDeny = async (req) => {
-        try {
-            const res = await axios.post(
-                "http://localhost/dms/api/denyDonationRequest.php",
-                { donation_id: req.donation_id },
-                { withCredentials: true }
+        const res = await axios.post(
+            "http://localhost/dms/api/denyDonationRequest.php",
+            { donation_id: req.donation_id },
+            { withCredentials: true }
+        );
+
+        if (res.data.success) {
+            setDonationRequests(prev =>
+                prev.filter(r => r.donation_id !== req.donation_id)
             );
-            if (res.data.success)
-                setDonationRequests(prev => prev.filter(r => r.donation_id !== req.donation_id));
-        } catch { }
+        }
     };
 
     if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -68,20 +95,22 @@ export default function NgoDashboardPage() {
 
             <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Pending Donation Requests</h2>
+
                 {donationRequests.length > 0 ? (
                     <div className={styles.cardGrid}>
                         {donationRequests.map(req => (
                             <div key={req.donation_id} className={styles.requestCard}>
                                 <div className={styles.cardHeaderUnderline}>
-                                    <span>{req.campaign_title}</span>
+                                    {req.campaign_title}
                                 </div>
+
                                 <div className={styles.cardBody}>
                                     <p><b>Donor:</b> {req.donor_name}</p>
                                     <p><b>Item:</b> {req.item_name}</p>
                                     <p><b>Quantity:</b> {req.quantity}</p>
-                                    <p><b>Status:</b> {req.status}</p>
                                     <p><b>Requested At:</b> {req.requested_at}</p>
                                 </div>
+
                                 <div className={styles.cardFooter}>
                                     <button className={styles.approveBtn} onClick={() => handleApprove(req)}>Approve</button>
                                     <button className={styles.denyBtn} onClick={() => handleDeny(req)}>Deny</button>
@@ -93,7 +122,52 @@ export default function NgoDashboardPage() {
             </div>
 
             <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>Pending Profile Edit Request</h2>
+
+                {profileRequests.length > 0 ? (
+                    <div className={styles.cardGrid}>
+                        {profileRequests.map(req => (
+                            <div key={req.user_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    Your Profile Update
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>New Name:</b> {req.new_name}</p>
+                                    <p><b>New Phone:</b> {req.new_phone}</p>
+                                    <p><b>New Address:</b> {req.new_address}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : <p>No pending profile edit request.</p>}
+            </div>
+
+            <div className={styles.section}>
+                <h2 className={styles.sectionTitle}>Pending Campaign Requests</h2>
+
+                {campaignRequests.length > 0 ? (
+                    <div className={styles.cardGrid}>
+                        {campaignRequests.map(req => (
+                            <div key={req.campaign_id} className={styles.requestCard}>
+                                <div className={styles.cardHeaderUnderline}>
+                                    {req.title}
+                                </div>
+                                <div className={styles.cardBody}>
+                                    <p><b>Description:</b> {req.description}</p>
+                                    <p><b>Target Qty:</b> {req.target_quantity}</p>
+                                    <p><b>Status:</b> {req.status}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : <p>No pending campaign requests.</p>}
+            </div>
+
+            <div className={styles.section}>
                 <h2 className={styles.sectionTitle}>Donation History</h2>
+
                 {records.length > 0 ? (
                     <>
                         <table className={styles.table}>
@@ -120,7 +194,10 @@ export default function NgoDashboardPage() {
                                 ))}
                             </tbody>
                         </table>
-                        <button className={styles.viewBtn} onClick={() => navigate("/records")}>View All Records</button>
+
+                        <button className={styles.viewBtn} onClick={() => navigate("/records")}>
+                            View All Records
+                        </button>
                     </>
                 ) : <p>No donation history.</p>}
             </div>
