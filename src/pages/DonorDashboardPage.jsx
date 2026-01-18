@@ -49,9 +49,9 @@ export default function DonorDashboardPage() {
 
     return (
         <div className={myDashboard.container}>
-            <h1>Donor Dashboard</h1>
+            <h1 className={myDashboard.heading}>Donor Dashboard</h1>
 
-            <div className={myDashboard.sectionCard}>
+            <div className={myDashboard.section}>
                 <h2 className={myDashboard.sectionTitle}>
                     Pending Donation Requests
                 </h2>
@@ -63,13 +63,15 @@ export default function DonorDashboardPage() {
                                 key={req.donation_id}
                                 className={myDashboard.requestCard}
                             >
-                                <h3 className={myDashboard.cardTitle}>
+                                <div className={myDashboard.cardHeaderUnderline}>
                                     {req.campaign_title}
-                                </h3>
+                                </div>
 
-                                <p><strong>Item:</strong> {req.item_name}</p>
-                                <p><strong>Quantity:</strong> {req.quantity}</p>
-                                <p><strong>NGO:</strong> {req.ngo_name}</p>
+                                <div className={myDashboard.cardBody}>
+                                    <p><b>Item:</b> {req.item_name}</p>
+                                    <p><b>Quantity:</b> {req.quantity}</p>
+                                    <p><b>NGO:</b> {req.ngo_name}</p>
+                                </div>
                             </div>
                         ))}
                     </div>
