@@ -51,6 +51,7 @@ try {
             n.organization_name AS ngo_name
         FROM campaigns c
         JOIN ngo n ON c.ngo_id = n.ngo_id
+        WHERE c.status != 'Pending'
         ORDER BY c.requested_at DESC
     ");
     $stmt->execute();
