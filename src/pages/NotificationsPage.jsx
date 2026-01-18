@@ -15,9 +15,6 @@ export default function NotificationsPage() {
         if (!user) return;
 
         const fetchNotifications = async () => {
-            setLoading(true);
-            setError(null);
-
             try {
                 const res = await axios.get(
                     "http://localhost/dms/api/fetchNotifications.php",
@@ -29,8 +26,7 @@ export default function NotificationsPage() {
                 } else {
                     setError(res.data.message || "No notifications found.");
                 }
-            } catch (err) {
-                console.error(err);
+            } catch {
                 setError("Failed to connect to the server.");
             } finally {
                 setLoading(false);
@@ -44,25 +40,38 @@ export default function NotificationsPage() {
         setSelectedNotification(notification);
 
         if (notification.status === "unread") {
-            try {
-                const res = await axios.post(
-                    "http://localhost/dms/api/markNotificationRead.php",
-                    { notification_id: notification.notification_id },
-                    { withCredentials: true }
-                );
+            await axios.post(
+                "http://localhost/dms/api/markNotificationRead.php",
+                { notification_id: notification.notification_id },
+                { withCredentials: true }
+            );
 
-                if (res.data.success) {
-                    setNotifications(prev =>
-                        prev.map(n =>
-                            n.notification_id === notification.notification_id
-                                ? { ...n, status: "read" }
-                                : n
-                        )
-                    );
-                }
-            } catch (err) {
-                console.error("Failed to mark notification as read", err);
-            }
+            setNotifications(prev =>
+                prev.map(n =>
+                    n.notification_id === notification.notification_id
+                        ? { ...n, status: "read" }
+                        : n
+                )
+            );
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedNotification) return;
+
+        const res = await axios.post(
+            "http://localhost/dms/api/deleteNotification.php",
+            { notification_id: selectedNotification.notification_id },
+            { withCredentials: true }
+        );
+
+        if (res.data.success) {
+            setNotifications(prev =>
+                prev.filter(
+                    n => n.notification_id !== selectedNotification.notification_id
+                )
+            );
+            setSelectedNotification(null);
         }
     };
 
@@ -80,12 +89,11 @@ export default function NotificationsPage() {
             )}
 
             <div className={styles.list}>
-                {notifications.map((n) => (
+                {notifications.map(n => (
                     <div
                         key={n.notification_id}
-                        className={`${styles.card} ${
-                            n.status === "unread" ? styles.unread : ""
-                        }`}
+                        className={`${styles.card} ${n.status === "unread" ? styles.unread : ""
+                            }`}
                     >
                         <div className={styles.text}>
                             <h3 className={styles.title}>{n.title}</h3>
@@ -117,12 +125,22 @@ export default function NotificationsPage() {
                         <p className={styles.modalMsg}>
                             {selectedNotification.message}
                         </p>
-                        <button
-                            className={styles.closeBtn}
-                            onClick={() => setSelectedNotification(null)}
-                        >
-                            Close
-                        </button>
+
+                        <div className={styles.modalActions}>
+                            <button
+                                className={styles.deleteBtn}
+                                onClick={handleDelete}
+                            >
+                                Delete
+                            </button>
+
+                            <button
+                                className={styles.closeBtn}
+                                onClick={() => setSelectedNotification(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
