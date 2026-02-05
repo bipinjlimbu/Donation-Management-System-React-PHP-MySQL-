@@ -13,26 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once 'session.php';
 require_once 'connectDB.php';
 
-if (!isset($_SESSION['user_id'], $_SESSION['role'])) {
-    http_response_code(401);
-    echo json_encode(["success" => false, "message" => "Unauthorized"]);
-    exit;
-}
-
 $conn = (new connectDB())->connect();
 
 try {
     $conn->exec("
         UPDATE campaigns 
         SET status = 'Active', approved_at = NOW()
-        WHERE status = 'Approved' AND start_date <= CURDATE()
+        WHERE status = 'Approved'
+          AND start_date <= CURDATE()
     ");
 
     $conn->exec("
         UPDATE campaigns 
         SET status = 'Completed'
         WHERE status = 'Active'
-        AND (end_date < CURDATE() OR collected_quantity >= target_quantity)
+          AND (end_date < CURDATE() OR collected_quantity >= target_quantity)
     ");
 
     $stmt = $conn->prepare("
@@ -50,10 +45,11 @@ try {
             c.end_date,
             n.organization_name AS ngo_name
         FROM campaigns c
-        JOIN ngo n ON c.ngo_id = n.ngo_id
+        INNER JOIN ngo n ON c.ngo_id = n.ngo_id
         WHERE c.status != 'Pending'
         ORDER BY c.requested_at DESC
     ");
+
     $stmt->execute();
 
     echo json_encode([
@@ -63,5 +59,9 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Database error"]);
+    echo json_encode([
+        "success" => false,
+        "message" => "Database error"
+    ]);
 }
+?>
