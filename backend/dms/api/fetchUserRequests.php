@@ -42,14 +42,41 @@ try {
 
         $requests = array_merge($donorRequests, $ngoRequests);
     } else if (isset($_SESSION['role']) && $_SESSION['role'] === 'NGO') {
+
         $stmt = $conn->prepare(
-            "SELECT ngo_id AS user_id, pending_organization_name AS new_name,
-                    pending_phone AS new_phone, pending_address AS new_address,
-                    pending_status AS status, requested_at
+            "SELECT ngo_id AS user_id,
+                    organization_name AS current_name,
+                    phone AS current_phone,
+                    address AS current_address,
+                    pending_organization_name AS new_name,
+                    pending_phone AS new_phone,
+                    pending_address AS new_address,
+                    pending_status AS status,
+                    requested_at
              FROM ngo
-             WHERE ngo_id = :ngo_id AND pending_status = 'Pending'"
+             WHERE ngo_id = :ngo_id
+               AND pending_status = 'Pending'"
         );
         $stmt->bindParam(':ngo_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else if (isset($_SESSION['role']) && $_SESSION['role'] === 'Donor') {
+
+        $stmt = $conn->prepare(
+            "SELECT donor_id AS user_id,
+                    full_name AS current_name,
+                    phone AS current_phone,
+                    address AS current_address,
+                    pending_full_name AS new_name,
+                    pending_phone AS new_phone,
+                    pending_address AS new_address,
+                    pending_status AS status,
+                    requested_at
+             FROM donor
+             WHERE donor_id = :donor_id
+               AND pending_status = 'Pending'"
+        );
+        $stmt->bindParam(':donor_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
