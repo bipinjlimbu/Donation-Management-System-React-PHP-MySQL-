@@ -10,6 +10,7 @@ export default function DonorDashboardPage() {
 
     const [pendingDonations, setPendingDonations] = useState([]);
     const [records, setRecords] = useState([]);
+    const [profileEditRequests, setProfileEditRequests] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -37,6 +38,16 @@ export default function DonorDashboardPage() {
                         )
                     );
                 }
+
+                const profileRes = await axios.get(
+                    "http://localhost/dms/api/fetchUserRequests.php",
+                    { withCredentials: true }
+                );
+
+                if (profileRes.data.success) {
+                    setProfileEditRequests(profileRes.data.requests || []);
+                }
+
             } finally {
                 setLoading(false);
             }
@@ -78,6 +89,39 @@ export default function DonorDashboardPage() {
                 ) : (
                     <p className={myDashboard.noData}>
                         No pending donation requests.
+                    </p>
+                )}
+            </div>
+
+            <div className={myDashboard.section}>
+                <h2 className={myDashboard.sectionTitle}>
+                    Pending Profile Edit Requests
+                </h2>
+
+                {profileEditRequests.length > 0 ? (
+                    <div className={myDashboard.cardGrid}>
+                        {profileEditRequests.map(req => (
+                            <div
+                                key={req.user_id}
+                                className={myDashboard.requestCard}
+                            >
+                                <div className={myDashboard.cardHeaderUnderline}>
+                                    Profile Update Request
+                                </div>
+
+                                <div className={myDashboard.cardBody}>
+                                    <p><b>New Name:</b> {req.new_name}</p>
+                                    <p><b>New Phone:</b> {req.new_phone}</p>
+                                    <p><b>New Address:</b> {req.new_address}</p>
+                                    <p><b>Status:</b> {req.status}</p>
+                                    <p><b>Requested At:</b> {req.requested_at}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className={myDashboard.noData}>
+                        No pending profile edit requests.
                     </p>
                 )}
             </div>
