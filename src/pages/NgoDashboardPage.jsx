@@ -135,6 +135,7 @@ export default function NgoDashboardPage() {
                                     <p><b>New Name:</b> {req.new_name}</p>
                                     <p><b>New Phone:</b> {req.new_phone}</p>
                                     <p><b>New Address:</b> {req.new_address}</p>
+                                    <p><b>Status:</b> {req.status}</p>
                                     <p><b>Requested At:</b> {req.requested_at}</p>
                                 </div>
                             </div>
