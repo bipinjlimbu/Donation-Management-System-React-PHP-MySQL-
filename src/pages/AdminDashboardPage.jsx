@@ -120,9 +120,8 @@ export default function AdminDashboardPage() {
                                     <span>{req.current_name} ({req.role})</span>
                                 </div>
                                 <div className={styles.cardBody}>
-                                    <p><b>Current Phone:</b> {req.current_phone}</p>
+                                    <p><b>New Name:</b> {req.new_name}</p>
                                     <p><b>New Phone:</b> {req.new_phone}</p>
-                                    <p><b>Current Address:</b> {req.current_address}</p>
                                     <p><b>New Address:</b> {req.new_address}</p>
                                     <p><b>Status:</b> {req.status}</p>
                                     <p><b>Requested At:</b> {req.requested_at}</p>
