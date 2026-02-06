@@ -291,57 +291,29 @@ export default function HomePage() {
             </section>
 
             <section className={myHome.testimonials}>
-                <h2 className={myHome.sectionTitle}>What People Say About Us</h2>
-
+                <h2 className={myHome.sectionTitle}>What People Say</h2>
                 <div className={myHome.testimonialGrid}>
-                    {testimonials.length === 0 ? (
-                        <p className={myHome.noTestimonials}>No testimonials available yet.</p>
-                    ) : (
-                        testimonials.slice(0, 3).map(t => {
-                            const name = t.role === "NGO" ? t.ngo_name : t.donor_name;
-                            return (
-                                <div key={t.testimonial_id} className={myHome.testimonialCard}>
-
-                                    <div className={myHome.cardHeader}>
-                                        <div className={myHome.avatar}>
-                                            {name?.charAt(0).toUpperCase()}
-                                        </div>
-                                        <div>
-                                            <div className={myHome.testimonialName}>{name}</div>
-                                            <div className={myHome.testimonialRole}>{t.role}</div>
-                                        </div>
+                    {testimonials.slice(0, 3).map(t => {
+                        const name = t.role === "NGO" ? t.ngo_name : t.donor_name;
+                        return (
+                            <div key={t.testimonial_id} className={myHome.refTestimonialCard}>
+                                <div className={myHome.refCardHeader}>
+                                    <div className={myHome.refAvatar}>{name?.charAt(0).toUpperCase()}</div>
+                                    <div>
+                                        <div className={myHome.refName}>{name}</div>
+                                        <div className={myHome.refRole}>{t.role}</div>
                                     </div>
-
-                                    <div className={myHome.testimonialMessage}>
-                                        “{t.message}”
-                                    </div>
-
-                                    <div className={myHome.testimonialFooter}>
-                                        <div className={myHome.testimonialRating}>
-                                            {"★".repeat(t.rating)}
-                                            {"☆".repeat(5 - t.rating)}
-                                        </div>
-                                    </div>
-
                                 </div>
-                            );
-                        })
-                    )}
+                                <div className={myHome.refMessageBox}>“{t.message}”</div>
+                                <div className={myHome.refRating}>
+                                    {"★".repeat(t.rating)}{"☆".repeat(5 - t.rating)}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-
                 <div className={myHome.testimonialActions}>
-                    {user && (
-                        <button
-                            className={myHome.primaryBtn}
-                            onClick={() => navigate("/testimonials/create")}
-                        >
-                            Write a Testimonial
-                        </button>
-                    )}
-                    <button
-                        className={myHome.secondaryBtn}
-                        onClick={() => navigate("/testimonials")}
-                    >
+                    <button className={myHome.secondaryBtn} onClick={() => navigate("/testimonials")}>
                         View All Testimonials
                     </button>
                 </div>
