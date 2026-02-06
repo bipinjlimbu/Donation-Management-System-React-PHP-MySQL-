@@ -2,7 +2,7 @@
     min-height: 90vh;
     padding: 40px 20px;
     background-image:
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
         url("../images/HomeImg.jpg");
     background-size: cover;
     background-position: center;
@@ -15,7 +15,7 @@
 }
 
 .heroOverlay {
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     padding: 60px 40px;
     border-radius: 16px;
     text-align: center;
@@ -37,7 +37,7 @@
     font-size: clamp(2.2rem, 5vw, 3.2rem);
     color: #ffffff;
     margin-bottom: 15px;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .heroHighlight {
@@ -87,7 +87,7 @@
 .primaryBtn:hover {
     background: #1e8449;
     transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
 
 .secondaryBtn {
@@ -105,7 +105,7 @@
     background: white;
     color: #2c3e50;
     transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 600px) {
@@ -117,7 +117,7 @@
 .impactSection {
     padding: 80px 20px;
     text-align: center;
-    background-color: #f8f9fa; 
+    background-color: #f8f9fa;
 }
 
 .sectionTitle {
@@ -142,20 +142,31 @@
     border-radius: 15px;
     min-width: 150px;
     max-width: 200px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     opacity: 0;
     animation: fadeInUp 1s forwards;
 }
 
-.impactCard:nth-child(1) { animation-delay: 0.2s; }
-.impactCard:nth-child(2) { animation-delay: 0.4s; }
-.impactCard:nth-child(3) { animation-delay: 0.6s; }
-.impactCard:nth-child(4) { animation-delay: 0.8s; }
+.impactCard:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.impactCard:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.impactCard:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.impactCard:nth-child(4) {
+    animation-delay: 0.8s;
+}
 
 .impactCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .impactNumber {
@@ -171,8 +182,15 @@
 }
 
 @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
@@ -213,9 +231,11 @@
 .campaignCard {
     background: #f8f9fa;
     border-radius: 15px;
-    padding: 30px 25px; /* increased padding */
-    width: 300px;       /* increased width */
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    padding: 30px 25px;
+    /* increased padding */
+    width: 300px;
+    /* increased width */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -225,14 +245,25 @@
     animation: fadeInUp 1s forwards;
 }
 
-.campaignCard:nth-child(1) { animation-delay: 0.2s; }
-.campaignCard:nth-child(2) { animation-delay: 0.4s; }
-.campaignCard:nth-child(3) { animation-delay: 0.6s; }
-.campaignCard:nth-child(4) { animation-delay: 0.8s; }
+.campaignCard:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.campaignCard:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.campaignCard:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.campaignCard:nth-child(4) {
+    animation-delay: 0.8s;
+}
 
 .campaignCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .cardTitle {
@@ -251,7 +282,8 @@
     text-align: center;
 
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* limit to 3 lines */
+    -webkit-line-clamp: 2;
+    /* limit to 3 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -267,11 +299,25 @@
     text-align: center;
 }
 
-.statusBadge.pending { background-color: #f39c12; }
-.statusBadge.active { background-color: #27ae60; }
-.statusBadge.completed { background-color: #2c3e50; }
-.statusBadge.denied { background-color: #e74c3c; }
-.statusBadge.approved { background-color: #2980b9; }
+.statusBadge.pending {
+    background-color: #f39c12;
+}
+
+.statusBadge.active {
+    background-color: #27ae60;
+}
+
+.statusBadge.completed {
+    background-color: #2c3e50;
+}
+
+.statusBadge.denied {
+    background-color: #e74c3c;
+}
+
+.statusBadge.approved {
+    background-color: #2980b9;
+}
 
 .cardFooter {
     font-size: 0.9rem;
@@ -315,8 +361,15 @@
 }
 
 @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
@@ -349,21 +402,32 @@
     border-radius: 15px;
     padding: 25px 20px;
     width: 240px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
     opacity: 0;
     animation: fadeInUp 1s forwards;
 }
 
-.stepCard:nth-child(1) { animation-delay: 0.2s; }
-.stepCard:nth-child(2) { animation-delay: 0.4s; }
-.stepCard:nth-child(3) { animation-delay: 0.6s; }
-.stepCard:nth-child(4) { animation-delay: 0.8s; }
+.stepCard:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.stepCard:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.stepCard:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.stepCard:nth-child(4) {
+    animation-delay: 0.8s;
+}
 
 .stepCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .stepIcon {
@@ -385,8 +449,15 @@
 }
 
 @keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
@@ -425,7 +496,7 @@
     padding: 30px 25px;
     border-radius: 16px;
     cursor: pointer;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -443,7 +514,7 @@
 
 .quickCard:hover {
     transform: translateY(-6px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .features {
@@ -464,7 +535,7 @@
     background-color: #f9fafb;
     padding: 35px 30px;
     border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -482,7 +553,7 @@
 
 .featureCard:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
 .trust {
@@ -503,7 +574,7 @@
     background: #f9fafb;
     padding: 40px 30px;
     border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -521,7 +592,7 @@
 
 .trustCard:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
 }
 
 .cta {
@@ -609,14 +680,14 @@
     background: white;
     padding: 35px 25px;
     border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     text-align: left;
 }
 
 .testimonialCard:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
 }
 
 .testimonialMessage {
