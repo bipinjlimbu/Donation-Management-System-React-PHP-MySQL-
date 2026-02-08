@@ -26,6 +26,7 @@ $conn = $objDb->connect();
 $data = json_decode(file_get_contents("php://input"), true);
 
 $user_id = (int) $_SESSION['user_id'];
+$user_role = $_SESSION['role'] ?? '';
 $campaignId = (int) ($data['campaign_id'] ?? 0);
 $title = trim($data['title'] ?? '');
 $description = trim($data['description'] ?? '');
@@ -42,16 +43,20 @@ if (!$campaignId || !$title || !$description || !$targetQuantity || !$endDate) {
 }
 
 try {
-    // 🔐 Verify ownership
-    $check = $conn->prepare(
-        "SELECT campaign_id FROM campaigns 
-         WHERE campaign_id = :cid AND created_by = :uid"
-    );
+    $check = $conn->prepare("SELECT created_by FROM campaigns WHERE campaign_id = :cid");
     $check->bindParam(':cid', $campaignId, PDO::PARAM_INT);
-    $check->bindParam(':uid', $user_id, PDO::PARAM_INT);
     $check->execute();
+    $campaign = $check->fetch(PDO::FETCH_ASSOC);
 
-    if (!$check->fetch()) {
+    if (!$campaign) {
+        echo json_encode(["success" => false, "message" => "Campaign not found."]);
+        exit;
+    }
+
+    $isCreator = ($campaign['created_by'] == $user_id);
+    $isAdmin = ($user_role === 'Admin');
+
+    if (!$isCreator && !$isAdmin) {
         echo json_encode([
             "success" => false,
             "message" => "You are not authorized to edit this campaign."
@@ -84,6 +89,6 @@ try {
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
-        "message" => "Database error"
+        "message" => "Database error: " . $e->getMessage()
     ]);
 }
