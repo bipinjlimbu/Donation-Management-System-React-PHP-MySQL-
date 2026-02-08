@@ -7,50 +7,39 @@ export default function UserListPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const { user } = useAuth();
+    const { user: currentUser } = useAuth();
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get(
-                    "http://localhost/dms/api/fetchusers.php",
-                    { withCredentials: true }
-                );
+                const res = await axios.get("http://localhost/dms/api/fetchusers.php", { withCredentials: true });
                 if (res.data.success) setUsers(res.data.users);
                 else setError(res.data.message);
             } catch (err) {
-                console.error(err);
                 setError("Failed to connect to server");
             } finally {
                 setLoading(false);
             }
         };
+        fetchUsers();
+    }, []);
 
-        if (user?.role !== "Admin") {
-            setError("Unauthorized: Admins only.");
-            setLoading(false);
-        } else {
-            fetchUsers();
-        }
-    }, [user]);
-
-    const deleteUser = async (registerId, userId) => {
-        if (!window.confirm("Are you sure you want to delete this specific record?")) return;
+    const deleteUser = async (targetRegisterId, targetUserId) => {
+        if (!window.confirm("Are you sure you want to delete ONLY this specific record?")) return;
 
         try {
             const res = await axios.post(
                 "http://localhost/dms/api/deleteuser.php",
                 {
-                    register_id: registerId,
-                    user_id: userId
+                    register_id: targetRegisterId,
+                    user_id: targetUserId
                 },
                 { withCredentials: true }
             );
 
             if (res.data.success) {
                 alert("Record removed successfully");
-                setUsers((prev) => prev.filter((u) => u.register_id !== registerId));
+                setUsers((prev) => prev.filter((u) => u.register_id !== targetRegisterId));
             } else {
                 alert(res.data.message);
             }
@@ -61,19 +50,15 @@ export default function UserListPage() {
 
     return (
         <div className={styles.page}>
-            {loading ? (
-                <p className={styles.center}>Loading records...</p>
-            ) : error ? (
-                <p className={styles.error}>{error}</p>
+            {loading ? (<p className={styles.center}>Loading...</p>
+            ) : error ? (<p className={styles.error}>{error}</p>
             ) : (
                 <div className={styles.container}>
-                    <h2 className={styles.title}>User Management</h2>
                     <table className={styles.table}>
                         <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Role</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -83,22 +68,14 @@ export default function UserListPage() {
                                 <tr key={u.register_id}>
                                     <td>{u.name}</td>
                                     <td>{u.email}</td>
-                                    <td>{u.role}</td>
+                                    <td>{u.status}</td>
                                     <td>
-                                        <span className={`${styles.statusBadge} ${styles[u.status.toLowerCase()]}`}>
-                                            {u.status}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {u.user_id !== user.user_id ? (
-                                            <button
-                                                className={styles.deleteBtn}
-                                                onClick={() => deleteUser(u.register_id, u.user_id)}
-                                            >
+                                        {u.user_id !== currentUser?.user_id ? (
+                                            <button className={styles.deleteBtn} onClick={() => deleteUser(u.register_id, u.user_id)}>
                                                 Delete
                                             </button>
                                         ) : (
-                                            <span className={styles.meBadge}>Current Admin</span>
+                                            <span className={styles.meBadge}>Admin</span>
                                         )}
                                     </td>
                                 </tr>
