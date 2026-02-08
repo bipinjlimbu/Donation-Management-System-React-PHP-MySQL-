@@ -14,6 +14,8 @@ export default function SingleCampaignPage() {
   const navigate = useNavigate();
 
   const isOwner = user?.role === "NGO" && user?.user_id === campaign?.ngo_id;
+  const isAdmin = user?.role === "Admin";
+  const canManage = isOwner || isAdmin;
 
   useEffect(() => {
     const fetchCampaign = async () => {
@@ -97,7 +99,7 @@ export default function SingleCampaignPage() {
               </button>
             )}
 
-            {isOwner && campaign.status === "Active" && (
+            {canManage && campaign.status === "Active" && (
               <button
                 className={mySingleCampaign.secondaryBtn}
                 onClick={() => navigate(`/edit-campaign/${campaign.campaign_id}`)}
@@ -106,7 +108,7 @@ export default function SingleCampaignPage() {
               </button>
             )}
 
-            {isOwner && (
+            {canManage && (
               <button
                 className={mySingleCampaign.deleteBtn}
                 onClick={deleteCampaign}
