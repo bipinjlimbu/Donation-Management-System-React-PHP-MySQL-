@@ -14,7 +14,7 @@ export default function UserListPage() {
         const fetchUsers = async () => {
             try {
                 const res = await axios.get(
-                    "http://localhost/dms/api/get_users.php",
+                    "http://localhost/dms/api/fetchusers.php",
                     { withCredentials: true }
                 );
                 if (res.data.success) setUsers(res.data.users);
@@ -40,7 +40,7 @@ export default function UserListPage() {
 
         try {
             const res = await axios.post(
-                "http://localhost/dms/api/delete_user.php",
+                "http://localhost/dms/api/deleteuser.php",
                 {
                     register_id: registerId,
                     user_id: userId
@@ -50,7 +50,6 @@ export default function UserListPage() {
 
             if (res.data.success) {
                 alert("Record removed successfully");
-                // Update UI by filtering out the specific register_id
                 setUsers((prev) => prev.filter((u) => u.register_id !== registerId));
             } else {
                 alert(res.data.message);
