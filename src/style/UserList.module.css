@@ -1,0 +1,117 @@
+.page {
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Table Styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    color: #555;
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: 600;
+}
+
+.table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+    vertical-align: middle;
+}
+
+.table tr:hover {
+    background-color: #fafafa;
+}
+
+/* Status Badges */
+.statusBadge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.approved {
+    background-color: #e6ffed;
+    color: #28a745;
+    border: 1px solid #c6f6d5;
+}
+
+.denied {
+    background-color: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #feb2b2;
+}
+
+.pending {
+    background-color: #fffaf0;
+    color: #d69e2e;
+    border: 1px solid #fbd38d;
+}
+
+/* Action Buttons */
+.deleteBtn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.deleteBtn:hover {
+    background-color: #c82333;
+}
+
+.meBadge {
+    background-color: #e2e8f0;
+    color: #4a5568;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/* Utility Classes */
+.center {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.error {
+    color: #dc3545;
+    background: #fff5f5;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 600px;
+}
