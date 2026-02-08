@@ -67,8 +67,9 @@ $userId = $_SESSION['user_id'] ?? null;
 $role = $_SESSION['role'] ?? null;
 
 $isOwner = ($role === 'NGO' && $userId == $campaign['ngo_id']);
+$isAdmin = ($role === 'Admin');
 
-if (!$isOwner && !in_array($campaign['status'], ['Active', 'Completed'])) {
+if (!$isOwner && !$isAdmin && !in_array($campaign['status'], ['Active', 'Completed'])) {
     echo json_encode(["success" => false, "message" => "Unauthorized access"]);
     exit;
 }
