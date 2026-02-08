@@ -17,6 +17,7 @@ import RecordsPage from "./pages/RecordsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import TestimonialPage from "./pages/TestimonialPage";
 import CreateTestimonialPage from "./pages/CreateTestimonialPage";
+import UserListPage from "./pages/UserListPage";
 
 const routes = createBrowserRouter([
     {
@@ -41,7 +42,7 @@ const routes = createBrowserRouter([
             },
             {
                 path: "/user-list",
-                element: <h1>User List (Admin Only)</h1>
+                element: <UserListPage />
             },
             {
                 path: "/campaigns",
