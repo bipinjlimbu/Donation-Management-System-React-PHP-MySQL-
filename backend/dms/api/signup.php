@@ -17,9 +17,36 @@ $address = trim($_POST['address'] ?? '');
 $registration_number = trim($_POST['registration_number'] ?? null);
 $requested_at = date('Y-m-d H:i:s');
 
-if (!$email || !$password || !$name) {
-    echo json_encode(["success" => false, "message" => "Required fields missing"]);
+if (!$email || !$password || !$name || !$phone || !$address) {
+    echo json_encode(["success" => false, "message" => "All fields are required"]);
     exit;
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(["success" => false, "message" => "Invalid email format"]);
+    exit;
+}
+
+$passwordRegex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/";
+if (!preg_match($passwordRegex, $password)) {
+    echo json_encode(["success" => false, "message" => "Password must be 8+ chars with uppercase, lowercase, and a number"]);
+    exit;
+}
+
+if (strlen($phone) < 10) {
+    echo json_encode(["success" => false, "message" => "Please enter a valid phone number"]);
+    exit;
+}
+
+if ($role === "NGO") {
+    if (!$registration_number) {
+        echo json_encode(["success" => false, "message" => "Registration number is required for NGOs"]);
+        exit;
+    }
+    if (!isset($_FILES["verification_file"])) {
+        echo json_encode(["success" => false, "message" => "Verification file required for NGOs"]);
+        exit;
+    }
 }
 
 $sql = "SELECT user_id FROM users WHERE email = :email";
@@ -34,11 +61,6 @@ if ($stmt->fetch()) {
 $verificationFilePath = null;
 
 if ($role === "NGO") {
-    if (!isset($_FILES["verification_file"])) {
-        echo json_encode(["success" => false, "message" => "Verification file required"]);
-        exit;
-    }
-
     $uploadDir = "uploads/verification/";
     if (!file_exists($uploadDir))
         mkdir($uploadDir, 0777, true);
