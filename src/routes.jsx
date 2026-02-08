@@ -21,89 +21,93 @@ import CreateTestimonialPage from "./pages/CreateTestimonialPage";
 const routes = createBrowserRouter([
     {
         path: "/",
-        element:<MainLayout/>,
+        element: <MainLayout />,
         children: [
             {
-                path:"/",
-                element:<HomePage/>
+                path: "/",
+                element: <HomePage />
             },
             {
-                path:"/dashboard",
-                element:<DashboardPage/>
+                path: "/dashboard",
+                element: <DashboardPage />
             },
             {
-                path:"/records",
-                element:<RecordsPage/>
+                path: "/records",
+                element: <RecordsPage />
             },
             {
-                path:"/notifications",
-                element:<NotificationsPage/>
+                path: "/notifications",
+                element: <NotificationsPage />
             },
             {
-                path:"/campaigns",
+                path: "/user-list",
+                element: <h1>User List (Admin Only)</h1>
+            },
+            {
+                path: "/campaigns",
                 children: [
                     {
                         index: true,
-                        element:<CampaignsPage/>
+                        element: <CampaignsPage />
                     },
                     {
-                        path:":id",
-                        element:<SingleCampaignPage/>
+                        path: ":id",
+                        element: <SingleCampaignPage />
                     }
                 ]
             },
             {
-                path:"/createCampaign",
-                element: <CreateCampaignPage/>
+                path: "/createCampaign",
+                element: <CreateCampaignPage />
             },
             {
-                path:"/donate/:id",
-                element:<DonationPage/>
+                path: "/donate/:id",
+                element: <DonationPage />
             },
             {
-                path:"/edit-campaign/:id",
-                element:<EditCampaignPage/>
+                path: "/edit-campaign/:id",
+                element: <EditCampaignPage />
             },
             {
-                path:"/testimonials",
-                children:[
+                path: "/testimonials",
+                children: [
                     {
-                        index:true,
-                        element:<TestimonialPage/>
+                        index: true,
+                        element: <TestimonialPage />
                     },
                     {
-                        path:"create",
-                        element:<CreateTestimonialPage/>
+                        path: "create",
+                        element: <CreateTestimonialPage />
                     }
                 ]
             },
             {
-                path:"/contact",
-                element:<ContactPage/>,
+                path: "/contact",
+                element: <ContactPage />,
             },
             {
-                path:"/about",
-                element:<AboutPage/>,
+                path: "/about",
+                element: <AboutPage />,
             },
             {
-                path:"/profile",
-                element:<ProfilePage/>,
+                path: "/profile",
+                element: <ProfilePage />,
             },
             {
-                path:"/login",
-                element:<LoginPage/>,
+                path: "/login",
+                element: <LoginPage />,
             },
             {
-                path:"/signup",
-                element:<SignUpPage/>,
+                path: "/signup",
+                element: <SignUpPage />,
             },
             {
-                path:"/editProfile",
-                element:<EditProfile/>,
+                path: "/editProfile",
+                element: <EditProfile />,
             },
             {
-                path:"*",
-                element:<h1> 404 Not Found </h1>
+                path: "*",
+                element: <h1> 404 Not Found </h1>
             }
         ]
     },
