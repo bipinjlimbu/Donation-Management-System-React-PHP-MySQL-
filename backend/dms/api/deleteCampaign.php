@@ -19,9 +19,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-if ($_SESSION['role'] !== 'NGO') {
+if ($_SESSION['role'] !== 'NGO' && $_SESSION['role'] !== 'Admin') {
     http_response_code(403);
-    echo json_encode(["success" => false, "message" => "Forbidden"]);
+    echo json_encode(["success" => false, "message" => "Forbidden: You do not have permission"]);
     exit;
 }
 
@@ -46,9 +46,12 @@ try {
         exit;
     }
 
-    if ($campaign['ngo_id'] != $_SESSION['user_id']) {
+    $isOwner = ($campaign['ngo_id'] == $_SESSION['user_id'] && $_SESSION['role'] === 'NGO');
+    $isAdmin = ($_SESSION['role'] === 'Admin');
+
+    if (!$isOwner && !$isAdmin) {
         http_response_code(403);
-        echo json_encode(["success" => false, "message" => "You can only delete your own campaigns"]);
+        echo json_encode(["success" => false, "message" => "You do not have permission to delete this campaign"]);
         exit;
     }
 
