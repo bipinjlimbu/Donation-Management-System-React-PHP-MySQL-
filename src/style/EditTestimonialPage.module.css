@@ -1,0 +1,84 @@
+.container {
+    max-width: 600px;
+    min-height: 55vh;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form label {
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 5px;
+}
+
+.form textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    resize: vertical;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    outline: none;
+}
+
+.form textarea:focus {
+    border-color: #3498db;
+}
+
+.form select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.form select:focus {
+    border-color: #3498db;
+}
+
+.form button {
+    margin-top: 10px;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.form button:hover {
+    background: #217dbb;
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .container h1 {
+        font-size: 22px;
+    }
+}
