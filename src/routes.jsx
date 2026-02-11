@@ -79,6 +79,10 @@ const routes = createBrowserRouter([
                     {
                         path: "create",
                         element: <CreateTestimonialPage />
+                    },
+                    {
+                        path: "edit/:id",
+                        element: <h1>Edit Testimonial Page (Coming Soon)</h1>
                     }
                 ]
             },
