@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
-import myTestimonial from "../style/TestimonialPage.module.css";
+import styles from "../style/TestimonialPage.module.css";
 
 export default function TestimonialPage() {
     const [testimonials, setTestimonials] = useState([]);
+    const [hasWritten, setHasWritten] = useState(false);
+
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -17,28 +19,32 @@ export default function TestimonialPage() {
             .then(res => {
                 if (res.data.success) {
                     setTestimonials(res.data.testimonials);
+                    setHasWritten(res.data.hasWritten);
                 }
             })
-            .catch(err => {
-                console.error("Error fetching testimonials:", err);
+            .catch(() => {
+                console.error("Failed to fetch testimonials");
             });
     }, []);
 
-    const canWrite = user && (user.role === "Donor" || user.role === "NGO");
+    const canWrite =
+        user &&
+        (user.role === "Donor" || user.role === "NGO") &&
+        !hasWritten;
 
     return (
-        <div className={myTestimonial.page}>
-            <div className={myTestimonial.header}>
-                <h1 className={myTestimonial.title}>Testimonials</h1>
-                <p className={myTestimonial.subtitle}>
+        <div className={styles.page}>
+            <div className={styles.header}>
+                <h1 className={styles.title}>Testimonials</h1>
+                <p className={styles.subtitle}>
                     Voices from donors and NGOs
                 </p>
             </div>
 
             {canWrite && (
-                <div className={myTestimonial.createWrapper}>
+                <div className={styles.createWrapper}>
                     <button
-                        className={myTestimonial.primaryBtn}
+                        className={styles.primaryBtn}
                         onClick={() => navigate("/testimonials/create")}
                     >
                         Write a Testimonial
@@ -46,61 +52,59 @@ export default function TestimonialPage() {
                 </div>
             )}
 
-            <div className={myTestimonial.grid}>
+            <div className={styles.grid}>
                 {testimonials.length === 0 ? (
-                    <p className={myTestimonial.empty}>
+                    <p className={styles.empty}>
                         No testimonials available.
                     </p>
                 ) : (
                     testimonials.map(t => {
                         const name =
-                            t.role === "NGO" ? t.ngo_name : t.donor_name;
+                            t.role === "NGO"
+                                ? t.ngo_name
+                                : t.donor_name;
 
                         const isOwner =
-                            user && Number(user.user_id) === Number(t.user_id);
+                            user &&
+                            Number(user.user_id) === Number(t.user_id);
+
+                        const isAdmin = user?.role === "Admin";
 
                         return (
-                            <div
-                                key={t.testimonial_id}
-                                className={myTestimonial.card}
-                            >
-                                <div className={myTestimonial.cardHeader}>
-                                    <div className={myTestimonial.avatar}>
+                            <div key={t.testimonial_id} className={styles.card}>
+                                <div className={styles.cardHeader}>
+                                    <div className={styles.avatar}>
                                         {name?.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div className={myTestimonial.name}>
+                                        <div className={styles.name}>
                                             {name}
                                         </div>
-                                        <div className={myTestimonial.role}>
+                                        <div className={styles.role}>
                                             {t.role}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className={myTestimonial.messageBox}>
+                                <div className={styles.messageBox}>
                                     “{t.message}”
                                 </div>
 
-                                <div className={myTestimonial.cardFooter}>
-                                    <div className={myTestimonial.rating}>
+                                <div className={styles.cardFooter}>
+                                    <div className={styles.rating}>
                                         {"★".repeat(t.rating)}
                                         {"☆".repeat(5 - t.rating)}
                                     </div>
 
-                                    {isOwner && (
-                                        <div className={myTestimonial.actions}>
+                                    {(isOwner || isAdmin) && (
+                                        <div className={styles.actions}>
                                             <button
-                                                className={
-                                                    myTestimonial.editBtn
-                                                }
+                                                className={styles.editBtn}
                                             >
                                                 Edit
                                             </button>
                                             <button
-                                                className={
-                                                    myTestimonial.deleteBtn
-                                                }
+                                                className={styles.deleteBtn}
                                             >
                                                 Delete
                                             </button>
