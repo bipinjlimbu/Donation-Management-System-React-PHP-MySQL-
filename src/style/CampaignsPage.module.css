@@ -100,6 +100,33 @@
   margin-top: 20px;
 }
 
+.filterBar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.filterBtn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid #27ae60;
+  background: transparent;
+  color: #27ae60;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filterBtn:hover {
+  background: #27ae60;
+  color: white;
+}
+
+.activeFilter {
+  background: #27ae60;
+  color: white;
+}
+
 @media (max-width: 600px) {
   .header {
     flex-direction: column;
