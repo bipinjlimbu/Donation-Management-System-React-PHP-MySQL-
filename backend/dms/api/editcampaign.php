@@ -43,7 +43,7 @@ if (!$campaignId || !$title || !$description || !$targetQuantity || !$endDate) {
 }
 
 try {
-    $check = $conn->prepare("SELECT created_by FROM campaigns WHERE campaign_id = :cid");
+    $check = $conn->prepare("SELECT ngo_id FROM campaigns WHERE campaign_id = :cid");
     $check->bindParam(':cid', $campaignId, PDO::PARAM_INT);
     $check->execute();
     $campaign = $check->fetch(PDO::FETCH_ASSOC);
@@ -53,7 +53,7 @@ try {
         exit;
     }
 
-    $isCreator = ($campaign['created_by'] == $user_id);
+    $isCreator = ($campaign['ngo_id'] == $user_id);
     $isAdmin = ($user_role === 'Admin');
 
     if (!$isCreator && !$isAdmin) {
