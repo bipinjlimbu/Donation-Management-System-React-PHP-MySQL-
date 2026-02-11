@@ -1,59 +1,53 @@
 .container {
     width: 100%;
     max-width: 1200px;
-    margin: 0 auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    padding: 20px;
+    margin: 30px auto;
+    padding: 25px;
     background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    min-height: 85vh; 
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    min-height: 85vh;
 }
 
 .container h1 {
+    text-align: center;
     font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: #2c3e50;
 }
 
-.filterBar {
-    margin: 20px 0;
+.filterButtons {
     display: flex;
     justify-content: center;
     gap: 12px;
+    margin-bottom: 25px;
 }
 
-.filterBar select {
-    padding: 10px 14px;
-    font-size: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-.filterBar button {
-    padding: 10px 16px;
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 6px;
+.filterBtn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 2px solid #27ae60;
+    background: transparent;
+    color: #27ae60;
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.filterBar button:hover {
-    background: #217dbb;
+.filterBtn:hover {
+    background: #27ae60;
+    color: white;
+}
+
+.active {
+    background: #27ae60;
+    color: white;
 }
 
 .tableWrapper {
     width: 100%;
-    margin-top: 20px;
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: 600px;  
-    padding-bottom: 10px;
+    max-height: 600px;
 }
 
 table {
@@ -64,35 +58,56 @@ table {
 
 thead th {
     background: #2c3e50;
-    color: #fff;
+    color: white;
     padding: 12px;
-    font-weight: 600;
 }
 
 tbody td {
     padding: 12px;
     border-bottom: 1px solid #ececec;
-    text-align: center;
 }
 
 tbody tr:hover {
-    background: none;
+    background: #f9fafb;
 }
 
-.container p {
-    font-size: 1.1rem;
-    color: #7f8c8d;
-    margin-top: 20px;
+.status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.delivered {
+    background: #27ae60;
+    color: white;
+}
+
+.denied {
+    background: #e74c3c;
+    color: white;
+}
+
+.pending {
+    background: #f39c12;
+    color: white;
+}
+
+.error {
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
 }
 
 @media (max-width: 768px) {
+
     table th,
     table td {
-        padding: 8px;
         font-size: 13px;
+        padding: 8px;
     }
 
-    .container {
-        padding: 15px;
+    .filterButtons {
+        flex-wrap: wrap;
     }
 }
