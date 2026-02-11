@@ -27,6 +27,32 @@ export default function TestimonialPage() {
             });
     }, []);
 
+    const handleDelete = async (testimonial_id) => {
+        if (!window.confirm("Are you sure you want to delete this testimonial?")) return;
+
+        try {
+            const res = await axios.post(
+                "http://localhost/dms/api/deleteTestimonial.php",
+                { testimonial_id },
+                { withCredentials: true }
+            );
+
+            if (res.data.success) {
+                alert("Testimonial deleted");
+
+                setTestimonials(prev =>
+                    prev.filter(t => t.testimonial_id !== testimonial_id)
+                );
+
+                setHasWritten(false);
+            } else {
+                alert(res.data.message);
+            }
+        } catch {
+            alert("Server error");
+        }
+    };
+
     const canWrite =
         user &&
         (user.role === "Donor" || user.role === "NGO") &&
@@ -54,19 +80,14 @@ export default function TestimonialPage() {
 
             <div className={styles.grid}>
                 {testimonials.length === 0 ? (
-                    <p className={styles.empty}>
-                        No testimonials available.
-                    </p>
+                    <p className={styles.empty}>No testimonials available.</p>
                 ) : (
                     testimonials.map(t => {
                         const name =
-                            t.role === "NGO"
-                                ? t.ngo_name
-                                : t.donor_name;
+                            t.role === "NGO" ? t.ngo_name : t.donor_name;
 
                         const isOwner =
-                            user &&
-                            Number(user.user_id) === Number(t.user_id);
+                            user && Number(user.user_id) === Number(t.user_id);
 
                         const isAdmin = user?.role === "Admin";
 
@@ -77,12 +98,8 @@ export default function TestimonialPage() {
                                         {name?.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div className={styles.name}>
-                                            {name}
-                                        </div>
-                                        <div className={styles.role}>
-                                            {t.role}
-                                        </div>
+                                        <div className={styles.name}>{name}</div>
+                                        <div className={styles.role}>{t.role}</div>
                                     </div>
                                 </div>
 
@@ -100,11 +117,17 @@ export default function TestimonialPage() {
                                         <div className={styles.actions}>
                                             <button
                                                 className={styles.editBtn}
+                                                onClick={() =>
+                                                    navigate(`/testimonials/edit/${t.testimonial_id}`)
+                                                }
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 className={styles.deleteBtn}
+                                                onClick={() =>
+                                                    handleDelete(t.testimonial_id)
+                                                }
                                             >
                                                 Delete
                                             </button>
