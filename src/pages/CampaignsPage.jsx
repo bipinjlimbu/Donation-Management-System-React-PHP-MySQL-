@@ -9,6 +9,8 @@ export default function CampaignsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [statusFilter, setStatusFilter] = useState("All");
+
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
@@ -29,6 +31,10 @@ export default function CampaignsPage() {
 
   const visibleCampaigns = campaigns.filter(c => {
     if (user?.role === "NGO" && c.ngo_id === user.user_id) return true;
+
+    if (statusFilter === "Active") return c.status === "Active";
+    if (statusFilter === "Completed") return c.status === "Completed";
+
     return c.status === "Active" || c.status === "Completed";
   });
 
@@ -47,6 +53,32 @@ export default function CampaignsPage() {
         )}
       </div>
 
+      <div className={myCampaigns.filterBar}>
+        <button
+          className={`${myCampaigns.filterBtn} ${statusFilter === "All" ? myCampaigns.activeFilter : ""
+            }`}
+          onClick={() => setStatusFilter("All")}
+        >
+          All
+        </button>
+
+        <button
+          className={`${myCampaigns.filterBtn} ${statusFilter === "Active" ? myCampaigns.activeFilter : ""
+            }`}
+          onClick={() => setStatusFilter("Active")}
+        >
+          Active
+        </button>
+
+        <button
+          className={`${myCampaigns.filterBtn} ${statusFilter === "Completed" ? myCampaigns.activeFilter : ""
+            }`}
+          onClick={() => setStatusFilter("Completed")}
+        >
+          Completed
+        </button>
+      </div>
+
       {loading ? (
         <div className={myCampaigns.center}>Loading campaigns...</div>
       ) : error ? (
@@ -57,15 +89,18 @@ export default function CampaignsPage() {
             visibleCampaigns.map(c => (
               <div key={c.campaign_id} className={myCampaigns.card}>
                 <h3 className={myCampaigns.title}>{c.title}</h3>
+
                 <p className={myCampaigns.description}>
                   {c.description?.length > 120
                     ? c.description.slice(0, 120) + "..."
                     : c.description}
                 </p>
+
                 <div className={myCampaigns.meta}>
                   <span><strong>Status:</strong> {c.status}</span>
                   <span><strong>Start:</strong> {c.start_date}</span>
                 </div>
+
                 <button
                   className={myCampaigns.viewBtn}
                   onClick={() => navigate(`/campaigns/${c.campaign_id}`)}
