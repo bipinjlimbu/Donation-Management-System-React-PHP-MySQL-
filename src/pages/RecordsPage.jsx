@@ -6,10 +6,13 @@ import axios from "axios";
 
 export default function RecordsPage() {
     const { user } = useAuth();
+
     const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
-    const [error, setError] = useState(null);
+    const [statusFilter, setStatusFilter] = useState("all");
+
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!user || !user.user_id) return;
@@ -29,8 +32,7 @@ export default function RecordsPage() {
                 } else {
                     setError(res.data.message || "No donation records found.");
                 }
-            } catch (err) {
-                console.error("Failed to fetch donation history:", err);
+            } catch {
                 setError("Failed to connect to the server.");
             } finally {
                 setLoading(false);
@@ -40,139 +42,102 @@ export default function RecordsPage() {
         fetchHistory();
     }, [user]);
 
-    const role = user?.role;
-
-    const filter = () => {
-        const filterValue = document.getElementById("filter").value;
-
-        if (filterValue === "all") {
+    useEffect(() => {
+        if (statusFilter === "all") {
             setFilteredRecords(records);
         } else {
-            const newList = records.filter(
-                (rec) => rec.status.toLowerCase() === filterValue.toLowerCase()
+            setFilteredRecords(
+                records.filter(
+                    r => r.status.toLowerCase() === statusFilter
+                )
             );
-            setFilteredRecords(newList);
         }
-    };
+    }, [statusFilter, records]);
 
     if (!user) return <LoginPage />;
 
-    else{
-        return (
-            <div className={myRecords.container}>
-                <h1>Records of Donations</h1>
+    const role = user.role;
 
-                {loading && <p>Loading donation records...</p>}
-                {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
+    return (
+        <div className={myRecords.container}>
+            <h1>Donation Records</h1>
+            <div className={myRecords.filterButtons}>
+                <button
+                    className={`${myRecords.filterBtn} ${statusFilter === "all" ? myRecords.active : ""
+                        }`}
+                    onClick={() => setStatusFilter("all")}
+                >
+                    All
+                </button>
 
-                {!loading && !error && filteredRecords.length === 0 && (
-                    <p>No Records of Donations.</p>
-                )}
+                <button
+                    className={`${myRecords.filterBtn} ${statusFilter === "delivered" ? myRecords.active : ""
+                        }`}
+                    onClick={() => setStatusFilter("delivered")}
+                >
+                    Delivered
+                </button>
 
-                <div className={myRecords.filterBar}>
-                    <select name="filter" id="filter">
-                        <option value="all">All Records</option>
-                        <option value="denied">Denied</option>
-                        <option value="delivered">Delivered</option>
-                    </select>
-                    <button onClick={filter}>Apply Filter</button>
-                </div>
-
-                {!loading && filteredRecords.length > 0 && role === "Admin" && (
-                    <div className={myRecords.tableWrapper}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign</th>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>Donor</th>
-                                    <th>NGO</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Delivered At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredRecords.map((rec) => (
-                                    <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_title}</td>
-                                        <td>{rec.item_name}</td>
-                                        <td>{rec.quantity}</td>
-                                        <td>{rec.donor_name}</td>
-                                        <td>{rec.ngo_name}</td>
-                                        <td>{rec.ngo_address}</td>
-                                        <td>{rec.status}</td>
-                                        <td>{rec.delivered_at || "-"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {!loading && filteredRecords.length > 0 && role === "Donor" && (
-                    <div className={myRecords.tableWrapper}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign</th>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>NGO</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Delivered At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredRecords.map((rec) => (
-                                    <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_title}</td>
-                                        <td>{rec.item_name}</td>
-                                        <td>{rec.quantity}</td>
-                                        <td>{rec.ngo_name}</td>
-                                        <td>{rec.ngo_address}</td>
-                                        <td>{rec.status}</td>
-                                        <td>{rec.delivered_at || "-"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {!loading && filteredRecords.length > 0 && role === "NGO" && (
-                    <div className={myRecords.tableWrapper}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Campaign</th>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>Donor</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Delivered At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredRecords.map((rec) => (
-                                    <tr key={rec.donation_id}>
-                                        <td>{rec.campaign_title}</td>
-                                        <td>{rec.item_name}</td>
-                                        <td>{rec.quantity}</td>
-                                        <td>{rec.donor_name}</td>
-                                        <td>{rec.ngo_address}</td>
-                                        <td>{rec.status}</td>
-                                        <td>{rec.delivered_at || "-"}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <button
+                    className={`${myRecords.filterBtn} ${statusFilter === "denied" ? myRecords.active : ""
+                        }`}
+                    onClick={() => setStatusFilter("denied")}
+                >
+                    Denied
+                </button>
             </div>
-        );
-    }
+
+            {loading && <p>Loading donation records...</p>}
+            {error && <p className={myRecords.error}>{error}</p>}
+
+            {!loading && filteredRecords.length === 0 && (
+                <p>No donation records found.</p>
+            )}
+
+            {!loading && filteredRecords.length > 0 && (
+                <div className={myRecords.tableWrapper}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+
+                                {role !== "Donor" && <th>Donor</th>}
+                                {role !== "NGO" && <th>NGO</th>}
+
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Delivered At</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {filteredRecords.map(rec => (
+                                <tr key={rec.donation_id}>
+                                    <td>{rec.campaign_title}</td>
+                                    <td>{rec.item_name}</td>
+                                    <td>{rec.quantity}</td>
+
+                                    {role !== "Donor" && <td>{rec.donor_name}</td>}
+                                    {role !== "NGO" && <td>{rec.ngo_name}</td>}
+
+                                    <td>{rec.ngo_address}</td>
+                                    <td>
+                                        <span
+                                            className={`${myRecords.status} ${myRecords[rec.status.toLowerCase()]
+                                                }`}
+                                        >
+                                            {rec.status}
+                                        </span>
+                                    </td>
+                                    <td>{rec.delivered_at || "-"}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
 }
