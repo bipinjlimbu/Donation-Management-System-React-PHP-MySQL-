@@ -1,117 +1,138 @@
 .page {
     padding: 20px;
-    background-color: #f9f9f9;
+    background: #f9f9f9;
     min-height: 100vh;
 }
 
 .container {
     max-width: 1100px;
-    margin: 0 auto;
+    margin: auto;
     background: white;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .title {
-    margin-bottom: 25px;
-    color: #333;
-    font-size: 1.8rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #2c3e50;
 }
 
-/* Table Styling */
+.filterButtons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.filterBtn {
+    padding: 8px 22px;
+    border-radius: 20px;
+    border: 2px solid #3498db;
+    background: transparent;
+    color: #3498db;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filterBtn:hover {
+    background: #3498db;
+    color: white;
+}
+
+.active {
+    background: #3498db;
+    color: white;
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    text-align: center;
 }
 
 .table th {
-    background-color: #f4f4f4;
-    color: #555;
-    text-align: left;
-    padding: 12px 15px;
+    background: #f2f2f2;
+    color: #000;
+    padding: 12px;
     font-weight: 600;
+    border-bottom: 2px solid #ddd;
 }
 
 .table td {
-    padding: 12px 15px;
+    padding: 12px;
     border-bottom: 1px solid #eee;
-    color: #444;
-    vertical-align: middle;
+    color: #333;
 }
 
 .table tr:hover {
-    background-color: #fafafa;
+    background: #fafafa;
 }
 
-/* Status Badges */
 .statusBadge {
-    padding: 5px 12px;
+    padding: 5px 14px;
     border-radius: 20px;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: capitalize;
+    display: inline-block;
 }
 
 .approved {
-    background-color: #e6ffed;
-    color: #28a745;
+    background: #e6ffed;
+    color: #27ae60;
     border: 1px solid #c6f6d5;
 }
 
 .denied {
-    background-color: #fff5f5;
-    color: #dc3545;
+    background: #fff5f5;
+    color: #e74c3c;
     border: 1px solid #feb2b2;
 }
 
 .pending {
-    background-color: #fffaf0;
-    color: #d69e2e;
+    background: #fffaf0;
+    color: #f39c12;
     border: 1px solid #fbd38d;
 }
 
-/* Action Buttons */
 .deleteBtn {
-    background-color: #dc3545;
+    background: #e74c3c;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
 .deleteBtn:hover {
-    background-color: #c82333;
+    background: #c0392b;
 }
 
 .meBadge {
-    background-color: #e2e8f0;
-    color: #4a5568;
+    background: #e2e8f0;
+    color: #333;
     padding: 4px 10px;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.8rem;
-    font-style: italic;
 }
 
-/* Utility Classes */
 .center {
     text-align: center;
     padding: 50px;
     font-size: 1.1rem;
-    color: #666;
+    color: #555;
 }
 
 .error {
-    color: #dc3545;
+    color: #e74c3c;
     background: #fff5f5;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
-    margin: 20px auto;
     max-width: 600px;
+    margin: auto;
 }
