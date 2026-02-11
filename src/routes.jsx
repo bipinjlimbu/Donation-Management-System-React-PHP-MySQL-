@@ -18,6 +18,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import TestimonialPage from "./pages/TestimonialPage";
 import CreateTestimonialPage from "./pages/CreateTestimonialPage";
 import UserListPage from "./pages/UserListPage";
+import EditTestimonialPage from "./pages/EditTestimonialPage";
 
 const routes = createBrowserRouter([
     {
@@ -82,7 +83,7 @@ const routes = createBrowserRouter([
                     },
                     {
                         path: "edit/:id",
-                        element: <h1>Edit Testimonial Page (Coming Soon)</h1>
+                        element: <EditTestimonialPage />
                     }
                 ]
             },
