@@ -29,6 +29,7 @@ try {
                 u.user_id 
             FROM register r
             LEFT JOIN users u ON r.user_id = u.user_id
+            WHERE r.status != 'Pending'
             ORDER BY r.requested_at DESC";
 
     $stmt = $conn->prepare($sql);
