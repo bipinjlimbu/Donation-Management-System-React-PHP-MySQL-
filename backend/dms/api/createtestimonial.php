@@ -41,6 +41,19 @@ if (empty($message) || $rating < 1 || $rating > 5) {
 }
 
 try {
+    $checkSql = "SELECT testimonial_id FROM testimonials WHERE user_id = :user_id LIMIT 1";
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $checkStmt->execute();
+
+    if ($checkStmt->fetch()) {
+        echo json_encode([
+            "success" => false,
+            "message" => "You have already submitted a testimonial."
+        ]);
+        exit;
+    }
+
     $sql = "INSERT INTO testimonials 
             (user_id, message, rating, status, created_at)
             VALUES (:user_id, :message, :rating, :status, :created_at)";
@@ -58,6 +71,7 @@ try {
         "success" => true,
         "message" => "Testimonial submitted successfully. Pending admin approval."
     ]);
+
 } catch (PDOException $e) {
     echo json_encode([
         "success" => false,
